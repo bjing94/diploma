@@ -1,4 +1,4 @@
-import { MIN_ORDER_ITEM_LEVEL } from './const/order.const';
+import { MIN_ORDER_ITEM_LEVEL } from '../const/order.const';
 import ProductDomainEntity from './food.domain-entity';
 
 export default class OrderItemDomainEntity {
@@ -7,7 +7,7 @@ export default class OrderItemDomainEntity {
   private product: ProductDomainEntity;
 
   get totalPrice(): number {
-    return this.product.getPrice() * this.count;
+    return this.product.price * this.count;
   }
 
   public getLevel(): number {

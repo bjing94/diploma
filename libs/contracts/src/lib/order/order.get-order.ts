@@ -1,4 +1,9 @@
-import { OrderStatus } from '@burger-shop/interfaces';
+import {
+  DeliveryInfoResponse,
+  OrderItemResponse,
+  OrderStatus,
+  PaymentInfoResponse,
+} from '@burger-shop/interfaces';
 
 export namespace OrderGetOrder {
   export const topic = 'order.get-by-id.request';
@@ -12,11 +17,11 @@ export namespace OrderGetOrder {
 
     status: OrderStatus;
 
-    orderItems: OrderItemDomainEntity[];
+    orderItems: OrderItemResponse[];
 
-    paymentInfo: PaymentInfoDomainEntity;
+    paymentInfo: PaymentInfoResponse;
 
-    deliveryInfo: DeliveryInfoDomainEntity;
+    deliveryInfo: DeliveryInfoResponse;
 
     createdAt: Date;
   }
