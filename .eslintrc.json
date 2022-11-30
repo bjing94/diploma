@@ -18,7 +18,8 @@
               }
             ]
           }
-        ]
+        ],
+        "no-magic-numbers": "warn"
       }
     },
     {

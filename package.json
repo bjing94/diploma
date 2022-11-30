@@ -13,10 +13,13 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/microservices": "^9.2.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/typeorm": "^9.0.1",
     "kafkajs": "^2.2.2",
+    "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "typeorm": "^0.3.10"
   },
   "devDependencies": {
     "@nestjs/schematics": "^9.0.0",
