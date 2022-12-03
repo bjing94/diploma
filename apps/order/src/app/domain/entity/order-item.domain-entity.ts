@@ -6,6 +6,12 @@ export default class OrderItemDomainEntity {
   private count: number;
   private product: ProductDomainEntity;
 
+  constructor(level: number, count: number, product: ProductDomainEntity) {
+    this.level = level;
+    this.count = count;
+    this.product = product;
+  }
+
   get totalPrice(): number {
     return this.product.price * this.count;
   }

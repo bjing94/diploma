@@ -8,8 +8,4 @@ export default class OrderQueryController {
   async get(id: string) {
     return this.orderRepository.find(id);
   }
-
-  async create(id: string) {
-    return this.orderRepository.find(id);
-  }
 }

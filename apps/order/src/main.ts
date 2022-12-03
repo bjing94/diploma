@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { KafkaOptions, Transport } from '@nestjs/microservices';
 
-import { AppModule } from './app/app.module';
+import { AppModule } from './app/application/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<KafkaOptions>(AppModule, {

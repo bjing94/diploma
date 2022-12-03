@@ -1,4 +1,4 @@
-import OrderDomainEntity from '../../domain/order.domain-entity';
+import OrderDomainEntity from '../../domain/entity/order.domain-entity';
 
 export default abstract class OrderAbstractRepository {
   public abstract find(id: string): Promise<OrderDomainEntity>;
