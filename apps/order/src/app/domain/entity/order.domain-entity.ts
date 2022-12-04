@@ -5,7 +5,7 @@ import OrderItemDomainEntity from './order-item.domain-entity';
 import PaymentInfoDomainEntity from './payment-info.domain.entity';
 
 export default class OrderDomainEntity {
-  private id: number;
+  private id: string;
 
   private status: OrderStatus;
 
@@ -17,7 +17,7 @@ export default class OrderDomainEntity {
 
   private createdAt: Date;
 
-  constructor(id: number, items: ProductDomainEntity[]) {
+  constructor(id: string, items: ProductDomainEntity[]) {
     this.id = id;
     this.orderItems = [];
 
@@ -81,10 +81,10 @@ export default class OrderDomainEntity {
     return this.status;
   }
 
-  public setId(id: number): void {
+  public setId(id: string): void {
     this.id = id;
   }
-  public getId(): number {
+  public getId(): string {
     return this.id;
   }
 

@@ -12,10 +12,9 @@ import OrderService from './order.service';
         transport: Transport.KAFKA,
         options: {
           client: {
-            clientId: 'test',
+            clientId: 'order-producer',
             brokers: ['localhost:29092'],
           },
-          producerOnlyMode: true,
         },
       },
     ]),

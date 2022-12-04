@@ -12,8 +12,7 @@
         "compiler": "tsc",
         "outputPath": "dist/apps/order",
         "main": "apps/order/src/main.ts",
-        "tsConfig": "apps/order/tsconfig.app.json",
-        "assets": ["apps/order/src/assets"]
+        "tsConfig": "apps/order/tsconfig.app.json"
       },
       "configurations": {
         "production": {

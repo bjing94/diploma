@@ -8,7 +8,7 @@ export default class OrderCommandController {
   constructor(private readonly service: OrderCommandService) {}
 
   @MessagePattern(OrderCreate.topic)
-  async create(@Payload() dto: OrderCreate.Request) {
+  create(@Payload() dto: OrderCreate.Request): OrderCreate.Response {
     return this.service.create(dto);
   }
 }
