@@ -10,7 +10,7 @@ import ProductRepository from '../../infrastructure/database/mongo/repository/pr
 import ProductAbstractRepository from '../repository/product.abstract-repository';
 
 @Injectable()
-export default class OrderEventSourceRepositoryProvider {
+export default class ProductRepositoryProvider {
   public repository: ProductAbstractRepository;
 
   constructor(

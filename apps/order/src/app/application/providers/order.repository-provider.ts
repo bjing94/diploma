@@ -9,7 +9,7 @@ import OrderRepository from '../../infrastructure/database/mongo/repository/orde
 import OrderAbstractRepository from '../repository/order.abstract-repository';
 
 @Injectable()
-export default class OrderEventSourceRepositoryProvider {
+export default class OrderRepositoryProvider {
   public repository: OrderAbstractRepository;
 
   constructor(
