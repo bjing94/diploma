@@ -25,4 +25,12 @@ export default class OrderItemDomainEntity {
       this.level = newLevel;
     }
   }
+
+  public getProduct() {
+    return this.product;
+  }
+
+  public getCount() {
+    return this.count;
+  }
 }

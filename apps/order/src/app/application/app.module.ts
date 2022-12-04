@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
-import getMongoConnectionString from '../config/mongoose.config';
+import getMongoEventStoreConnectionString from '../config/mongoose.config';
 import {
   Event,
   EventSchema,
@@ -9,11 +9,13 @@ import {
 
 import OrderCommandController from './order.command.controller';
 import OrderCommandService from './order.command.service';
+import OrderQueryController from './order.query.controller';
+import OrderQueryService from './order.query.service';
 import OrderEventSourceRepositoryProvider from './providers/order.event-source.repository-provider';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(getMongoConnectionString()),
+    MongooseModule.forRoot(getMongoEventStoreConnectionString()),
     MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
     ClientsModule.register([
       {
@@ -31,7 +33,11 @@ import OrderEventSourceRepositoryProvider from './providers/order.event-source.r
       },
     ]),
   ],
-  controllers: [OrderCommandController],
-  providers: [OrderCommandService, OrderEventSourceRepositoryProvider],
+  controllers: [OrderCommandController, OrderQueryController],
+  providers: [
+    OrderCommandService,
+    OrderQueryService,
+    OrderEventSourceRepositoryProvider,
+  ],
 })
 export class AppModule {}

@@ -1,4 +1,9 @@
-import { OrderStatus } from '@burger-shop/interfaces';
+import {
+  DeliveryStatus,
+  OrderStatus,
+  PaymentStatus,
+  PaymentType,
+} from '@burger-shop/interfaces';
 import DeliveryInfoDomainEntity from './delivery-info.domain-entiy';
 import ProductDomainEntity from './food.domain-entity';
 import OrderItemDomainEntity from './order-item.domain-entity';
@@ -7,22 +12,44 @@ import PaymentInfoDomainEntity from './payment-info.domain.entity';
 export default class OrderDomainEntity {
   private id: string;
 
-  private status: OrderStatus;
+  private status: OrderStatus = OrderStatus.PENDING;
 
   private orderItems: OrderItemDomainEntity[];
 
   private paymentInfo: PaymentInfoDomainEntity;
 
-  private deliveryInfo: DeliveryInfoDomainEntity;
+  private deliveryInfo?: DeliveryInfoDomainEntity;
 
   private createdAt: Date;
 
-  constructor(id: string, items: ProductDomainEntity[]) {
+  constructor(
+    id: string,
+    items: {
+      product: ProductDomainEntity;
+      count: number;
+    }[],
+    paymentInfo: { type: PaymentType },
+    deliveryInfo?: { tableId: string }
+  ) {
     this.id = id;
     this.orderItems = [];
-
+    let totalPrice = 0;
     for (let i = 0; i < items.length; i++) {
-      this.addItem(items[i]);
+      totalPrice += items[i].product.price * items[i].count;
+      this.addItem(items[i].product);
+    }
+
+    this.paymentInfo = new PaymentInfoDomainEntity({
+      type: paymentInfo.type,
+      status: PaymentStatus.PENDING,
+      total: totalPrice,
+    });
+
+    if (deliveryInfo) {
+      this.deliveryInfo = new DeliveryInfoDomainEntity({
+        tableId: deliveryInfo.tableId,
+        status: DeliveryStatus.PENDING,
+      });
     }
   }
 
@@ -71,6 +98,10 @@ export default class OrderDomainEntity {
     });
     this.orderItems = newOrderItems;
     return removedItem;
+  }
+
+  public getOrderItems(): OrderItemDomainEntity[] {
+    return this.orderItems;
   }
 
   public setStatus(newStatus: OrderStatus): void {

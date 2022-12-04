@@ -15,5 +15,7 @@ export default class OrderQueryService {
       OrderCreated.topic,
       data
     );
+
+    // Save to read database
   }
 }
