@@ -5,13 +5,13 @@ export type PaymentInfoDocument = PaymentInfo & Document;
 
 @Schema()
 export class PaymentInfo {
-  @Prop()
+  @Prop({ type: String })
   public status: PaymentStatus;
 
   @Prop()
   public total: number;
 
-  @Prop()
+  @Prop({ type: String })
   public type: PaymentType;
 }
 

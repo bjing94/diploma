@@ -12,7 +12,7 @@ import PaymentInfoDomainEntity from './payment-info.domain.entity';
 export default class OrderDomainEntity {
   private id: string;
 
-  private status: OrderStatus = OrderStatus.PENDING;
+  private status: OrderStatus = OrderStatus.CREATED;
 
   private orderItems: OrderItemDomainEntity[];
 

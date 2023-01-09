@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum OrderStatus {
-  PENDING = 'pending',
-  REJECTED = 'rejected',
-  FULFILLED = 'fulfilled',
+  CREATED = 'created',
+  PAYED = 'payed',
+  COMPLETED = 'completed',
 }
 
 export class OrderItemResponse {

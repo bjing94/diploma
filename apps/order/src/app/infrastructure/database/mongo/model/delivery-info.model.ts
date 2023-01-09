@@ -8,7 +8,7 @@ export class DeliveryInfo {
   @Prop()
   tableId: string;
 
-  @Prop()
+  @Prop({ type: String })
   status: DeliveryStatus;
 }
 

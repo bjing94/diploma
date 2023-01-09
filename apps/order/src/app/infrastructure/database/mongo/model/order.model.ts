@@ -11,7 +11,7 @@ export class Order {
   @Prop()
   id: string;
 
-  @Prop()
+  @Prop({ type: String })
   status: OrderStatus;
 
   @Prop()
