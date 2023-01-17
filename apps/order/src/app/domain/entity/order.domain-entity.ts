@@ -16,9 +16,9 @@ export default class OrderDomainEntity {
 
   private orderItems: OrderItemDomainEntity[];
 
-  private paymentInfo: PaymentInfoDomainEntity;
+  private paymentId: string;
 
-  private deliveryInfo?: DeliveryInfoDomainEntity;
+  private deliveryId?: string;
 
   private createdAt: Date;
 
@@ -28,8 +28,8 @@ export default class OrderDomainEntity {
       product: ProductDomainEntity;
       count: number;
     }[],
-    paymentInfo: { type: PaymentType },
-    deliveryInfo?: { tableId: string }
+    paymentId: string,
+    deliveryId?: string
   ) {
     this.id = id;
     this.orderItems = [];
@@ -39,34 +39,9 @@ export default class OrderDomainEntity {
       this.addItem(items[i].product);
     }
 
-    this.paymentInfo = new PaymentInfoDomainEntity({
-      type: paymentInfo.type,
-      status: PaymentStatus.PENDING,
-      total: totalPrice,
-    });
+    this.paymentId = paymentId;
 
-    if (deliveryInfo) {
-      this.deliveryInfo = new DeliveryInfoDomainEntity({
-        tableId: deliveryInfo.tableId,
-        status: DeliveryStatus.PENDING,
-      });
-    }
-  }
-
-  public setDeliveryInfo(deliveryInfo: DeliveryInfoDomainEntity): void {
-    this.deliveryInfo = deliveryInfo;
-  }
-
-  public getDeliveryInfo(): DeliveryInfoDomainEntity {
-    return this.deliveryInfo;
-  }
-
-  public setPaymentInfo(paymentInfo: PaymentInfoDomainEntity): void {
-    this.paymentInfo = paymentInfo;
-  }
-
-  public getPaymentInfo(): PaymentInfoDomainEntity {
-    return this.paymentInfo;
+    this.deliveryId = deliveryId;
   }
 
   public addItem(item: ProductDomainEntity): void {

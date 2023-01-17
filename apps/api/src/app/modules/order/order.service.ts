@@ -1,4 +1,4 @@
-import { OrderCreate, OrderGetOrder } from '@burger-shop/contracts';
+import { OrderCreate, OrderGetOrder, OrderPay } from '@burger-shop/contracts';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -13,6 +13,7 @@ export default class OrderService {
   onModuleInit() {
     this.kafkaClient.subscribeToResponseOf(OrderCreate.topic);
     this.kafkaClient.subscribeToResponseOf(OrderGetOrder.topic);
+    this.kafkaClient.subscribeToResponseOf(OrderPay.topic);
   }
 
   public async create(dto: OrderCreate.Request) {
@@ -29,6 +30,15 @@ export default class OrderService {
       this.kafkaClient.send<OrderGetOrder.Response, OrderGetOrder.Request>(
         OrderGetOrder.topic,
         { id }
+      )
+    );
+  }
+
+  public async pay(id: string) {
+    return lastValueFrom(
+      this.kafkaClient.send<OrderPay.Response, OrderPay.Request>(
+        OrderPay.topic,
+        { orderId: id }
       )
     );
   }

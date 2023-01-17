@@ -12,7 +12,7 @@ export default class CreateOrderSagaRepository {
   public async createSaga(orderId: string) {
     const newSaga = new this.sagaModel({
       orderId,
-      status: OrderStatus.CREATED,
+      status: OrderStatus.WAITING_FOR_PAYMENT,
     });
     return newSaga.save();
   }

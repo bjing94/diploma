@@ -1,5 +1,6 @@
 import { OrderStatus } from '@burger-shop/interfaces';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { DeliveryInfo } from './delivery-info.model';
 import { OrderItem } from './order-item.model';
 import { PaymentInfo } from './payment-info.model';
@@ -14,13 +15,24 @@ export class Order {
   @Prop({ type: String })
   status: OrderStatus;
 
-  @Prop()
+  @Prop({
+    type: [Types.ObjectId],
+    ref: OrderItem.name,
+  })
   orderItems: OrderItem[];
 
-  @Prop()
-  paymentInfo: PaymentInfo;
+  @Prop({
+    type: Types.ObjectId,
+    ref: PaymentInfo.name,
+  })
+  paymentInfo: Types.ObjectId;
 
-  @Prop({ required: false, default: null })
+  @Prop({
+    required: false,
+    default: null,
+    type: Types.ObjectId,
+    ref: DeliveryInfo.name,
+  })
   deliveryInfo: DeliveryInfo;
 
   @Prop()

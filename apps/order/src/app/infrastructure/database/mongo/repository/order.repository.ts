@@ -9,7 +9,7 @@ export default class OrderRepository implements OrderAbstractRepository {
     this._repository = repository;
   }
   public async find(id: string): Promise<Order> {
-    return this._repository.findById(id).exec();
+    return this._repository.findOne({ id: id }).exec();
   }
   public async create(order: Order): Promise<Order> {
     return this._repository.create(order);

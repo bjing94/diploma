@@ -80,48 +80,28 @@ export default class OrderCommandService {
   // }
 
   public async createOrder(dto: OrderCreate.Request) {
-    const saga = new CreateOrderSaga(this.createOrderSagaRepo.repository);
+    const saga = new CreateOrderSaga(
+      this.createOrderSagaRepo.repository,
+      this.orderRepoProvider
+    );
     saga.setState(OrderStatus.CREATED);
-    await saga.getState().create(dto);
+    return saga.getState().create(dto);
   }
 
-  public async cancelOrder() {}
+  // public async cancelOrder() {}
 
-  public async payOrder() {}
+  public async payOrder(orderId: string) {
+    const sagaInfo = await (
+      await this.createOrderSagaRepo.repository.getSaga(orderId)
+    ).toObject();
+    if (!sagaInfo) return null;
+    const saga = new CreateOrderSaga(
+      this.createOrderSagaRepo.repository,
+      this.orderRepoProvider
+    );
+    saga.setState(sagaInfo.status);
+    return saga.getState().pay(orderId);
+  }
 
-  public async completeOrder() {}
-}
-
-abstract class CreateOrderSagaState {
-  public state: any; // our saga
-  public abstract execute();
-  public abstract rollback();
-}
-
-class CreateOrderSagaCreated implements CreateOrderSagaState {
-  public state: any;
-  public execute() {
-    console.log('asking delivery service for info');
-  }
-  public rollback() {
-    console.log('deleting order');
-  }
-}
-class CreateOrderSagaDeliveryWaiting implements CreateOrderSagaState {
-  public state: any;
-  public execute() {
-    console.log('changing state to delivery confirmed');
-  }
-  public rollback() {
-    console.log('removing confirmed order');
-  }
-}
-class CreateOrderSagaDeliveryConfirmed implements CreateOrderSagaState {
-  public state: any;
-  public execute() {
-    console.log('asking payment service');
-  }
-  public rollback() {
-    console.log('removing confirmed order');
-  }
+  // public async completeOrder() {}
 }
