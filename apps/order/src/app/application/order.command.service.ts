@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { OrderCreate, OrderCreated } from '@burger-shop/contracts';
+import { OrderCreate, OrderCreated, OrderPayed } from '@burger-shop/contracts';
 import OrderDomainEntity from '../domain/entity/order.domain-entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { generateOrderId } from './helper/generate-order-id';
@@ -85,7 +85,12 @@ export default class OrderCommandService {
       this.orderRepoProvider
     );
     saga.setState(OrderStatus.CREATED);
-    return saga.getState().create(dto);
+    const result = await saga.getState().create(dto);
+    await this.kafka.emit<void, OrderCreated.Payload>(OrderCreated.topic, {
+      ...dto,
+      id: result.getId(),
+    });
+    return result;
   }
 
   // public async cancelOrder() {}
@@ -100,7 +105,11 @@ export default class OrderCommandService {
       this.orderRepoProvider
     );
     saga.setState(sagaInfo.status);
-    return saga.getState().pay(orderId);
+    const result = saga.getState().pay(orderId);
+    await this.kafka.emit<void, OrderPayed.Payload>(OrderPayed.topic, {
+      orderId,
+    });
+    return result;
   }
 
   // public async completeOrder() {}

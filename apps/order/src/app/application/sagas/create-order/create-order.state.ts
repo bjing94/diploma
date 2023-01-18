@@ -1,5 +1,6 @@
 import CreateOrderSaga from './create-order.saga';
 import { OrderCreate } from '@burger-shop/contracts';
+import OrderDomainEntity from '../../../domain/entity/order.domain-entity';
 
 export default abstract class CreateOrderSagaState {
   protected saga: CreateOrderSaga;
@@ -8,7 +9,7 @@ export default abstract class CreateOrderSagaState {
     this.saga = saga;
   }
 
-  public abstract create(dto: OrderCreate.Request);
+  public abstract create(dto: OrderCreate.Request): Promise<OrderDomainEntity>;
 
   //   public abstract cancel();
 

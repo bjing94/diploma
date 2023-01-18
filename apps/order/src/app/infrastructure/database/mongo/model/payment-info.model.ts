@@ -1,6 +1,5 @@
 import { PaymentStatus, PaymentType } from '@burger-shop/interfaces';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
 
 export type PaymentInfoDocument = PaymentInfo & Document;
 

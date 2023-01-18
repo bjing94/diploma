@@ -16,10 +16,12 @@
     "baseUrl": ".",
     "paths": {
       "@burger-shop/contracts": ["libs/contracts/src/index.ts"],
+      "@burger-shop/domain-entities": ["libs/domain-entities/src/index.ts"],
       "@burger-shop/interfaces": ["libs/interfaces/src/index.ts"],
       "@burger-shop/kafka-module": ["libs/kafka-module/src/index.ts"]
     },
     "strictPropertyInitialization": false
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp"],
+  "include": ["./libs/*/src/**/*", "./apps/*/src/**/*"]
 }

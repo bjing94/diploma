@@ -19,7 +19,7 @@ export class Order {
     type: [Types.ObjectId],
     ref: OrderItem.name,
   })
-  orderItems: OrderItem[];
+  orderItems: Types.ObjectId[];
 
   @Prop({
     type: Types.ObjectId,

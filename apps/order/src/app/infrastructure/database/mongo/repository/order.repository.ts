@@ -15,7 +15,7 @@ export default class OrderRepository implements OrderAbstractRepository {
     return this._repository.create(order);
   }
   public async update(id: string, order: Order): Promise<Order> {
-    return this._repository.findByIdAndUpdate(id, order).exec();
+    return this._repository.findOneAndUpdate({ id }, order).exec();
   }
   public async delete(id: string): Promise<void> {
     await this._repository.findByIdAndDelete(id).exec();

@@ -7,7 +7,7 @@ import PaymentInfoDomainEntity from '../../../domain/entity/payment-info.domain.
 import OrderMapper from '../../mapper/order.mapper';
 
 export class CreateOrderStarted extends CreateOrderSagaState {
-  public async create(dto: OrderCreate.Request) {
+  public async create(dto: OrderCreate.Request): Promise<OrderDomainEntity> {
     const orderId = generateOrderId();
     const payment = new PaymentInfoDomainEntity();
 
@@ -19,12 +19,9 @@ export class CreateOrderStarted extends CreateOrderSagaState {
     );
     // some logic
 
-    console.log('Creating order', JSON.stringify(order));
     // Save to database
-    const dbOrder = OrderMapper.toDatabase(order);
-    await this.saga.orderRepository.repository.create(dbOrder);
     await this.saga.sagaRepository.createSaga(orderId);
-    return dbOrder.id;
+    return order;
   }
   public pay(orderId: string) {
     throw new Error('Cannot pay not created order');
@@ -35,7 +32,7 @@ export class CreateOrderStarted extends CreateOrderSagaState {
 }
 
 export class CreateOrderCreated extends CreateOrderSagaState {
-  public create(dto: OrderCreate.Request) {
+  public create(dto: OrderCreate.Request): Promise<OrderDomainEntity> {
     throw new Error('Method not implemented.');
   }
   public async pay(orderId: string) {

@@ -1,0 +1,29 @@
+{
+  "monorepo": true,
+  "root": "apps/burger-shop",
+  "sourceRoot": "apps/burger-shop/src",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/burger-shop/tsconfig.app.json"
+  },
+  "projects": {
+    "burger-shop": {
+      "type": "application",
+      "root": "apps/burger-shop",
+      "entryFile": "main",
+      "sourceRoot": "apps/burger-shop/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/burger-shop/tsconfig.app.json"
+      }
+    },
+    "product": {
+      "type": "application",
+      "root": "apps/product",
+      "entryFile": "main",
+      "sourceRoot": "apps/product/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/product/tsconfig.app.json"
+      }
+    }
+  }
+}
