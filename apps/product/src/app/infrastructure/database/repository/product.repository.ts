@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import ProductAbstractRepository from '../../../application/repository/product.abstract-repository';
-import { Product, ProductDocument } from '../model/product.model';
+import { Product, ProductDocument } from '@burger-shop/models';
 
 export default class ProductRepository implements ProductAbstractRepository {
   private _repository: Model<ProductDocument>;

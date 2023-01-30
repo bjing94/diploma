@@ -5,9 +5,11 @@ import {
   ProductGetById,
   ProductUpdated,
 } from '@burger-shop/contracts';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import ProductQueryService from './product.query.service';
 
+@Controller()
 export default class ProductQueryController {
   constructor(private readonly productQueryService: ProductQueryService) {}
 

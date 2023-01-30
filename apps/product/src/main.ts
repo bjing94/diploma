@@ -5,18 +5,25 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { KafkaOptions, Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3333;
-  await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
-  );
+  const app = await NestFactory.createMicroservice<KafkaOptions>(AppModule, {
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: ['localhost:29092'],
+        clientId: 'product-client',
+      },
+      consumer: {
+        groupId: 'product-consumer',
+      },
+    },
+  });
+  await app.listen();
+  Logger.log(`Products microservice started.`);
 }
 
 bootstrap();

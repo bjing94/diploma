@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
-import getMongoEventStoreConnectionString from '../config/mongoose.config';
+import getMongoEventStoreConnectionString, {
+  DatabaseNames,
+  getMongoReadDbConntectionString,
+} from '../config/mongoose.config';
 import {
   CreateOrderSagaModel,
   CreateOrderSagaSchema,
@@ -9,7 +12,7 @@ import {
 import {
   Event,
   EventSchema,
-} from '../infrastructure/database/mongo/model/event.model';
+} from '../../../../../libs/models/src/lib/event.model';
 import {
   Order,
   OrderSchema,
@@ -25,12 +28,23 @@ import OrderRepositoryProvider from './providers/order.repository-provider';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(getMongoEventStoreConnectionString()),
-    MongooseModule.forFeature([
-      { name: Event.name, schema: EventSchema },
-      { name: CreateOrderSagaModel.name, schema: CreateOrderSagaSchema },
-      { name: Order.name, schema: OrderSchema },
-    ]),
+    MongooseModule.forRoot(getMongoEventStoreConnectionString(), {
+      connectionName: DatabaseNames.eventDB,
+    }),
+    MongooseModule.forRoot(getMongoReadDbConntectionString(), {
+      connectionName: DatabaseNames.readDB,
+    }),
+    MongooseModule.forFeature(
+      [
+        { name: CreateOrderSagaModel.name, schema: CreateOrderSagaSchema },
+        { name: Order.name, schema: OrderSchema },
+      ],
+      DatabaseNames.readDB
+    ),
+    MongooseModule.forFeature(
+      [{ name: Event.name, schema: EventSchema }],
+      DatabaseNames.eventDB
+    ),
     ClientsModule.register([
       {
         name: 'KAFKA_CLIENT',

@@ -1,8 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { OrderCreate, OrderPay } from '@burger-shop/contracts';
 import OrderCommandService from './order.command.service';
+import LoggerInterceptor from './interceptors/logger.interceptor';
 
+@UseInterceptors(LoggerInterceptor)
 @Controller()
 export default class OrderCommandController {
   constructor(private readonly service: OrderCommandService) {}

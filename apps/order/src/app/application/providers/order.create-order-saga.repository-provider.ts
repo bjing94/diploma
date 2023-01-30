@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { DatabaseNames } from '../../config/mongoose.config';
 import {
   CreateOrderSagaDocument,
   CreateOrderSagaModel,
@@ -12,7 +13,7 @@ export default class CreateOrderSagaRepositoryProvider {
   public repository: CreateOrderSagaRepository;
 
   constructor(
-    @InjectModel(CreateOrderSagaModel.name)
+    @InjectModel(CreateOrderSagaModel.name, DatabaseNames.readDB)
     private readonly eventModel: Model<CreateOrderSagaDocument>
   ) {}
 

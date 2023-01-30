@@ -5,3 +5,8 @@ export default function getMongoEventStoreConnectionString() {
 export function getMongoReadDbConntectionString() {
   return `mongodb://root:root@localhost:27018/?authMechanism=DEFAULT`;
 }
+
+export enum DatabaseNames {
+  readDB = 'read-db',
+  eventDB = 'event-db',
+}

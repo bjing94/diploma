@@ -1,4 +1,4 @@
-import { Product } from '../../infrastructure/database/model/product.model';
+import { Product } from '@burger-shop/models';
 
 export default abstract class ProductAbstractRepository {
   public abstract find(id: number): Promise<Product>;

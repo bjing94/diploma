@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { DatabaseNames } from '../../config/mongoose.config';
 import {
   Order,
   OrderDocument,
@@ -13,7 +14,7 @@ export default class OrderRepositoryProvider {
   public repository: OrderAbstractRepository;
 
   constructor(
-    @InjectModel(Order.name)
+    @InjectModel(Order.name, DatabaseNames.readDB)
     private readonly orderModel: Model<OrderDocument>
   ) {}
 

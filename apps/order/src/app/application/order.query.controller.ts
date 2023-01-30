@@ -1,9 +1,11 @@
 import { OrderCreated, OrderPayed } from '@burger-shop/contracts';
-import { Controller } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import LoggerInterceptor from './interceptors/logger.interceptor';
 import OrderQueryService from './order.query.service';
 import OrderAbstractRepository from './repository/order.abstract-repository';
 
+@UseInterceptors(LoggerInterceptor)
 @Controller()
 export default class OrderQueryController {
   constructor(private readonly orderQueryService: OrderQueryService) {}

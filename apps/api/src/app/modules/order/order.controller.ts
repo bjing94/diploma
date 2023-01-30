@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { OrderCreate, OrderGetOrder, OrderPay } from '@burger-shop/contracts';
 import OrderService from './order.service';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Order')
 @Controller('order')
@@ -14,6 +14,7 @@ export default class OrderController {
   }
 
   @ApiResponse({ type: OrderCreate.Response })
+  @ApiBody({ type: OrderCreate.Request })
   @Post('create')
   async create(
     @Body() dto: OrderCreate.Request

@@ -6,14 +6,14 @@ import {
   ProductUpdated,
 } from '@burger-shop/contracts';
 import { Injectable } from '@nestjs/common';
-import { Product } from '../../infrastructure/database/model/product.model';
-import ProductRepositoryProvider from '../provider/product.repository-provider';
-import ProductAbstractRepository from '../repository/product.abstract-repository';
+import { Product } from '@burger-shop/models';
+import ProductRepositoryProvider from './provider/product.repository-provider';
+import ProductAbstractRepository from './repository/product.abstract-repository';
 
 @Injectable()
 export default class ProductQueryService {
   private productRepo: ProductAbstractRepository;
-  constructor(productRepoProvider: ProductRepositoryProvider) {
+  constructor(private readonly productRepoProvider: ProductRepositoryProvider) {
     this.productRepo = productRepoProvider.repository;
   }
 
@@ -32,8 +32,9 @@ export default class ProductQueryService {
   }
 
   public async onCreated(dto: ProductCreated.Payload): Promise<void> {
+    console.log(this.productRepo);
     const product = new Product(dto.product);
-    await this.productRepo.create(product);
+    await this.productRepoProvider.repository.create(product);
   }
 
   public async onDeleted(dto: ProductDeleted.Payload): Promise<void> {
