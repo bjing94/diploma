@@ -12,6 +12,7 @@ export class AppCommand {
 
   @Command({ command: 'order-events:run' })
   async runEvents() {
-    this.appService.loadOrderEvents();
+    await this.appService.loadOrderEvents();
+    return;
   }
 }

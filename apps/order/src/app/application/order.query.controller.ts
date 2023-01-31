@@ -1,4 +1,8 @@
-import { OrderCreated, OrderPayed } from '@burger-shop/contracts';
+import {
+  OrderCompleted,
+  OrderCreated,
+  OrderPayed,
+} from '@burger-shop/contracts';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import LoggerInterceptor from './interceptors/logger.interceptor';
@@ -20,7 +24,8 @@ export default class OrderQueryController {
     await this.orderQueryService.onPayed(data);
   }
 
-  // async get(id: string) {
-  //   return this.orderRepository.find(id);
-  // }
+  @MessagePattern(OrderCompleted.topic)
+  async onCompleted(@Payload() data: OrderCompleted.Payload) {
+    await this.orderQueryService.onCompleted(data);
+  }
 }

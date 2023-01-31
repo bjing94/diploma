@@ -1,4 +1,4 @@
-import { ProductDomainEntity } from '@burger-shop/domain-entities';
+import { ProductDomainEntity } from '../product/product.domain-entity';
 import { MIN_ORDER_ITEM_LEVEL } from '../const/order.const';
 
 export default class OrderItemDomainEntity {

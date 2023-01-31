@@ -1,40 +1,36 @@
 import { AppService } from './app.service';
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppCommand } from './app.command';
-import getMongoEventStoreConnectionStringOrder, {
-  DatabaseNames,
-} from '../config/mongoose.config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { kafkaConfig } from './config/provide-kafka-config';
+import getMongoEventStoreConnectionStringOrder from '../config/mongoose.config';
 import { CommandModule } from 'nestjs-command';
 import OrderEventSourceRepositoryProvider from './providers/order.event-source.repository-provider';
 import { Event, EventSchema } from '@burger-shop/models';
+import { Connection } from 'mongoose';
+import { KafkaProducerModule } from '@burger-shop/kafka-module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(getMongoEventStoreConnectionStringOrder(), {
-      connectionName: DatabaseNames.orderEvents,
-    }),
-    MongooseModule.forFeature(
-      [{ name: Event.name, schema: EventSchema }],
-      DatabaseNames.orderEvents
-    ),
-    ClientsModule.register([
-      {
-        name: kafkaConfig.clientName,
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            clientId: 'order-producer',
-            brokers: ['localhost:29092'],
-          },
-        },
+      connectionFactory: (connection: Connection) => {
+        if (connection.readyState === 1) {
+          Logger.log('DB connected');
+        }
+
+        connection.on('disconnected', () => {
+          Logger.log('DB disconnected');
+        });
+        connection.on('error', () => {
+          Logger.log('Error');
+        });
+        return connection;
       },
-    ]),
+    }),
+    MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
     CommandModule,
+    KafkaProducerModule.register('cli-producer', ['localhost:29092']),
   ],
   controllers: [AppController],
   providers: [AppService, AppCommand, OrderEventSourceRepositoryProvider],

@@ -11,7 +11,7 @@ export default class OrderEventSourceRepositoryProvider {
   public repository: OrderEventSourceAbstractRepository;
 
   constructor(
-    @InjectModel(Event.name, DatabaseNames.orderEvents)
+    @InjectModel(Event.name)
     private readonly eventModel: Model<EventDocument>
   ) {}
 

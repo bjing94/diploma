@@ -19,6 +19,9 @@ async function bootstrap() {
       },
       consumer: {
         groupId: 'product-consumer',
+        retry: {
+          retries: 0,
+        },
       },
     },
   });

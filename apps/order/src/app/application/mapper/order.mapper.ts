@@ -1,3 +1,4 @@
+import { ProductDomainEntity } from '@burger-shop/domain-entities';
 import { PaymentStatus } from '@burger-shop/interfaces';
 import OrderDomainEntity from '../../domain/entity/order.domain-entity';
 import { Order } from '../../infrastructure/database/mongo/model/order.model';
@@ -13,5 +14,10 @@ export default class OrderMapper {
     return order;
   }
 
-  //   public static toDomain() {}
+  public static toDomain(
+    order: Order,
+    products: { product: ProductDomainEntity; count: number }[]
+  ): OrderDomainEntity {
+    return new OrderDomainEntity(order.id, products, '2');
+  }
 }

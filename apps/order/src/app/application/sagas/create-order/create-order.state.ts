@@ -9,14 +9,16 @@ export default abstract class CreateOrderSagaState {
     this.saga = saga;
   }
 
-  public abstract create(dto: OrderCreate.Request): Promise<OrderDomainEntity>;
+  public abstract create(
+    dto: OrderCreate.Request
+  ): Promise<OrderDomainEntity | null>;
 
   //   public abstract cancel();
 
-  public abstract pay(orderId: string);
+  public abstract pay(orderId: string): Promise<boolean>;
 
   //   public abstract deliver();
 
-  public abstract complete(orderId: string);
+  public abstract complete(orderId: string): Promise<boolean>;
 }
 // created -> waiting for payment -> waiting for pickup/waiting for delivery guy -> in delivery -> completed

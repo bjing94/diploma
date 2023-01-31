@@ -25,9 +25,9 @@ export namespace OrderCreate {
   }
 
   export class OrderItem {
-    @IsString()
+    @IsNumber()
     @ApiProperty()
-    public readonly foodId: string;
+    public readonly foodId: number;
 
     @IsNumber()
     @ApiProperty()

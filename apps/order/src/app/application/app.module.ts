@@ -1,3 +1,4 @@
+import { EventSchema, Event } from '@burger-shop/models';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -10,13 +11,10 @@ import {
   CreateOrderSagaSchema,
 } from '../infrastructure/database/mongo/model/create-order-saga.model';
 import {
-  Event,
-  EventSchema,
-} from '../../../../../libs/models/src/lib/event.model';
-import {
   Order,
   OrderSchema,
 } from '../infrastructure/database/mongo/model/order.model';
+import ProductAdapterModule from './adapter/product.module';
 
 import OrderCommandController from './order.command.controller';
 import OrderCommandService from './order.command.service';
@@ -60,6 +58,7 @@ import OrderRepositoryProvider from './providers/order.repository-provider';
         },
       },
     ]),
+    ProductAdapterModule,
   ],
   controllers: [OrderCommandController, OrderQueryController],
   providers: [

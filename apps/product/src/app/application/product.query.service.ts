@@ -18,7 +18,7 @@ export default class ProductQueryService {
   }
 
   public async getById(id: number): Promise<ProductGetById.Response> {
-    const product = await this.productRepo.find(id);
+    const product = await this.productRepoProvider.repository.find(id);
     return {
       product,
     };

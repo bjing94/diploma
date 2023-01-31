@@ -1,4 +1,4 @@
-import { ProductDomainEntity } from '@burger-shop/domain-entities';
+import { ProductDomainEntity } from '../product/product.domain-entity';
 import {
   DeliveryStatus,
   OrderStatus,
@@ -59,7 +59,7 @@ export default class OrderDomainEntity {
   }
 
   public removeItem(level: number): OrderItemDomainEntity | null {
-    const newOrderItems = [];
+    const newOrderItems: OrderItemDomainEntity[] = [];
     let currentLevel = 0;
     let removedItem = null;
     this.orderItems.forEach((orderItem) => {

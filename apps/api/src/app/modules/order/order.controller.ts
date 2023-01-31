@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { OrderCreate, OrderGetOrder, OrderPay } from '@burger-shop/contracts';
+import {
+  OrderComplete,
+  OrderCreate,
+  OrderGetOrder,
+  OrderPay,
+} from '@burger-shop/contracts';
 import OrderService from './order.service';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -32,5 +37,11 @@ export default class OrderController {
   @Post(':id/pay')
   async pay(@Param('id') id: string): Promise<OrderPay.Response> {
     return this.orderService.pay(id);
+  }
+
+  @ApiResponse({ type: OrderComplete.Response })
+  @Post(':id/complete')
+  async complete(@Param('id') id: string): Promise<OrderComplete.Response> {
+    return this.orderService.complete(id);
   }
 }

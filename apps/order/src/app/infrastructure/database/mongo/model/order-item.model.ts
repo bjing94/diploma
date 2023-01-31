@@ -1,6 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
-import { Product } from '@burger-shop/models';
 
 export type OrderItemDocument = OrderItem & Document;
 
@@ -12,8 +10,8 @@ export class OrderItem {
   @Prop()
   count: number;
 
-  @Prop({ type: Types.ObjectId, ref: Product.name })
-  product: Types.ObjectId;
+  @Prop()
+  productId: number;
 }
 
 export const OrderItemSchema = SchemaFactory.createForClass(OrderItem);
