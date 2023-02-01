@@ -14,3 +14,11 @@ export * from './lib/product/command/product.delete';
 export * from './lib/product/event/product.created';
 export * from './lib/product/event/product.updated';
 export * from './lib/product/event/product.deleted';
+
+export * from './lib/payment/event/payment.created';
+export * from './lib/payment/event/payment.payed';
+export * from './lib/payment/event/payment.rejected';
+export * from './lib/payment/event/payment.refunded';
+
+export * from './lib/payment/command/payment.create';
+export * from './lib/payment/command/payment.fulfill';

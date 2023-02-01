@@ -36,8 +36,7 @@ export default class OrderCommandService {
     if (!result) return result;
 
     await this.kafka.emit<void, OrderCreated.Payload>(OrderCreated.topic, {
-      ...dto,
-      id: result.getId(),
+      order: result,
     });
     return result;
   }

@@ -2,6 +2,7 @@ export enum PaymentStatus {
   PENDING = 'pending',
   REJECTED = 'rejected',
   FULFILLED = 'fulfilled',
+  REFUNDED = 'refunded',
 }
 
 export enum PaymentType {

@@ -1,5 +1,6 @@
 import { PaymentStatus, PaymentType } from '@burger-shop/interfaces';
-import { generateOrderId } from '../../application/helper/generate-order-id';
+import { generateOrderId } from './helper/generate-order-id';
+
 export default class PaymentInfoDomainEntity {
   constructor(part?: Partial<PaymentInfoDomainEntity>) {
     part = part ?? {};
