@@ -36,4 +36,10 @@ export default class ProductCommandService {
       },
     };
   }
+
+  public async createMenu() {}
+
+  public async removeItemFromMenu() {}
+
+  public async addItemToMenu() {}
 }

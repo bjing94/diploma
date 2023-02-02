@@ -5,18 +5,27 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
-import { AppModule } from './app/app.module';
+import { KafkaOptions, Transport } from '@nestjs/microservices';
+import { PaymentModule } from './app/application/payment.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3333;
-  await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+  const app = await NestFactory.createMicroservice<KafkaOptions>(
+    PaymentModule,
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          brokers: ['localhost:29092'],
+          clientId: 'payment-client',
+        },
+        consumer: {
+          groupId: 'payment-consumer',
+        },
+      },
+    }
   );
+  await app.listen();
+  Logger.log(`Payment microservice started`);
 }
 
 bootstrap();

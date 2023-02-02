@@ -6,11 +6,11 @@ export namespace PaymentCreated {
 
   export class Payload {
     @ApiProperty()
-    public readonly product: PaymentCreatedDto;
+    public readonly payment: PaymentCreatedDto;
   }
 }
 
-interface PaymentCreatedDto {
+export interface PaymentCreatedDto {
   id: number;
   link?: string;
   status: PaymentStatus;

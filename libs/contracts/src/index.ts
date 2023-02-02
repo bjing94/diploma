@@ -16,9 +16,8 @@ export * from './lib/product/event/product.updated';
 export * from './lib/product/event/product.deleted';
 
 export * from './lib/payment/event/payment.created';
-export * from './lib/payment/event/payment.payed';
-export * from './lib/payment/event/payment.rejected';
-export * from './lib/payment/event/payment.refunded';
+export * from './lib/payment/event/payment.status-updated';
 
 export * from './lib/payment/command/payment.create';
 export * from './lib/payment/command/payment.fulfill';
+export * from './lib/payment/query/payment.get';

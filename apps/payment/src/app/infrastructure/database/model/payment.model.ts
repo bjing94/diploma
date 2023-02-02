@@ -1,4 +1,4 @@
-import { PaymentStatus } from '@burger-shop/interfaces';
+import { PaymentStatus, PaymentType } from '@burger-shop/interfaces';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export type PaymentDocument = PaymentModel & Document;
@@ -14,11 +14,11 @@ export default class PaymentModel {
   @Prop()
   public sum: number;
 
-  @Prop()
-  public type: string;
+  @Prop({ type: String })
+  public type: PaymentType;
 
   @Prop({ required: false })
-  public link: string;
+  public link?: string;
 }
 
 export const CreateOrderSagaSchema = SchemaFactory.createForClass(PaymentModel);

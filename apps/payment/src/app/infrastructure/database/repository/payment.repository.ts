@@ -9,7 +9,7 @@ export default class PaymentRepository implements PaymentAbstractRepository {
     this._repository = repository;
   }
 
-  public async find(id: string): Promise<PaymentModel> {
+  public async find(id: number): Promise<PaymentModel> {
     const payment = await this._repository.findOne({ id: id }).exec();
     return payment;
   }
@@ -19,7 +19,7 @@ export default class PaymentRepository implements PaymentAbstractRepository {
   }
 
   public async update(
-    id: string,
+    id: number,
     payment: PaymentModel
   ): Promise<PaymentModel> {
     return this._repository.findOneAndUpdate({ id }, payment);

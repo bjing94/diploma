@@ -45,4 +45,8 @@ export default class ProductQueryService {
     const product = new Product(dto.product);
     await this.productRepo.update(product.id, product);
   }
+
+  // public async getMenu(){
+
+  // }
 }
