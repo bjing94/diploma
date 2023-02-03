@@ -1,4 +1,5 @@
 import {
+  MenuCreated,
   ProductCreated,
   ProductDeleted,
   ProductUpdated,
@@ -31,6 +32,13 @@ export class KafkaProducerService {
     payload: ProductDeleted.Payload
   ): Promise<void> {
     await this.kafka.emit<void, ProductDeleted.Payload>(
+      ProductDeleted.topic,
+      payload
+    );
+  }
+
+  public async emitMenuCreated(payload: MenuCreated.Payload): Promise<void> {
+    await this.kafka.emit<void, MenuCreated.Payload>(
       ProductDeleted.topic,
       payload
     );
