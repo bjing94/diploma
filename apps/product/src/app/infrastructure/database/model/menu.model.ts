@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 import { MenuItemModel } from './menu-item.model';
 
 export type MenuDocument = MenuModel & Document;

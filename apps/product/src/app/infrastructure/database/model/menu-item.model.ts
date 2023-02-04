@@ -1,6 +1,6 @@
 import { Product } from '@burger-shop/models';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 export type MenuItemDocument = MenuItemModel & Document;
 
@@ -12,6 +12,12 @@ export class MenuItemModel {
 
   @Prop()
   id: number;
+
+  @Prop()
+  available: boolean;
+
+  @Prop()
+  price: number;
 
   @Prop({
     type: [Types.ObjectId],

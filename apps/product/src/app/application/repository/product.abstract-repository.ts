@@ -1,7 +1,7 @@
-import { Product } from '@burger-shop/models';
+import { Product, ProductDocument } from '@burger-shop/models';
 
 export default abstract class ProductAbstractRepository {
-  public abstract find(id: number): Promise<Product>;
+  public abstract find(id: number): Promise<ProductDocument>;
   public abstract findMany(take: number, skip: number): Promise<Product[]>;
   public abstract create(order: Product): Promise<Product>;
   public abstract update(id: number, order: Product): Promise<Product>;

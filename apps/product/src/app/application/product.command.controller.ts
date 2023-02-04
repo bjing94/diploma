@@ -1,4 +1,8 @@
-import { ProductCreate } from '@burger-shop/contracts';
+import {
+  ProductCreateRequest,
+  ProductCreateResponse,
+} from '@burger-shop/contracts';
+import { CommandTopics } from '@burger-shop/kafka-module';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import ProductCommandService from './product.command.service';
@@ -7,10 +11,10 @@ import ProductCommandService from './product.command.service';
 export default class ProductCommandController {
   constructor(private readonly productCommandService: ProductCommandService) {}
 
-  @MessagePattern(ProductCreate.topic)
+  @MessagePattern(CommandTopics.productCreate)
   public async create(
-    @Payload() payload: ProductCreate.Request
-  ): Promise<ProductCreate.Response> {
+    @Payload() payload: ProductCreateRequest
+  ): Promise<ProductCreateResponse> {
     return this.productCommandService.create(payload);
   }
 }

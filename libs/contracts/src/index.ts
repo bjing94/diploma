@@ -1,5 +1,5 @@
 export * from './lib/order/command/order.create';
-export * from './lib/order/command/order.get-order';
+export * from './lib/order/query/order.get-order';
 export * from './lib/order/event/order.created';
 export * from './lib/order/command/order.pay';
 export * from './lib/order/command/order.complete';

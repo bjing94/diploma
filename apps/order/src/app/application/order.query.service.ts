@@ -20,11 +20,11 @@ export default class OrderQueryService {
   ) {}
 
   async getOrder(data: OrderGetOrder.Request) {
-    const order = await this.orderRepoProvider.repository.find(data.orderId);
-    return {
-      id: order.id,
-      status: order.status,
-    };
+    // const order = await this.orderRepoProvider.repository.find(data.orderId);
+    // return {
+    //   id: order.id,
+    //   status: order.status,
+    // };
   }
 
   async onCreated(data: OrderCreated.Payload) {
@@ -32,9 +32,9 @@ export default class OrderQueryService {
       OrderCreated.topic,
       data
     );
-    const order = new OrderDomainEntity(data.id, data.orderItems, '');
-    const dbOrder = OrderMapper.toDatabase(order);
-    await this.orderRepoProvider.repository.create(dbOrder);
+    // const order = new OrderDomainEntity(data.id, data.orderItems, '');
+    // const dbOrder = OrderMapper.toDatabase(order);
+    // await this.orderRepoProvider.repository.create(dbOrder);
   }
 
   async onPayed(data: OrderPayed.Payload) {

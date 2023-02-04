@@ -5,7 +5,19 @@ import { KafkaProducerService } from './kafka-producer.service';
 
 @Module({})
 export class KafkaProducerModule {
-  static register(clientId: string, brokers: string[]): DynamicModule {
+  private static clientId: string;
+  private static brokers: string[];
+  private static responseTopics: string[];
+
+  static register(
+    clientId: string,
+    brokers: string[],
+    responseTopics: string[]
+  ): DynamicModule {
+    this.clientId = clientId;
+    this.brokers = brokers;
+    this.responseTopics = responseTopics;
+
     return {
       module: KafkaProducerModule,
       imports: [
@@ -18,12 +30,18 @@ export class KafkaProducerModule {
                 clientId: clientId,
                 brokers,
               },
-              producerOnlyMode: true,
+              producerOnlyMode: false,
             },
           },
         ]),
       ],
-      providers: [KafkaProducerService],
+      providers: [
+        KafkaProducerService,
+        {
+          provide: 'RESPONSE_TOPICS',
+          useValue: responseTopics,
+        },
+      ],
       exports: [KafkaProducerService],
     };
   }

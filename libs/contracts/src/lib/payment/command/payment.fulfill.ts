@@ -1,18 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export namespace PaymentFulfill {
-  export const topic = 'payment.fulfill.command';
+export class PaymentFulfillCommandRequest {
+  @ApiProperty()
+  public readonly id: number;
 
-  export class Request {
-    @ApiProperty()
-    public readonly id: number;
+  @ApiProperty()
+  public readonly hash: string;
+}
 
-    @ApiProperty()
-    public readonly hash: string;
-  }
-
-  export class Response {
-    @ApiProperty()
-    public readonly success: boolean;
-  }
+export class PaymentFulfillCommandResponse {
+  @ApiProperty()
+  public readonly success: boolean;
 }

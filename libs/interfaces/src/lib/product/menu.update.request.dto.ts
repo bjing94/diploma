@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MenuItemResponseDto } from './menu-item.response.dto';
+import { MenuItemUpdateRequestDto } from './menu-item.update.request.dto';
 
 export class MenuUpdateRequestDto {
   @ApiProperty()
   public readonly id: number;
 
-  @ApiProperty({ type: MenuItemResponseDto, isArray: true })
-  public readonly items: MenuItemResponseDto[];
+  @ApiProperty({ type: MenuItemUpdateRequestDto, isArray: true })
+  public readonly items: MenuItemUpdateRequestDto[];
 }

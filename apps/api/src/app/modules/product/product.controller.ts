@@ -1,4 +1,7 @@
-import { ProductCreate } from '@burger-shop/contracts';
+import {
+  ProductCreateRequest,
+  ProductCreateResponse,
+} from '@burger-shop/contracts';
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import ProductService from './product.service';
@@ -7,6 +10,14 @@ import ProductService from './product.service';
 @Controller('product')
 export default class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @ApiOperation({ description: 'Create product' })
+  @Post()
+  public async create(
+    @Body() dto: ProductCreateRequest
+  ): Promise<ProductCreateResponse> {
+    return this.productService.create(dto);
+  }
 
   // @ApiOperation({ description: 'Create product' })
   // @Post()

@@ -1,69 +1,53 @@
-import {
-  OrderComplete,
-  OrderCreate,
-  OrderGetOrder,
-  OrderPay,
-} from '@burger-shop/contracts';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-import { lastValueFrom } from 'rxjs';
-import { kafkaConfig } from '../../config/provide-kafka-config';
+// import {
+//   OrderComplete,
+//   OrderCreate,
+//   OrderGetOrder,
+//   OrderPay,
+// } from '@burger-shop/contracts';
+// import { KafkaProducerService } from '@burger-shop/kafka-module';
+// import { BadRequestException, Injectable } from '@nestjs/common';
 
-@Injectable()
-export default class OrderService {
-  constructor(
-    @Inject(kafkaConfig.clientName) private readonly kafkaClient: ClientKafka
-  ) {}
+// @Injectable()
+// export default class OrderService {
+//   constructor(private readonly kafkaProducerService: KafkaProducerService) {}
 
-  onModuleInit() {
-    this.kafkaClient.subscribeToResponseOf(OrderCreate.topic);
-    this.kafkaClient.subscribeToResponseOf(OrderGetOrder.topic);
-    this.kafkaClient.subscribeToResponseOf(OrderPay.topic);
-  }
+//   public async create(dto: OrderCreate.Request) {
+//     const result = await this.kafkaProducerService.send<
+//       OrderCreate.Response,
+//       OrderCreate.Request
+//     >(OrderCreate.topic, dto);
 
-  public async create(dto: OrderCreate.Request) {
-    const result = await lastValueFrom(
-      this.kafkaClient.send<OrderCreate.Response, OrderCreate.Request>(
-        OrderCreate.topic,
-        dto
-      )
-    );
-    if (!result) {
-      throw new BadRequestException('Order not created!');
-    }
-    return result;
-  }
+//     if (!result) {
+//       throw new BadRequestException('Order not created!');
+//     }
+//     return result;
+//   }
 
-  public async get(id: string) {
-    throw new BadRequestException('Order not found!');
-    const result = await lastValueFrom(
-      this.kafkaClient.send<OrderGetOrder.Response, OrderGetOrder.Request>(
-        OrderGetOrder.topic,
-        { id }
-      )
-    );
-    if (!result) {
-      throw new BadRequestException('Order not found!');
-    }
-    return result;
-  }
+//   public async get(id: string) {
+//     throw new BadRequestException('Order not found!');
+//     const result = this.kafkaProducerService.send<
+//       OrderGetOrder.Response,
+//       OrderGetOrder.Request
+//     >(OrderGetOrder.topic, { id });
 
-  public async pay(id: string) {
-    return lastValueFrom(
-      this.kafkaClient.send<OrderPay.Response, OrderPay.Request>(
-        OrderPay.topic,
-        { orderId: id }
-      )
-    );
-  }
+//     if (!result) {
+//       throw new BadRequestException('Order not found!');
+//     }
+//     return result;
+//   }
 
-  public async complete(id: string) {
-    const response = await lastValueFrom(
-      this.kafkaClient.send<OrderComplete.Response, OrderComplete.Request>(
-        OrderPay.topic,
-        { orderId: id }
-      )
-    );
-    return response;
-  }
-}
+//   public async pay(id: string) {
+//     return this.kafkaProducerService.send<OrderPay.Response, OrderPay.Request>(
+//       OrderPay.topic,
+//       { orderId: id }
+//     );
+//   }
+
+//   public async complete(id: string) {
+//     const response = await this.kafkaProducerService.send<
+//       OrderComplete.Response,
+//       OrderComplete.Request
+//     >(OrderPay.topic, { orderId: id });
+//     return response;
+//   }
+// }

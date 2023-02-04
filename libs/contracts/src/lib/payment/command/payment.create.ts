@@ -1,22 +1,18 @@
 import { PaymentType } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
 
-export namespace PaymentCreate {
-  export const topic = 'payment.create.command';
+export class PaymentCreateCommandRequest {
+  @ApiProperty()
+  public readonly sum: number;
 
-  export class Request {
-    @ApiProperty()
-    public readonly sum: number;
+  @ApiProperty()
+  public readonly type: PaymentType;
+}
 
-    @ApiProperty()
-    public readonly type: PaymentType;
-  }
+export class PaymentCreateCommandResponse {
+  @ApiProperty()
+  public readonly success: boolean;
 
-  export class Response {
-    @ApiProperty()
-    public readonly success: boolean;
-
-    @ApiProperty()
-    public readonly id: number;
-  }
+  @ApiProperty()
+  public readonly id: number;
 }

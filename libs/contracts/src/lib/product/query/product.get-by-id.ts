@@ -1,14 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ProductResponseDto } from '@burger-shop/interfaces';
 
-export namespace ProductGetById {
-  export const topic = 'product.get-by-id.query';
+export class ProductGetByIdQueryRequest {
+  @ApiProperty()
+  public id: number;
+}
 
-  export class Request {
-    @ApiProperty()
-    public id: number;
-  }
-  export class Response {
-    public product: ProductResponseDto;
-  }
+export class ProductGetByIdQueryResponse {
+  @ApiProperty()
+  public product: ProductResponseDto;
 }

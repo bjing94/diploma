@@ -1,14 +1,10 @@
 import { PaymentStatus } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
 
-export namespace PaymentStatusUpdated {
-  export const topic = 'payment.payed.event';
+export class PaymentStatusUpdatedEventPayload {
+  @ApiProperty()
+  public readonly id: number;
 
-  export class Payload {
-    @ApiProperty()
-    public readonly id: number;
-
-    @ApiProperty()
-    public readonly status: PaymentStatus;
-  }
+  @ApiProperty()
+  public readonly status: PaymentStatus;
 }
