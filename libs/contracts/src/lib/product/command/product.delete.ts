@@ -1,7 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
 export class ProductDeleteRequest {
   @ApiProperty()
+  @IsNumber()
   public readonly id: number;
 }
 export class ProductDeleteResponse {

@@ -1,4 +1,8 @@
-import { CommandTopics, KafkaProducerModule } from '@burger-shop/kafka-module';
+import {
+  CommandTopics,
+  KafkaProducerModule,
+  QueryTopics,
+} from '@burger-shop/kafka-module';
 import { Module } from '@nestjs/common';
 
 @Module({
@@ -6,7 +10,13 @@ import { Module } from '@nestjs/common';
     KafkaProducerModule.register(
       'api-producer',
       ['localhost:29092'],
-      [CommandTopics.productCreate]
+      [
+        CommandTopics.productCreate,
+        CommandTopics.productDelete,
+        CommandTopics.productUpdate,
+        QueryTopics.productGet,
+        QueryTopics.productFind,
+      ]
     ),
   ],
   exports: [KafkaProducerModule],

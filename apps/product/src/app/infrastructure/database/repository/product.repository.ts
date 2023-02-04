@@ -1,8 +1,9 @@
 import { Model } from 'mongoose';
 import ProductAbstractRepository from '../../../application/repository/product.abstract-repository';
 import { Product, ProductDocument } from '@burger-shop/models';
-import { ProductCreate, ProductUpdate } from '@burger-shop/contracts';
 import { InjectModel } from '@nestjs/mongoose';
+import ProductCreateDto from '../../../interfaces/product.create.dto';
+import ProductUpdateDto from '../../../interfaces/product.update.dto';
 
 export default class ProductRepository implements ProductAbstractRepository {
   constructor(
@@ -18,14 +19,13 @@ export default class ProductRepository implements ProductAbstractRepository {
     return this.model.find().limit(take).skip(skip).exec();
   }
 
-  public async create(product: ProductCreate.Request): Promise<Product> {
-    return this.model.create(product);
+  public async create(product: ProductCreateDto): Promise<Product> {
+    const maxIdProduct = await this.model.findOne().sort({ id: 'desc' });
+    const maxId = maxIdProduct ? maxIdProduct.id + 1 : 1;
+    return this.model.create({ ...product, id: maxId });
   }
 
-  public async update(
-    id: number,
-    product: ProductUpdate.Request
-  ): Promise<Product> {
+  public async update(id: number, product: ProductUpdateDto): Promise<Product> {
     return this.model.findOneAndUpdate({ id }, product).exec();
   }
 

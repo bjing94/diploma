@@ -1,13 +1,17 @@
 import {
   ProductCreateRequest,
   ProductCreateResponse,
+  ProductDeleteRequest,
+  ProductDeleteResponse,
+  ProductUpdateRequest,
+  ProductUpdateResponse,
 } from '@burger-shop/contracts';
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
 import { MenuItemCreateRequestDto } from '@burger-shop/interfaces';
+import { KafkaProducerService } from '@burger-shop/kafka-module';
 import { Inject, Injectable } from '@nestjs/common';
 import MenuItemDomainEntity from '../domain/menu-item.domain-entity';
 import MenuDomainEntity from '../domain/menu.domain-entity';
-import { KafkaProducerService } from '../infrastructure/kafka/kafka-producer.service';
 import MenuDomainMapper from './mapper/menu.domain.mapper';
 import ProductDomainMapper from './mapper/product.domain.mapper';
 import MenuRepositoryProvider from './provider/menu.repository-provider';
@@ -43,73 +47,33 @@ export default class ProductCommandService {
     };
   }
 
-  // public async createMenu(
-  //   data: MenuCreate.Request
-  // ): Promise<MenuCreate.Response> {
-  //   const { items } = data;
-  //   const domainItems: MenuItemDomainEntity[] = [];
+  public async update(
+    dto: ProductUpdateRequest
+  ): Promise<ProductUpdateResponse> {
+    const { id, name, price } = dto;
+    const product = await this.productRepository.find(id);
+    if (!product) return { success: false };
 
-  //   let idx = 0;
-  //   for (const item of items) {
-  //     const product = await this.productRepository.find(item.productId);
-  //     if (!product) return { success: false };
-  //     const domainProduct = ProductDomainMapper.toDomain(product);
-  //     domainItems.push(
-  //       new MenuItemDomainEntity(domainProduct, true, item.price, idx)
-  //     );
-  //     idx++;
-  //   }
+    await this.kafkaProducerService.emitProductUpdated({
+      product: {
+        id,
+        name,
+        price,
+      },
+    });
+    return { success: true };
+  }
 
-  //   const menu = new MenuDomainEntity(domainItems, 1);
-  //   const product = await this.productRepository.find(1);
-  //   if (!product) return;
+  public async delete(
+    dto: ProductDeleteRequest
+  ): Promise<ProductDeleteResponse> {
+    const { id } = dto;
+    const product = await this.productRepository.find(id);
+    if (!product) return { success: false };
 
-  //   await this.menuRepoProvider.repository.create({
-  //     id: menu.id,
-  //     items: menu.items.map((item) => {
-  //       return {
-  //         id: item.id,
-  //         price: item.price,
-  //         available: item.available,
-  //         product: product,
-  //       };
-  //     }),
-  //   });
-  //   await this.kafkaProducerService.emitMenuCreated({
-  //     menu: {
-  //       id: menu.id,
-  //       items: menu.items,
-  //     },
-  //   });
-  //   return {
-  //     success: true,
-  //   };
-  // }
-
-  // public async updateMenu(
-  //   data: MenuUpdate.Request
-  // ): Promise<MenuUpdate.Response> {
-  //   const { menu: updatedMenu } = data;
-  //   const menu = await this.menuRepoProvider.repository.find(updatedMenu.id);
-  //   if (!menu) return { success: false };
-  //   const newMenuItems = await this.getMenuItems(updatedMenu.items);
-  //   const menuDomain = MenuDomainMapper.toDomain(menu);
-  //   menuDomain.items = newMenuItems;
-  // }
-
-  // private async getMenuItems(items: MenuItemCreateRequestDto[]) {
-  //   const domainItems: MenuItemDomainEntity[] = [];
-
-  //   let idx = 0;
-  //   for (const item of items) {
-  //     const product = await this.productRepository.find(item.productId);
-  //     if (!product) return [];
-  //     const domainProduct = ProductDomainMapper.toDomain(product);
-  //     domainItems.push(
-  //       new MenuItemDomainEntity(domainProduct, true, item.price, idx)
-  //     );
-  //     idx++;
-  //   }
-  //   return domainItems;
-  // }
+    await this.kafkaProducerService.emitProductDeleted({
+      id,
+    });
+    return { success: true };
+  }
 }

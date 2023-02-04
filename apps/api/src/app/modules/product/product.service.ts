@@ -1,6 +1,9 @@
 import {
   ProductCreateRequest,
   ProductCreateResponse,
+  ProductDeleteRequest,
+  ProductFindQueryRequest,
+  ProductUpdateRequest,
 } from '@burger-shop/contracts';
 import { CommandTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { Inject, Injectable } from '@nestjs/common';
@@ -20,5 +23,17 @@ export default class ProductService {
 
   public async get(id: number) {
     return this.kafkaProducerService.sendProductGet({ id });
+  }
+
+  public async find(dto: ProductFindQueryRequest) {
+    return this.kafkaProducerService.sendProductFind(dto);
+  }
+
+  public async delete(dto: ProductDeleteRequest) {
+    return this.kafkaProducerService.sendProductDelete(dto);
+  }
+
+  public async update(dto: ProductUpdateRequest) {
+    return this.kafkaProducerService.sendProductUpdate(dto);
   }
 }

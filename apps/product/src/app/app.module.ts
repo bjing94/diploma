@@ -1,3 +1,4 @@
+import { KafkaProducerModule } from '@burger-shop/kafka-module';
 import { Product, ProductSchema } from '@burger-shop/models';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,7 +13,6 @@ import {
   MenuSchema,
 } from './infrastructure/database/model/menu.model';
 import ProductRepository from './infrastructure/database/repository/product.repository';
-import { KafkaProducerModule } from './infrastructure/kafka/kafka-producer';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { KafkaProducerModule } from './infrastructure/kafka/kafka-producer';
         schema: MenuSchema,
       },
     ]),
-    KafkaProducerModule,
+    KafkaProducerModule.register('product-consumer', ['localhost:29092'], []),
   ],
   controllers: [ProductQueryController, ProductCommandController],
   providers: [

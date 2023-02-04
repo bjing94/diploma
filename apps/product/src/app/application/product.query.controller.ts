@@ -1,38 +1,53 @@
+import {
+  ProductCreatedEventPayload,
+  ProductDeletedEventPayload,
+  ProductFindQueryRequest,
+  ProductFindQueryResponse,
+  ProductGetByIdQueryRequest,
+  ProductGetByIdQueryResponse,
+  ProductUpdatedEventPayload,
+} from '@burger-shop/contracts';
+import { EventTopics, QueryTopics } from '@burger-shop/kafka-module';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import ProductQueryService from './product.query.service';
 
 @Controller()
 export default class ProductQueryController {
-  // constructor(private readonly productQueryService: ProductQueryService) {}
-  // @MessagePattern(ProductGetById.topic)
-  // public async getProductById(
-  //   @Payload() payload: ProductGetById.Request
-  // ): Promise<ProductGetById.Response> {
-  //   return this.productQueryService.getById(payload.id);
-  // }
-  // @MessagePattern(ProductFind.topic)
-  // public async find(
-  //   @Payload() payload: ProductFind.Request
-  // ): Promise<ProductFind.Response> {
-  //   return this.productQueryService.find(payload);
-  // }
-  // @MessagePattern(ProductCreated.topic)
-  // public async onProductCreated(
-  //   @Payload() payload: ProductCreated.Payload
-  // ): Promise<void> {
-  //   return this.productQueryService.onCreated(payload);
-  // }
-  // @MessagePattern(ProductUpdated.topic)
-  // public async onProductUpdated(
-  //   @Payload() payload: ProductUpdated.Payload
-  // ): Promise<void> {
-  //   return this.productQueryService.onUpdated(payload);
-  // }
-  // @MessagePattern(ProductDeleted.topic)
-  // public async onProductDeleted(
-  //   @Payload() payload: ProductDeleted.Payload
-  // ): Promise<void> {
-  //   return this.productQueryService.onDeleted(payload);
-  // }
+  constructor(private readonly productQueryService: ProductQueryService) {}
+
+  @MessagePattern(QueryTopics.productGet)
+  public async getProductById(
+    @Payload() payload: ProductGetByIdQueryRequest
+  ): Promise<ProductGetByIdQueryResponse> {
+    return this.productQueryService.getById(payload.id);
+  }
+
+  @MessagePattern(QueryTopics.productFind)
+  public async find(
+    @Payload() payload: ProductFindQueryRequest
+  ): Promise<ProductFindQueryResponse> {
+    return this.productQueryService.find(payload);
+  }
+
+  @MessagePattern(EventTopics.productCreated)
+  public async onProductCreated(
+    @Payload() payload: ProductCreatedEventPayload
+  ): Promise<void> {
+    return this.productQueryService.onCreated(payload);
+  }
+
+  @MessagePattern(EventTopics.productUpdated)
+  public async onProductUpdated(
+    @Payload() payload: ProductUpdatedEventPayload
+  ): Promise<void> {
+    return this.productQueryService.onUpdated(payload);
+  }
+
+  @MessagePattern(EventTopics.productDeleted)
+  public async onProductDeleted(
+    @Payload() payload: ProductDeletedEventPayload
+  ): Promise<void> {
+    return this.productQueryService.onDeleted(payload);
+  }
 }

@@ -1,6 +1,10 @@
 import {
   ProductCreateRequest,
   ProductCreateResponse,
+  ProductDeleteRequest,
+  ProductDeleteResponse,
+  ProductUpdateRequest,
+  ProductUpdateResponse,
 } from '@burger-shop/contracts';
 import { CommandTopics } from '@burger-shop/kafka-module';
 import { Controller } from '@nestjs/common';
@@ -16,5 +20,19 @@ export default class ProductCommandController {
     @Payload() payload: ProductCreateRequest
   ): Promise<ProductCreateResponse> {
     return this.productCommandService.create(payload);
+  }
+
+  @MessagePattern(CommandTopics.productUpdate)
+  public async update(
+    @Payload() payload: ProductUpdateRequest
+  ): Promise<ProductUpdateResponse> {
+    return this.productCommandService.update(payload);
+  }
+
+  @MessagePattern(CommandTopics.productDelete)
+  public async delete(
+    @Payload() payload: ProductDeleteRequest
+  ): Promise<ProductDeleteResponse> {
+    return this.productCommandService.delete(payload);
   }
 }

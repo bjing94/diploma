@@ -1,4 +1,3 @@
-import { MenuCreate } from '@burger-shop/contracts';
 import { MenuCreateDto } from '@burger-shop/interfaces';
 import { Model } from 'mongoose';
 import MenuAbstractRepository from '../../../application/repository/menu.abstract-repository';
@@ -45,7 +44,7 @@ export default class MenuRepository implements MenuAbstractRepository {
 
   public async update(
     id: number,
-    menu: MenuCreate.Request & { id: number }
+    menu: any & { id: number }
   ): Promise<MenuModel> {
     return this._repository.findOneAndUpdate({ id }, menu).exec();
   }

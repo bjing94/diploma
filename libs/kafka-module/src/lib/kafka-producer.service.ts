@@ -49,8 +49,10 @@ export class KafkaProducerService {
   ) {}
 
   async onModuleInit() {
-    await this.kafka.subscribeToResponseOf('product.create.command');
-    console.log(JSON.stringify(this.kafka));
+    for (const topic of this.responseTopics) {
+      Logger.log(`Subscribed to response of ${topic}`);
+      await this.kafka.subscribeToResponseOf(topic);
+    }
   }
 
   public async emit<TResult, TInput>(
@@ -67,7 +69,7 @@ export class KafkaProducerService {
     topic: string,
     value: TInput
   ): Promise<TResult> {
-    this.logger.verbose(`Emit ${topic}, value:${JSON.stringify(value)}`);
+    this.logger.verbose(`Send ${topic}, value:${JSON.stringify(value)}`);
 
     await this.kafka.connect();
     const result = await lastValueFrom(
