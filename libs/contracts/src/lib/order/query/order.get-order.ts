@@ -18,7 +18,7 @@ class OrderItem {
 
 export class OrderGetQueryRequest {
   @IsString()
-  public readonly id: string;
+  public readonly id: number;
 }
 
 export class OrderGetQueryResponse {

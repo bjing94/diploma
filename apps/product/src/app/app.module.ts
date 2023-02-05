@@ -13,6 +13,7 @@ import {
   MenuModel,
   MenuSchema,
 } from './infrastructure/database/model/menu.model';
+import MenuRepository from './infrastructure/database/repository/menu.repository';
 import ProductRepository from './infrastructure/database/repository/product.repository';
 
 @Module({
@@ -35,6 +36,10 @@ import ProductRepository from './infrastructure/database/repository/product.repo
     {
       provide: 'ProductRepository',
       useClass: ProductRepository,
+    },
+    {
+      provide: 'MenuRepository',
+      useClass: MenuRepository,
     },
     MenuRepositoryProvider,
   ],

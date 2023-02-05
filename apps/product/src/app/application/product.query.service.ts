@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ProductAbstractRepository from './repository/product.abstract-repository';
 import {
+  MenuCreateCommandRequest,
+  MenuCreatedEventPayload,
+  MenuGetQueryRequest,
   ProductCreatedEventPayload,
   ProductDeletedEventPayload,
   ProductFindQueryRequest,
@@ -9,12 +12,15 @@ import {
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { EventStoreService } from '@burger-shop/event-store';
+import MenuAbstractRepository from './repository/menu.abstract-repository';
 
 @Injectable()
 export default class ProductQueryService {
   constructor(
     @Inject('ProductRepository')
     private readonly productRepository: ProductAbstractRepository,
+    @Inject('MenuRepository')
+    private readonly menuRepository: MenuAbstractRepository,
     private readonly eventStoreService: EventStoreService
   ) {}
 
@@ -49,11 +55,21 @@ export default class ProductQueryService {
     await this.productRepository.update(product.id, product);
   }
 
-  // public async getMenu(){
+  public async onMenuCreated(dto: MenuCreatedEventPayload): Promise<void> {
+    const { menu } = dto;
+    const id = await this.menuRepository.getNextId();
+    const result = await this.menuRepository.create({
+      id,
+      items: menu.items.map((item, idx) => {
+        return { ...item, id: idx };
+      }),
+    });
+    console.log(result);
+  }
 
-  // }
-
-  // public async onMenuCreated(dto:ProductCreated.Payload){
-
-  // }
+  public async getMenu(dto: MenuGetQueryRequest) {
+    const result = await this.menuRepository.find(dto.id);
+    console.log(result);
+    return result;
+  }
 }

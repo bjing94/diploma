@@ -1,12 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ProductResponseDto } from './product.response.dto';
 
 export class MenuItemCreatedDto {
   @ApiProperty()
-  public readonly id: number;
-
-  @ApiProperty({ type: ProductResponseDto })
-  public readonly product: ProductResponseDto;
+  public readonly product: { _id: string };
 
   @ApiProperty()
   public readonly available: boolean;

@@ -1,4 +1,7 @@
 import {
+  MenuCreatedEventPayload,
+  MenuGetQueryRequest,
+  MenuGetQueryResponse,
   ProductCreatedEventPayload,
   ProductDeletedEventPayload,
   ProductFindQueryRequest,
@@ -49,5 +52,19 @@ export default class ProductQueryController {
     @Payload() payload: ProductDeletedEventPayload
   ): Promise<void> {
     return this.productQueryService.onDeleted(payload);
+  }
+
+  @MessagePattern(QueryTopics.menuGet)
+  public async getProductMenuById(
+    @Payload() payload: MenuGetQueryRequest
+  ): Promise<any> {
+    return this.productQueryService.getMenu(payload);
+  }
+
+  @MessagePattern(EventTopics.menuCreated)
+  public async onMenuCreated(
+    @Payload() payload: MenuCreatedEventPayload
+  ): Promise<void> {
+    return this.productQueryService.onMenuCreated(payload);
   }
 }

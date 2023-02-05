@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types, Document } from 'mongoose';
-import { MenuItemModel } from './menu-item.model';
+import mongoose, { Types, Document } from 'mongoose';
+import { MenuItemModel, MenuItemSchema } from './menu-item.model';
 
 export type MenuDocument = MenuModel & Document;
 
@@ -14,7 +14,7 @@ export class MenuModel {
   id: number;
 
   @Prop({
-    type: [Types.ObjectId],
+    type: [MenuItemSchema],
     ref: MenuItemModel.name,
   })
   items: MenuItemModel[];

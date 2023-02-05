@@ -1,6 +1,6 @@
 import { Product } from '@burger-shop/models';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types, Document } from 'mongoose';
+import mongoose, { Types, Document } from 'mongoose';
 
 export type MenuItemDocument = MenuItemModel & Document;
 
@@ -20,7 +20,7 @@ export class MenuItemModel {
   price: number;
 
   @Prop({
-    type: [Types.ObjectId],
+    type: mongoose.Schema.Types.ObjectId,
     ref: Product.name,
   })
   product: Product;

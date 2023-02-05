@@ -14,6 +14,8 @@ import { Module } from '@nestjs/common';
         CommandTopics.productCreate,
         CommandTopics.productDelete,
         CommandTopics.productUpdate,
+        CommandTopics.menuCreate,
+        QueryTopics.menuGet,
         QueryTopics.productGet,
         QueryTopics.productFind,
       ]

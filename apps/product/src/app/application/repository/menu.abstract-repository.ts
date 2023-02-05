@@ -7,4 +7,5 @@ export default abstract class MenuAbstractRepository {
   public abstract create(menu: MenuCreateDto): Promise<MenuModel>;
   public abstract update(id: number, menu: any): Promise<MenuModel>;
   public abstract delete(id: number): Promise<void>;
+  public abstract getNextId(): Promise<number>;
 }

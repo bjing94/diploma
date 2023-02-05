@@ -1,4 +1,6 @@
 import {
+  MenuCreateCommandRequest,
+  MenuCreateCommandResponse,
   ProductCreateRequest,
   ProductCreateResponse,
   ProductDeleteRequest,
@@ -9,8 +11,10 @@ import {
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
 import { EventStoreService } from '@burger-shop/event-store';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
+import { Product, ProductDocument } from '@burger-shop/models';
 import { Inject, Injectable } from '@nestjs/common';
 import MenuRepositoryProvider from './provider/menu.repository-provider';
+import MenuAbstractRepository from './repository/menu.abstract-repository';
 import ProductAbstractRepository from './repository/product.abstract-repository';
 
 @Injectable()
@@ -18,6 +22,8 @@ export default class ProductCommandService {
   constructor(
     @Inject('ProductRepository')
     private readonly productRepository: ProductAbstractRepository,
+    @Inject('MenuRepository')
+    private readonly menuRepository: MenuAbstractRepository,
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly menuRepoProvider: MenuRepositoryProvider,
     private readonly eventStoreService: EventStoreService
@@ -91,5 +97,36 @@ export default class ProductCommandService {
       }),
     });
     return { success: true };
+  }
+
+  public async createMenu(
+    dto: MenuCreateCommandRequest
+  ): Promise<MenuCreateCommandResponse> {
+    const { items } = dto;
+    const productsMap = new Map<number, ProductDocument>();
+    for (const item of items) {
+      const product = await this.productRepository.find(item.productId);
+      if (!product) {
+        return { success: false };
+      }
+      productsMap.set(item.productId, product);
+    }
+    const payload = {
+      menu: {
+        items: items.map((item) => ({
+          available: item.available,
+          price: item.price,
+          product: { _id: productsMap.get(item.productId)._id },
+        })),
+      },
+    };
+    await this.kafkaProducerService.emitMenuCreated(payload);
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.menuCreated,
+      payload: JSON.stringify(payload),
+    });
+    return {
+      success: true,
+    };
   }
 }
