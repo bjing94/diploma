@@ -7,13 +7,11 @@ import {
   ProductGetByIdQueryResponse,
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
-import { KafkaSaveEventInterceptor } from '@burger-shop/event-store';
 import { EventTopics, QueryTopics } from '@burger-shop/kafka-module';
-import { Controller, UseInterceptors } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import ProductQueryService from './product.query.service';
 
-@UseInterceptors(KafkaSaveEventInterceptor)
 @Controller()
 export default class ProductQueryController {
   constructor(private readonly productQueryService: ProductQueryService) {}

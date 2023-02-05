@@ -1,4 +1,3 @@
-import { ProductResponseDto } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
@@ -12,5 +11,5 @@ export class ProductCreateRequest {
 }
 export class ProductCreateResponse {
   @ApiProperty()
-  public readonly product: ProductResponseDto;
+  public readonly succes: boolean;
 }

@@ -3,6 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
+import { KafkaLoggerInterceptor } from '@burger-shop/kafka-module';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { KafkaOptions, Transport } from '@nestjs/microservices';
@@ -25,6 +26,7 @@ async function bootstrap() {
       },
     },
   });
+  app.useGlobalInterceptors(new KafkaLoggerInterceptor());
   await app.listen();
   Logger.log(`Products microservice started.`);
 }

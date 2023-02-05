@@ -7,7 +7,8 @@ import {
   ProductUpdateResponse,
 } from '@burger-shop/contracts';
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
-import { KafkaProducerService } from '@burger-shop/kafka-module';
+import { EventStoreService } from '@burger-shop/event-store';
+import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { Inject, Injectable } from '@nestjs/common';
 import MenuRepositoryProvider from './provider/menu.repository-provider';
 import ProductAbstractRepository from './repository/product.abstract-repository';
@@ -18,27 +19,31 @@ export default class ProductCommandService {
     @Inject('ProductRepository')
     private readonly productRepository: ProductAbstractRepository,
     private readonly kafkaProducerService: KafkaProducerService,
-    private readonly menuRepoProvider: MenuRepositoryProvider
+    private readonly menuRepoProvider: MenuRepositoryProvider,
+    private readonly eventStoreService: EventStoreService
   ) {}
 
   public async create(
     dto: ProductCreateRequest
   ): Promise<ProductCreateResponse> {
     const domain = new ProductDomainEntity(dto.name, dto.price);
-    const id = await this.productRepository.getNextId();
     await this.kafkaProducerService.emitProductCreated({
       product: {
-        id: id,
         name: domain.name,
         price: domain.price,
       },
     });
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.productCreated,
+      payload: JSON.stringify({
+        product: {
+          name: domain.name,
+          price: domain.price,
+        },
+      }),
+    });
     return {
-      product: {
-        id: id,
-        name: domain.name,
-        price: domain.price,
-      },
+      succes: true,
     };
   }
 
@@ -56,6 +61,16 @@ export default class ProductCommandService {
         price,
       },
     });
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.productUpdated,
+      payload: JSON.stringify({
+        product: {
+          id,
+          name,
+          price,
+        },
+      }),
+    });
     return { success: true };
   }
 
@@ -68,6 +83,12 @@ export default class ProductCommandService {
 
     await this.kafkaProducerService.emitProductDeleted({
       id,
+    });
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.productDeleted,
+      payload: JSON.stringify({
+        id,
+      }),
     });
     return { success: true };
   }

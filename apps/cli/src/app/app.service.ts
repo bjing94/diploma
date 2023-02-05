@@ -22,10 +22,14 @@ export class AppService {
   ) {}
 
   async loadOrderEvents() {
-    const events = await this.eventStoreService.getEvents();
-    for (const event of events) {
-      await this.kafkaProducer.emit(event.name, event.payload);
+    try {
+      const events = await this.eventStoreService.getEvents();
+      for (const event of events) {
+        await this.kafkaProducer.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
     }
-    return;
   }
 }

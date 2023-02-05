@@ -1,4 +1,4 @@
 export interface ISaveEvent {
-  payload: any;
+  payload: string;
   name: string;
 }

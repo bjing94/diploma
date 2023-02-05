@@ -15,6 +15,6 @@ export class EventStoreService {
   }
 
   public async getEvents() {
-    return this.model.find();
+    return this.model.find().sort({ createdAt: 'asc' });
   }
 }
