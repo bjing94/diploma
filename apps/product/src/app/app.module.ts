@@ -2,6 +2,7 @@ import { KafkaProducerModule } from '@burger-shop/kafka-module';
 import { Product, ProductSchema } from '@burger-shop/models';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import EventStoreRootModule from './application/event-store/event-store-root.module';
 import ProductCommandController from './application/product.command.controller';
 import ProductCommandService from './application/product.command.service';
 import ProductQueryController from './application/product.query.controller';
@@ -25,6 +26,7 @@ import ProductRepository from './infrastructure/database/repository/product.repo
       },
     ]),
     KafkaProducerModule.register('product-consumer', ['localhost:29092'], []),
+    EventStoreRootModule,
   ],
   controllers: [ProductQueryController, ProductCommandController],
   providers: [

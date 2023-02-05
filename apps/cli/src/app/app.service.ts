@@ -12,19 +12,19 @@ import getMongoEventStoreConnectionStringOrder, {
 import { kafkaConfig } from './config/provide-kafka-config';
 import OrderEventSourceRepositoryProvider from './providers/order.event-source.repository-provider';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
+import { EventStoreService } from '@burger-shop/event-store';
 
 @Injectable()
 export class AppService {
   constructor(
-    private readonly orderEventRepoProvider: OrderEventSourceRepositoryProvider,
-    private readonly kafkaProducer: KafkaProducerService
+    private readonly kafkaProducer: KafkaProducerService,
+    private readonly eventStoreService: EventStoreService
   ) {}
 
   async loadOrderEvents() {
-    const repository = this.orderEventRepoProvider.repository;
-    const events = await repository.getAllEvents();
+    const events = await this.eventStoreService.getEvents();
     for (const event of events) {
-      await this.kafkaProducer.emit(event.type, event.data);
+      await this.kafkaProducer.emit(event.name, event.payload);
     }
     return;
   }

@@ -20,9 +20,7 @@ export default class ProductRepository implements ProductAbstractRepository {
   }
 
   public async create(product: ProductCreateDto): Promise<Product> {
-    const maxIdProduct = await this.model.findOne().sort({ id: 'desc' });
-    const maxId = maxIdProduct ? maxIdProduct.id + 1 : 1;
-    return this.model.create({ ...product, id: maxId });
+    return this.model.create(product);
   }
 
   public async update(id: number, product: ProductUpdateDto): Promise<Product> {
@@ -31,5 +29,11 @@ export default class ProductRepository implements ProductAbstractRepository {
 
   public async delete(id: number): Promise<void> {
     await this.model.findOneAndDelete({ id }).exec();
+  }
+
+  public async getNextId() {
+    const maxIdProduct = await this.model.findOne().sort({ id: 'desc' });
+    const maxId = maxIdProduct ? maxIdProduct.id + 1 : 1;
+    return maxId;
   }
 }

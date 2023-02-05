@@ -27,7 +27,8 @@
             }
           ]
         }
-      }
+      },
+      "dependsOn": []
     },
     "serve": {
       "executor": "@nrwl/js:node",

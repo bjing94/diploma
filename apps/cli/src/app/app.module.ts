@@ -10,29 +10,17 @@ import OrderEventSourceRepositoryProvider from './providers/order.event-source.r
 import { Event, EventSchema } from '@burger-shop/models';
 import { Connection } from 'mongoose';
 import { KafkaProducerModule } from '@burger-shop/kafka-module';
+import { EventStoreModule } from '@burger-shop/event-store';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(getMongoEventStoreConnectionStringOrder(), {
-      connectionFactory: (connection: Connection) => {
-        if (connection.readyState === 1) {
-          Logger.log('DB connected');
-        }
-
-        connection.on('disconnected', () => {
-          Logger.log('DB disconnected');
-        });
-        connection.on('error', () => {
-          Logger.log('Error');
-        });
-        return connection;
-      },
-    }),
-    MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
     CommandModule,
-    KafkaProducerModule.register('cli-producer', ['localhost:29092']),
+    KafkaProducerModule.register('cli-producer', ['localhost:29092'], []),
+    EventStoreModule.register(
+      'mongodb://root:root@localhost:27017/?authMechanism=DEFAULT'
+    ),
   ],
   controllers: [AppController],
-  providers: [AppService, AppCommand, OrderEventSourceRepositoryProvider],
+  providers: [AppService, AppCommand],
 })
 export class AppModule {}

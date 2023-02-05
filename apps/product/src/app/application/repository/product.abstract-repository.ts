@@ -11,4 +11,5 @@ export default abstract class ProductAbstractRepository {
     product: ProductUpdateDto
   ): Promise<Product>;
   public abstract delete(id: number): Promise<void>;
+  public abstract getNextId(): Promise<number>;
 }

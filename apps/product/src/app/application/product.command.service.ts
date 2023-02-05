@@ -7,13 +7,8 @@ import {
   ProductUpdateResponse,
 } from '@burger-shop/contracts';
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
-import { MenuItemCreateRequestDto } from '@burger-shop/interfaces';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
 import { Inject, Injectable } from '@nestjs/common';
-import MenuItemDomainEntity from '../domain/menu-item.domain-entity';
-import MenuDomainEntity from '../domain/menu.domain-entity';
-import MenuDomainMapper from './mapper/menu.domain.mapper';
-import ProductDomainMapper from './mapper/product.domain.mapper';
 import MenuRepositoryProvider from './provider/menu.repository-provider';
 import ProductAbstractRepository from './repository/product.abstract-repository';
 
@@ -30,17 +25,17 @@ export default class ProductCommandService {
     dto: ProductCreateRequest
   ): Promise<ProductCreateResponse> {
     const domain = new ProductDomainEntity(dto.name, dto.price);
-
+    const id = await this.productRepository.getNextId();
     await this.kafkaProducerService.emitProductCreated({
       product: {
-        id: domain.id,
+        id: id,
         name: domain.name,
         price: domain.price,
       },
     });
     return {
       product: {
-        id: domain.id,
+        id: id,
         name: domain.name,
         price: domain.price,
       },

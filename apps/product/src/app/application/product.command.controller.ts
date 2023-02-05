@@ -7,6 +7,7 @@ import {
   ProductUpdateResponse,
 } from '@burger-shop/contracts';
 import { CommandTopics } from '@burger-shop/kafka-module';
+import { UseInterceptors } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import ProductCommandService from './product.command.service';

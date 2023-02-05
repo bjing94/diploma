@@ -8,12 +8,14 @@ import {
   ProductGetByIdQueryResponse,
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
+import { EventStoreService } from '@burger-shop/event-store';
 
 @Injectable()
 export default class ProductQueryService {
   constructor(
     @Inject('ProductRepository')
-    private readonly productRepository: ProductAbstractRepository
+    private readonly productRepository: ProductAbstractRepository,
+    private readonly eventStoreService: EventStoreService
   ) {}
 
   public async getById(id: number): Promise<ProductGetByIdQueryResponse> {
@@ -33,7 +35,8 @@ export default class ProductQueryService {
   }
 
   public async onCreated(dto: ProductCreatedEventPayload): Promise<void> {
-    const { id, price, name } = dto.product;
+    const { price, name } = dto.product;
+    const id = await this.productRepository.getNextId();
     await this.productRepository.create({ id, price, name });
   }
 
