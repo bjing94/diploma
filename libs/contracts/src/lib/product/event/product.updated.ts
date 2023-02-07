@@ -1,7 +1,7 @@
-import { ProductResponseDto } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
+import ProductUpdatedDto from '../product.updated.dto';
 
 export class ProductUpdatedEventPayload {
   @ApiProperty()
-  public readonly product: ProductResponseDto;
+  public readonly product: ProductUpdatedDto;
 }

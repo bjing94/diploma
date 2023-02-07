@@ -1,3 +1,5 @@
-export function generateId(): number {
-  return Math.floor(Math.random() * (100000 - 0) + 0);
+import { Types } from 'mongoose';
+
+export function generateId(): string {
+  return new Types.ObjectId().toString();
 }

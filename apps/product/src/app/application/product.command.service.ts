@@ -12,7 +12,9 @@ import { ProductDomainEntity } from '@burger-shop/domain-entities';
 import { EventStoreService } from '@burger-shop/event-store';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { Product, ProductDocument } from '@burger-shop/models';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import MenuItemDomainEntity from '../domain/menu-item.domain-entity';
+import MenuDomainEntity from '../domain/menu.domain-entity';
 import MenuRepositoryProvider from './provider/menu.repository-provider';
 import MenuAbstractRepository from './repository/menu.abstract-repository';
 import ProductAbstractRepository from './repository/product.abstract-repository';
@@ -37,6 +39,7 @@ export default class ProductCommandService {
       product: {
         name: domain.name,
         price: domain.price,
+        id: domain.id,
       },
     });
     await this.eventStoreService.saveEvent({
@@ -45,6 +48,7 @@ export default class ProductCommandService {
         product: {
           name: domain.name,
           price: domain.price,
+          id: domain.id,
         },
       }),
     });
@@ -103,7 +107,7 @@ export default class ProductCommandService {
     dto: MenuCreateCommandRequest
   ): Promise<MenuCreateCommandResponse> {
     const { items } = dto;
-    const productsMap = new Map<number, ProductDocument>();
+    const productsMap = new Map<string, ProductDocument>();
     for (const item of items) {
       const product = await this.productRepository.find(item.productId);
       if (!product) {
@@ -111,13 +115,26 @@ export default class ProductCommandService {
       }
       productsMap.set(item.productId, product);
     }
+
+    const menuItems = items.map((item, idx) => {
+      const product = productsMap.get(item.productId);
+      return new MenuItemDomainEntity(
+        new ProductDomainEntity(product.name, product.price, product.id),
+        item.available,
+        item.price,
+        idx
+      );
+    });
+    const menuDomain = new MenuDomainEntity(menuItems);
+
     const payload = {
       menu: {
-        items: items.map((item) => ({
+        items: menuDomain.items.map((item) => ({
           available: item.available,
           price: item.price,
-          product: { _id: productsMap.get(item.productId)._id },
+          product: { _id: item.product.id },
         })),
+        id: menuDomain.id,
       },
     };
     await this.kafkaProducerService.emitMenuCreated(payload);

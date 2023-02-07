@@ -21,7 +21,7 @@ export default class MenuController {
 
   @ApiOperation({ description: 'Get menu' })
   @Get(':id')
-  public async get(@Param('id') id: number): Promise<MenuGetQueryResponse> {
+  public async get(@Param('id') id: string): Promise<MenuGetQueryResponse> {
     return this.menuService.getMenu({ id });
   }
 }

@@ -24,8 +24,9 @@ export default class ProductQueryService {
     private readonly eventStoreService: EventStoreService
   ) {}
 
-  public async getById(id: number): Promise<ProductGetByIdQueryResponse> {
+  public async getById(id: string): Promise<ProductGetByIdQueryResponse> {
     const product = await this.productRepository.find(id);
+
     return {
       product,
     };
@@ -36,14 +37,14 @@ export default class ProductQueryService {
   ): Promise<ProductFindQueryResponse> {
     const products = await this.productRepository.findMany(dto.take, dto.skip);
     return {
-      products: products,
+      products,
     };
   }
 
   public async onCreated(dto: ProductCreatedEventPayload): Promise<void> {
-    const { price, name } = dto.product;
-    const id = await this.productRepository.getNextId();
-    await this.productRepository.create({ id, price, name });
+    const { price, name, id } = dto.product;
+    const result = await this.productRepository.create({ id, price, name });
+    console.log(result);
   }
 
   public async onDeleted(dto: ProductDeletedEventPayload): Promise<void> {
@@ -57,9 +58,8 @@ export default class ProductQueryService {
 
   public async onMenuCreated(dto: MenuCreatedEventPayload): Promise<void> {
     const { menu } = dto;
-    const id = await this.menuRepository.getNextId();
     const result = await this.menuRepository.create({
-      id,
+      id: menu.id,
       items: menu.items.map((item, idx) => {
         return { ...item, id: idx };
       }),

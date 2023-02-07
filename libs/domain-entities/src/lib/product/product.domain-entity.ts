@@ -1,22 +1,22 @@
 import { generateId } from './generate-order-id';
 
 export class ProductDomainEntity {
-  private _id: number;
+  private _id: string;
 
   private _name: string;
 
   private _price: number;
 
-  constructor(name: string, price: number, id?: number) {
+  constructor(name: string, price: number, id?: string) {
     this.id = id ?? generateId();
     this.name = name;
     this.price = price;
   }
 
-  public get id(): number {
+  public get id(): string {
     return this._id;
   }
-  public set id(value: number) {
+  public set id(value: string) {
     this._id = value;
   }
 

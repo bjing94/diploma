@@ -4,7 +4,7 @@ import { IsNumber } from 'class-validator';
 export class ProductDeleteRequest {
   @ApiProperty()
   @IsNumber()
-  public readonly id: number;
+  public readonly id: string;
 }
 export class ProductDeleteResponse {
   @ApiProperty()

@@ -39,14 +39,13 @@ export default class ProductController {
   public async find(
     @Query('pagination') dto: ProductFindQueryRequest
   ): Promise<ProductFindQueryResponse> {
-    console.log(dto);
     return this.productService.find(dto);
   }
 
   @ApiOperation({ description: 'Get product' })
   @Get(':id')
   public async get(
-    @Param('id') id: number
+    @Param('id') id: string
   ): Promise<ProductGetByIdQueryResponse> {
     return this.productService.get(id);
   }

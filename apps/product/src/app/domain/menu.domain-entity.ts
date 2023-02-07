@@ -1,19 +1,20 @@
+import { Types } from 'mongoose';
 import MenuItemDomainEntity from './menu-item.domain-entity';
 
 export default class MenuDomainEntity {
-  private _id: number;
+  private _id: string;
 
   private _items: MenuItemDomainEntity[];
 
-  constructor(items: MenuItemDomainEntity[], id: number) {
-    this.id = id;
+  constructor(items: MenuItemDomainEntity[], id?: string) {
+    this.id = id ?? new Types.ObjectId(id).toString();
     this.items = items;
   }
 
-  public get id(): number {
+  public get id(): string {
     return this._id;
   }
-  public set id(value: number) {
+  public set id(value: string) {
     this._id = value;
   }
 

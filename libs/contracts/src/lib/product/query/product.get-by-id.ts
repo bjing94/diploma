@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ProductResponseDto } from '@burger-shop/interfaces';
-import { IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class ProductGetByIdQueryRequest {
   @ApiProperty()
-  @IsNumber()
-  public id: number;
+  @IsString()
+  public id: string;
 }
 
 export class ProductGetByIdQueryResponse {

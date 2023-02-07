@@ -1,6 +1,6 @@
 import { Product } from '@burger-shop/models';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Types, Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type MenuItemDocument = MenuItemModel & Document;
 
@@ -9,9 +9,6 @@ export class MenuItemModel {
   constructor(part?: Partial<MenuItemModel>) {
     Object.assign(this, part);
   }
-
-  @Prop()
-  id: number;
 
   @Prop()
   available: boolean;

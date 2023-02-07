@@ -10,9 +10,6 @@ export class Product {
   }
 
   @Prop()
-  id: number;
-
-  @Prop()
   price: number;
 
   @Prop()

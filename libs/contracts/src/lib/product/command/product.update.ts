@@ -1,11 +1,10 @@
-import { ProductResponseDto } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
 export class ProductUpdateRequest {
   @ApiProperty()
   @IsNumber()
-  public readonly id: number;
+  public readonly id: string;
 
   @ApiProperty()
   @IsNumber()

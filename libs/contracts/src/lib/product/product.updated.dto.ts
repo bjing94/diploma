@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ProductResponseDto {
+export default class ProductUpdatedDto {
   @ApiProperty()
-  public readonly id?: string;
+  public readonly id: string;
 
   @ApiProperty()
   public readonly name: string;

@@ -5,7 +5,7 @@ import { IsNumber } from 'class-validator';
 export class MenuGetQueryRequest {
   @ApiProperty()
   @IsNumber()
-  public readonly id: number;
+  public readonly id: string;
 }
 
 export class MenuGetQueryResponse {

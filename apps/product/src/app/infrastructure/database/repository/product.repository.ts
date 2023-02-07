@@ -4,6 +4,7 @@ import { Product, ProductDocument } from '@burger-shop/models';
 import { InjectModel } from '@nestjs/mongoose';
 import ProductCreateDto from '../../../interfaces/product.create.dto';
 import ProductUpdateDto from '../../../interfaces/product.update.dto';
+import { Types } from 'mongoose';
 
 export default class ProductRepository implements ProductAbstractRepository {
   constructor(
@@ -11,24 +12,34 @@ export default class ProductRepository implements ProductAbstractRepository {
     private readonly model: Model<ProductDocument>
   ) {}
 
-  public async find(id: number) {
-    return this.model.findOne({ id }).exec();
+  public async find(id: string) {
+    return this.model.findById(id).exec();
   }
 
-  public async findMany(take: number, skip: number): Promise<Product[]> {
+  public async findMany(
+    take: number,
+    skip: number
+  ): Promise<ProductDocument[]> {
     return this.model.find().limit(take).skip(skip).exec();
   }
 
-  public async create(product: ProductCreateDto): Promise<Product> {
-    return this.model.create(product);
+  public async create(product: ProductCreateDto): Promise<ProductDocument> {
+    return this.model.create({
+      _id: new Types.ObjectId(product.id),
+      name: product.name,
+      price: product.price,
+    });
   }
 
-  public async update(id: number, product: ProductUpdateDto): Promise<Product> {
-    return this.model.findOneAndUpdate({ id }, product).exec();
+  public async update(
+    id: string,
+    product: ProductUpdateDto
+  ): Promise<ProductDocument> {
+    return this.model.findByIdAndUpdate(id, product).exec();
   }
 
-  public async delete(id: number): Promise<void> {
-    await this.model.findOneAndDelete({ id }).exec();
+  public async delete(id: string): Promise<void> {
+    await this.model.findByIdAndDelete(id).exec();
   }
 
   public async getNextId() {

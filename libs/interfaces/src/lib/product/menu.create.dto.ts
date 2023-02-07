@@ -5,7 +5,7 @@ class MenuItemCreateDto {
   public readonly available: boolean;
 }
 export class MenuCreateDto {
-  public readonly id: number;
+  public readonly id: string;
 
   public readonly items: MenuItemCreateDto[];
 }

@@ -21,7 +21,7 @@ export default class ProductService {
     return this.kafkaProducerService.sendProductCreate(dto);
   }
 
-  public async get(id: number) {
+  public async get(id: string) {
     return this.kafkaProducerService.sendProductGet({ id });
   }
 

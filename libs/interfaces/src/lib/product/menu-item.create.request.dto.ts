@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class MenuItemCreateRequestDto {
   @ApiProperty()
-  @IsNumber()
-  public readonly productId: number;
+  @IsString()
+  public readonly productId: string;
 
   @ApiProperty()
   @IsBoolean()
