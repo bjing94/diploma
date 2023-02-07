@@ -1,11 +1,14 @@
 import { PaymentType } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString } from 'class-validator';
 
 export class PaymentCreateCommandRequest {
   @ApiProperty()
+  @IsNumber()
   public readonly sum: number;
 
-  @ApiProperty()
+  @ApiProperty({ enum: PaymentType })
+  @IsString()
   public readonly type: PaymentType;
 }
 
@@ -14,5 +17,5 @@ export class PaymentCreateCommandResponse {
   public readonly success: boolean;
 
   @ApiProperty()
-  public readonly id: number;
+  public readonly id: string;
 }

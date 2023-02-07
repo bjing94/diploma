@@ -28,4 +28,6 @@ export enum EventTopics {
   productUpdated = 'product.updated.event',
   productDeleted = 'product.deleted.event',
   menuCreated = 'menu.created.event',
+  paymentCreated = 'payment.created.event',
+  paymentStatusUpdated = 'payment.status-updated.event',
 }

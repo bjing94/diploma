@@ -1,30 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import {
-  PaymentCreated,
-  PaymentGet,
-  PaymentStatusUpdated,
-} from '@burger-shop/contracts';
 import PaymentRepositoryProvider from './providers/payment.repository-provider';
 import PaymentMapper from './mapper/payment.mapper';
+import {
+  PaymentCreatedEventPayload,
+  PaymentGetQueryRequest,
+  PaymentGetQueryResponse,
+  PaymentStatusUpdatedEventPayload,
+} from '@burger-shop/contracts';
 
 @Injectable()
 export default class PaymentQueryService {
   constructor(private readonly paymentRepository: PaymentRepositoryProvider) {}
 
   public async getPayment(
-    data: PaymentGet.Request
-  ): Promise<PaymentGet.Response> {
+    data: PaymentGetQueryRequest
+  ): Promise<PaymentGetQueryResponse> {
     const payment = await this.paymentRepository.repository.find(data.id);
     const domain = PaymentMapper.toDomain(payment);
     return { payment: domain };
   }
 
-  public async onPaymentCreated(data: PaymentCreated.Payload) {
+  public async onPaymentCreated(data: PaymentCreatedEventPayload) {
     const { payment } = data;
     await this.paymentRepository.repository.create(payment);
   }
 
-  public async onPaymentStatusUpdated(data: PaymentStatusUpdated.Payload) {
+  public async onPaymentStatusUpdated(data: PaymentStatusUpdatedEventPayload) {
     const { id, status } = data;
     const payment = await this.paymentRepository.repository.find(data.id);
     payment.status = status;

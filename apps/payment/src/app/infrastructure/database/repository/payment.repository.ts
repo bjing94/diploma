@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import PaymentAbstractRepository from '../../../application/repository/payment.repository';
+import PaymentAbstractRepository from '../../../application/repository/payment.abstract-repository';
 import PaymentModel, { PaymentDocument } from '../model/payment.model';
 
 export default class PaymentRepository implements PaymentAbstractRepository {
@@ -9,23 +9,23 @@ export default class PaymentRepository implements PaymentAbstractRepository {
     this._repository = repository;
   }
 
-  public async find(id: number): Promise<PaymentModel> {
-    const payment = await this._repository.findOne({ id: id }).exec();
+  public async find(id: string): Promise<PaymentDocument> {
+    const payment = await this._repository.findById(id).exec();
     return payment;
   }
 
-  public async create(payment: PaymentModel): Promise<PaymentModel> {
+  public async create(payment: PaymentModel): Promise<PaymentDocument> {
     return this._repository.create(payment);
   }
 
   public async update(
-    id: number,
+    id: string,
     payment: PaymentModel
-  ): Promise<PaymentModel> {
-    return this._repository.findOneAndUpdate({ id }, payment);
+  ): Promise<PaymentDocument> {
+    return this._repository.findByIdAndUpdate(id, payment);
   }
 
   public async delete(id: string): Promise<void> {
-    await this._repository.findOneAndDelete({ id });
+    await this._repository.findByIdAndDelete(id);
   }
 }

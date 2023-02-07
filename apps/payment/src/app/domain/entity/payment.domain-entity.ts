@@ -1,23 +1,24 @@
 import { PaymentStatus, PaymentType } from '@burger-shop/interfaces';
+import { Types } from 'mongoose';
 
 export default class PaymentDomainEntity {
-  private _id: number;
+  private _id: string;
   private _link?: string;
   private _status: PaymentStatus;
   private _sum: number;
   private _type: PaymentType;
 
   constructor(
-    status: PaymentStatus,
     sum: number,
     type: PaymentType,
-    id?: number,
+    status?: PaymentStatus,
+    id?: string,
     link?: string
   ) {
-    this.status = status;
+    this.status = status ?? PaymentStatus.PENDING;
     this.sum = sum;
     this.type = type;
-    this.id = id ?? 25;
+    this.id = id ?? new Types.ObjectId(id).toString();
     this.link = '' ?? link;
   }
 
@@ -28,10 +29,10 @@ export default class PaymentDomainEntity {
     return link;
   }
 
-  public get id(): number {
+  public get id(): string {
     return this._id;
   }
-  public set id(value: number) {
+  public set id(value: string) {
     this._id = value;
   }
 

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class PaymentGetQueryRequest {
   @ApiProperty()
-  public readonly id: number;
+  public readonly id: string;
 }
 
 export class PaymentGetQueryResponse {

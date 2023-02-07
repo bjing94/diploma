@@ -5,7 +5,7 @@ import PaymentModel, {
   PaymentDocument,
 } from '../../infrastructure/database/model/payment.model';
 import PaymentRepository from '../../infrastructure/database/repository/payment.repository';
-import PaymentAbstractRepository from '../repository/payment.repository';
+import PaymentAbstractRepository from '../repository/payment.abstract-repository';
 
 @Injectable()
 export default class PaymentRepositoryProvider {

@@ -1,8 +1,9 @@
 import {
-  PaymentCreated,
-  PaymentGet,
-  PaymentStatusUpdated,
+  PaymentCreatedEventPayload,
+  PaymentGetQueryRequest,
+  PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
+import { EventTopics, QueryTopics } from '@burger-shop/kafka-module';
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import PaymentQueryService from './payment.query.service';
@@ -11,20 +12,20 @@ import PaymentQueryService from './payment.query.service';
 export default class PaymentQueryController {
   constructor(private readonly paymentQueryService: PaymentQueryService) {}
 
-  @MessagePattern(PaymentCreated.topic)
-  public async onPaymentCreated(@Payload() data: PaymentCreated.Payload) {
+  @MessagePattern(EventTopics.paymentCreated)
+  public async onPaymentCreated(@Payload() data: PaymentCreatedEventPayload) {
     return this.onPaymentCreated(data);
   }
 
-  @MessagePattern(PaymentStatusUpdated.topic)
+  @MessagePattern(EventTopics.paymentStatusUpdated)
   public async onPaymentStatusUpdated(
-    @Payload() data: PaymentStatusUpdated.Payload
+    @Payload() data: PaymentStatusUpdatedEventPayload
   ) {
     return this.onPaymentStatusUpdated(data);
   }
 
-  @MessagePattern(PaymentGet.topic)
-  public async onPaymentGet(@Payload() data: PaymentGet.Request) {
+  @MessagePattern(QueryTopics.paymentGet)
+  public async onPaymentGet(@Payload() data: PaymentGetQueryRequest) {
     return this.paymentQueryService.getPayment(data);
   }
 }
