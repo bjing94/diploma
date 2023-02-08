@@ -1,8 +1,5 @@
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
-import {
-  Product,
-  ProductDocument,
-} from '../../../../../../libs/models/src/lib/product.model';
+import { Product, ProductDocument } from '@burger-shop/models';
 
 export default class ProductDomainMapper {
   public static toDatabase(product: ProductDomainEntity): Product {

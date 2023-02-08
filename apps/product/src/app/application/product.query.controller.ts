@@ -57,7 +57,7 @@ export default class ProductQueryController {
   @MessagePattern(QueryTopics.menuGet)
   public async getProductMenuById(
     @Payload() payload: MenuGetQueryRequest
-  ): Promise<any> {
+  ): Promise<MenuGetQueryResponse> {
     return this.productQueryService.getMenu(payload);
   }
 

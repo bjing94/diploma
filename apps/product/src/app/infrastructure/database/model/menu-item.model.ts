@@ -10,6 +10,8 @@ export class MenuItemModel {
     Object.assign(this, part);
   }
 
+  id: string;
+
   @Prop()
   available: boolean;
 

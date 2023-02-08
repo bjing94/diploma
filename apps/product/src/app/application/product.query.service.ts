@@ -4,6 +4,7 @@ import {
   MenuCreateCommandRequest,
   MenuCreatedEventPayload,
   MenuGetQueryRequest,
+  MenuGetQueryResponse,
   ProductCreatedEventPayload,
   ProductDeletedEventPayload,
   ProductFindQueryRequest,
@@ -67,9 +68,11 @@ export default class ProductQueryService {
     console.log(result);
   }
 
-  public async getMenu(dto: MenuGetQueryRequest) {
+  public async getMenu(
+    dto: MenuGetQueryRequest
+  ): Promise<MenuGetQueryResponse> {
     const result = await this.menuRepository.find(dto.id);
-    console.log(result);
-    return result;
+
+    return { menu: result };
   }
 }

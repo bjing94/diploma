@@ -3,7 +3,7 @@ import { MenuItemResponseDto } from './menu-item.response.dto';
 
 export class MenuResponseDto {
   @ApiProperty()
-  public readonly id: number;
+  public readonly id: string;
 
   @ApiProperty({ type: MenuItemResponseDto, isArray: true })
   public readonly items: MenuItemResponseDto[];

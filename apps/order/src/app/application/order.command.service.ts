@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   OrderCompleted,
   OrderCreate,
+  OrderCreateCommandRequest,
   OrderCreated,
   OrderPayed,
 } from '@burger-shop/contracts';
@@ -25,7 +26,7 @@ export default class OrderCommandService {
     private readonly productAdapterService: ProductAdapterService
   ) {}
 
-  public async createOrder(dto: OrderCreate.Request) {
+  public async createOrder(dto: OrderCreateCommandRequest) {
     const saga = new CreateOrderSaga(
       this.createOrderSagaRepo.repository,
       this.orderRepoProvider,

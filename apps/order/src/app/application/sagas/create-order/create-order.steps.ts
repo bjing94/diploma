@@ -1,15 +1,15 @@
 import CreateOrderSagaState from './create-order.state';
-import { OrderCreate } from '@burger-shop/contracts';
 import { generateOrderId } from '../../helper/generate-order-id';
 import OrderDomainEntity from '../../../domain/entity/order.domain-entity';
 import PaymentInfoDomainEntity from '../../../domain/entity/payment-info.domain.entity';
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
 import OrderMapper from '../../mapper/order.mapper';
 import { OrderStatus } from '@burger-shop/interfaces';
+import { OrderCreateCommandRequest } from '@burger-shop/contracts';
 
 export class CreateOrderStarted extends CreateOrderSagaState {
   public async create(
-    dto: OrderCreate.Request
+    dto: OrderCreateCommandRequest
   ): Promise<OrderDomainEntity | null> {
     const orderId = generateOrderId();
     const payment = new PaymentInfoDomainEntity();

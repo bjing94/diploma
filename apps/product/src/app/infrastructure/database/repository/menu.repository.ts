@@ -10,15 +10,15 @@ export default class MenuRepository implements MenuAbstractRepository {
     private readonly _repository: Model<MenuDocument>
   ) {}
 
-  public async find(id: string): Promise<MenuModel> {
+  public async find(id: string): Promise<MenuDocument> {
     return this._repository.findById(id).populate('items.product').exec();
   }
 
-  public async findMany(take: number, skip: number): Promise<MenuModel[]> {
+  public async findMany(take: number, skip: number): Promise<MenuDocument[]> {
     return this._repository.find().limit(take).skip(skip).exec();
   }
 
-  public async create(menu: MenuCreateDto): Promise<MenuModel> {
+  public async create(menu: MenuCreateDto): Promise<MenuDocument> {
     const { id, items } = menu;
     return this._repository.create({
       _id: new Types.ObjectId(id),
@@ -29,7 +29,7 @@ export default class MenuRepository implements MenuAbstractRepository {
   public async update(
     id: string,
     menu: any & { id: number }
-  ): Promise<MenuModel> {
+  ): Promise<MenuDocument> {
     return this._repository.findByIdAndUpdate(id, menu).exec();
   }
 

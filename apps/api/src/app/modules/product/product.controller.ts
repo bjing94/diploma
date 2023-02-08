@@ -54,7 +54,7 @@ export default class ProductController {
   @ApiBody({ type: OmitType(ProductUpdateRequest, ['id']) })
   @Put(':id')
   public async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() dto: Omit<ProductUpdateRequest, 'id'>
   ): Promise<ProductUpdateResponse> {
     return this.productService.update({ ...dto, id });
@@ -62,7 +62,7 @@ export default class ProductController {
 
   @ApiOperation({ description: 'Delete product' })
   @Delete(':id')
-  public async delete(@Param('id') id: number): Promise<ProductDeleteResponse> {
+  public async delete(@Param('id') id: string): Promise<ProductDeleteResponse> {
     return this.productService.delete({ id });
   }
 }

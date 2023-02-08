@@ -126,7 +126,7 @@ export default class ProductCommandService {
       );
     });
     const menuDomain = new MenuDomainEntity(menuItems);
-
+    console.log(menuDomain);
     const payload = {
       menu: {
         items: menuDomain.items.map((item) => ({
@@ -144,6 +144,7 @@ export default class ProductCommandService {
     });
     return {
       success: true,
+      id: menuDomain.id,
     };
   }
 }

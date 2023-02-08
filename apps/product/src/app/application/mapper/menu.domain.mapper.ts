@@ -1,11 +1,14 @@
 import MenuItemDomainEntity from '../../domain/menu-item.domain-entity';
 import MenuDomainEntity from '../../domain/menu.domain-entity';
 import { MenuItemModel } from '../../infrastructure/database/model/menu-item.model';
-import { MenuModel } from '../../infrastructure/database/model/menu.model';
+import {
+  MenuDocument,
+  MenuModel,
+} from '../../infrastructure/database/model/menu.model';
 import ProductDomainMapper from './product.domain.mapper';
 
 export default class MenuDomainMapper {
-  public static toDomain(menu: MenuModel): MenuDomainEntity {
+  public static toDomain(menu: MenuDocument): MenuDomainEntity {
     const domainItems = menu.items.map((item) => {
       return new MenuItemDomainEntity(
         ProductDomainMapper.toDomain(item.product),

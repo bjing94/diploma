@@ -10,6 +10,8 @@ export class MenuModel {
     Object.assign(this, part);
   }
 
+  id: string;
+
   @Prop({
     type: [MenuItemSchema],
     ref: MenuItemModel.name,

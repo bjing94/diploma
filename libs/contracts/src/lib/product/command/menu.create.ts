@@ -13,4 +13,6 @@ export class MenuCreateCommandRequest {
 export class MenuCreateCommandResponse {
   @ApiProperty()
   public readonly success: boolean;
+  @ApiProperty()
+  public readonly id?: string;
 }
