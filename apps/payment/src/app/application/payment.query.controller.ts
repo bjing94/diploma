@@ -14,14 +14,14 @@ export default class PaymentQueryController {
 
   @MessagePattern(EventTopics.paymentCreated)
   public async onPaymentCreated(@Payload() data: PaymentCreatedEventPayload) {
-    return this.onPaymentCreated(data);
+    return this.paymentQueryService.onPaymentCreated(data);
   }
 
   @MessagePattern(EventTopics.paymentStatusUpdated)
   public async onPaymentStatusUpdated(
     @Payload() data: PaymentStatusUpdatedEventPayload
   ) {
-    return this.onPaymentStatusUpdated(data);
+    return this.paymentQueryService.onPaymentStatusUpdated(data);
   }
 
   @MessagePattern(QueryTopics.paymentGet)

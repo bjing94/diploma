@@ -1,49 +1,44 @@
 import {
-  OrderCreated,
-  OrderGetOrder,
-  OrderPayed,
+  OrderCompletedEventPayload,
+  OrderCreatedEventPayload,
+  OrderGetQueryRequest,
+  OrderGetQueryResponse,
+  OrderPayedEventPayload,
 } from '@burger-shop/contracts';
 import { OrderStatus } from '@burger-shop/interfaces';
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-import OrderDomainEntity from '../domain/entity/order.domain-entity';
-import OrderMapper from './mapper/order.mapper';
-import OrderEventSourceRepositoryProvider from './providers/order.event-source.repository-provider';
-import OrderRepositoryProvider from './providers/order.repository-provider';
+import OrderAbstractRepository from './repository/order.abstract-repository';
 
 @Injectable()
 export default class OrderQueryService {
   constructor(
-    @Inject('KAFKA_CLIENT') private readonly kafka: ClientKafka,
-    private readonly eventSourceProvider: OrderEventSourceRepositoryProvider,
-    private readonly orderRepoProvider: OrderRepositoryProvider
+    @Inject('OrderRepository')
+    private readonly repository: OrderAbstractRepository
   ) {}
 
-  async getOrder(data: OrderGetOrder.Request) {
-    // const order = await this.orderRepoProvider.repository.find(data.orderId);
-    // return {
-    //   id: order.id,
-    //   status: order.status,
-    // };
+  async getOrder(data: OrderGetQueryRequest): Promise<OrderGetQueryResponse> {
+    return this.repository.find(data.id);
   }
 
-  async onCreated(data: OrderCreated.Payload) {
+  async onCreated(data: OrderCreatedEventPayload) {
     // const order = new OrderDomainEntity(data.id, data.orderItems, '');
+    await this.repository.create(data.order);
     // const dbOrder = OrderMapper.toDatabase(order);
     // await this.orderRepoProvider.repository.create(dbOrder);
   }
 
-  async onPayed(data: OrderPayed.Payload) {
-    const order = await this.orderRepoProvider.repository.find(data.orderId);
+  async onPayed(data: OrderPayedEventPayload) {
+    const order = await this.repository.find(data.orderId);
     if (!order) return;
     order.status = OrderStatus.PAYED;
-    await this.orderRepoProvider.repository.update(data.orderId, order);
+    const { id, ...rest } = order;
+    await this.repository.update(data.orderId, { ...rest });
   }
 
-  async onCompleted(data: OrderPayed.Payload) {
-    const order = await this.orderRepoProvider.repository.find(data.orderId);
+  async onCompleted(data: OrderCompletedEventPayload) {
+    const order = await this.repository.find(data.orderId);
     if (!order) return;
     order.status = OrderStatus.COMPLETED;
-    await this.orderRepoProvider.repository.update(data.orderId, order);
+    await this.repository.update(data.orderId, order);
   }
 }

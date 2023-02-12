@@ -1,12 +1,43 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  getMongoEventStoreConnectionStringReadDb,
+  READ_CONNECTION_NAME,
+} from '../config/mongoose.config';
+import PaymentModel, {
+  PaymentSchema,
+} from '../infrastructure/database/model/payment.model';
+import PaymentRepository from '../infrastructure/database/repository/payment.repository';
+import KafkaRootModule from './kafka/kafka.module';
 import PaymentCommandController from './payment.command.controller';
 import PaymentCommandService from './payment.command.service';
 import PaymentQueryController from './payment.query.controller';
 import PaymentQueryService from './payment.query.service';
 
 @Module({
-  imports: [],
+  imports: [
+    MongooseModule.forRoot(getMongoEventStoreConnectionStringReadDb(), {
+      connectionName: READ_CONNECTION_NAME,
+    }),
+    MongooseModule.forFeature(
+      [
+        {
+          name: PaymentModel.name,
+          schema: PaymentSchema,
+        },
+      ],
+      READ_CONNECTION_NAME
+    ),
+    KafkaRootModule,
+  ],
   controllers: [PaymentCommandController, PaymentQueryController],
-  providers: [PaymentQueryService, PaymentCommandService],
+  providers: [
+    PaymentQueryService,
+    PaymentCommandService,
+    {
+      provide: 'PaymentRepository',
+      useClass: PaymentRepository,
+    },
+  ],
 })
 export class PaymentModule {}

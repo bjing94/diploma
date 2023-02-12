@@ -5,10 +5,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import ProductCreateDto from '../../../interfaces/product.create.dto';
 import ProductUpdateDto from '../../../interfaces/product.update.dto';
 import { Types } from 'mongoose';
+import { READ_CONNECTION_NAME } from '../../../config/mongoose.config';
 
 export default class ProductRepository implements ProductAbstractRepository {
   constructor(
-    @InjectModel(Product.name)
+    @InjectModel(Product.name, READ_CONNECTION_NAME)
     private readonly model: Model<ProductDocument>
   ) {}
 

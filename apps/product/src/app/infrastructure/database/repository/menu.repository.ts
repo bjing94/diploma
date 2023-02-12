@@ -2,11 +2,12 @@ import { MenuCreateDto } from '@burger-shop/interfaces';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import MenuAbstractRepository from '../../../application/repository/menu.abstract-repository';
+import { READ_CONNECTION_NAME } from '../../../config/mongoose.config';
 import { MenuDocument, MenuModel } from '../model/menu.model';
 
 export default class MenuRepository implements MenuAbstractRepository {
   constructor(
-    @InjectModel(MenuModel.name)
+    @InjectModel(MenuModel.name, READ_CONNECTION_NAME)
     private readonly _repository: Model<MenuDocument>
   ) {}
 
@@ -19,10 +20,10 @@ export default class MenuRepository implements MenuAbstractRepository {
   }
 
   public async create(menu: MenuCreateDto): Promise<MenuDocument> {
-    const { id, items } = menu;
+    const { id, ...rest } = menu;
     return this._repository.create({
       _id: new Types.ObjectId(id),
-      items: items,
+      ...rest,
     });
   }
 
@@ -41,5 +42,12 @@ export default class MenuRepository implements MenuAbstractRepository {
     const maxIdProduct = await this._repository.findOne().sort({ id: 'desc' });
     const maxId = maxIdProduct ? maxIdProduct.id + 1 : 1;
     return maxId;
+  }
+
+  public getActiveMenu(): Promise<MenuDocument> {
+    return this._repository
+      .findOne({ active: true })
+      .populate('items.product')
+      .exec();
   }
 }

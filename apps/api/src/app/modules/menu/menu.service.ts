@@ -3,6 +3,8 @@ import {
   MenuCreateCommandResponse,
   MenuGetQueryRequest,
   MenuGetQueryResponse,
+  ProductGetMenuItemQueryRequest,
+  ProductGetMenuItemQueryResponse,
 } from '@burger-shop/contracts';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
 import { Inject, Injectable } from '@nestjs/common';
@@ -24,5 +26,11 @@ export default class MenuService {
     dto: MenuGetQueryRequest
   ): Promise<MenuGetQueryResponse> {
     return this.kafkaProducerService.sendMenuGet(dto);
+  }
+
+  public async getMenuItem(
+    dto: ProductGetMenuItemQueryRequest
+  ): Promise<ProductGetMenuItemQueryResponse> {
+    return this.kafkaProducerService.sendMenuItemGet(dto);
   }
 }

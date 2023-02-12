@@ -8,4 +8,6 @@ export class MenuCreateDto {
   public readonly id: string;
 
   public readonly items: MenuItemCreateDto[];
+
+  public readonly active: boolean;
 }

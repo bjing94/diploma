@@ -6,7 +6,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { InjectConnection } from '@nestjs/mongoose';
 import mongoose, { Connection } from 'mongoose';
-import getMongoEventStoreConnectionStringOrder, {
+import getMongoEventStoreConnectionStringEventStore, {
   DatabaseNames,
 } from '../config/mongoose.config';
 import { kafkaConfig } from './config/provide-kafka-config';

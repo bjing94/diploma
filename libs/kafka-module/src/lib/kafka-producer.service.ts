@@ -19,6 +19,12 @@ import {
   OrderPayCommandRequest,
   OrderPayCommandResponse,
   OrderPayedEventPayload,
+  PaymentCreateCommandRequest,
+  PaymentCreateCommandResponse,
+  PaymentCreatedEventPayload,
+  PaymentFulfillCommandRequest,
+  PaymentFulfillCommandResponse,
+  PaymentStatusUpdatedEventPayload,
   ProductCreatedEventPayload,
   ProductCreateRequest,
   ProductCreateResponse,
@@ -29,6 +35,8 @@ import {
   ProductFindQueryResponse,
   ProductGetByIdQueryRequest,
   ProductGetByIdQueryResponse,
+  ProductGetMenuItemQueryRequest,
+  ProductGetMenuItemQueryResponse,
   ProductUpdatedEventPayload,
   ProductUpdateRequest,
   ProductUpdateResponse,
@@ -53,16 +61,18 @@ export class KafkaProducerService {
       Logger.log(`Subscribed to response of ${topic}`);
       await this.kafka.subscribeToResponseOf(topic);
     }
+    await this.kafka.subscribeToResponseOf('menu-item.get.query');
+    await this.kafka.connect();
   }
 
   public async emit<TResult, TInput>(
     topic: string,
     value: TInput
-  ): Promise<Observable<TResult>> {
+  ): Promise<void> {
     this.logger.verbose(`Emit ${topic}, value:${JSON.stringify(value)}`);
 
     await this.kafka.connect();
-    return this.kafka.emit<TResult, TInput>(topic, value);
+    await this.kafka.emit<TResult, TInput>(topic, value);
   }
 
   public async send<TResult, TInput>(
@@ -232,14 +242,14 @@ export class KafkaProducerService {
   public async emitOrderCreated(
     payload: OrderCreatedEventPayload
   ): Promise<void> {
-    return this.send<void, OrderCreatedEventPayload>(
+    await this.emit<void, OrderCreatedEventPayload>(
       EventTopics.orderCreated,
       payload
     );
   }
 
   public async emitOrderPayed(payload: OrderPayedEventPayload): Promise<void> {
-    return this.send<void, OrderPayedEventPayload>(
+    await this.emit<void, OrderPayedEventPayload>(
       EventTopics.orderPayed,
       payload
     );
@@ -248,7 +258,7 @@ export class KafkaProducerService {
   public async emitOrderCompleted(
     payload: OrderCompletedEventPayload
   ): Promise<void> {
-    return this.send<void, OrderCompletedEventPayload>(
+    await this.emit<void, OrderCompletedEventPayload>(
       EventTopics.orderCompleted,
       payload
     );
@@ -261,5 +271,51 @@ export class KafkaProducerService {
       QueryTopics.orderGet,
       payload
     );
+  }
+
+  public async sendMenuItemGet(
+    payload: ProductGetMenuItemQueryRequest
+  ): Promise<ProductGetMenuItemQueryResponse> {
+    return this.send<
+      ProductGetMenuItemQueryResponse,
+      ProductGetMenuItemQueryRequest
+    >(QueryTopics.menuItemGet, payload);
+  }
+
+  // Payment
+  public async emitPaymentCreated(
+    payload: PaymentCreatedEventPayload
+  ): Promise<void> {
+    await this.emit<void, PaymentCreatedEventPayload>(
+      EventTopics.paymentCreated,
+      payload
+    );
+  }
+
+  public async emitPaymentStatusUpdated(
+    payload: PaymentStatusUpdatedEventPayload
+  ): Promise<void> {
+    await this.emit<void, PaymentStatusUpdatedEventPayload>(
+      EventTopics.paymentStatusUpdated,
+      payload
+    );
+  }
+
+  public async sendPaymentCreate(
+    payload: PaymentCreateCommandRequest
+  ): Promise<PaymentCreateCommandResponse> {
+    return this.send<PaymentCreateCommandResponse, PaymentCreateCommandRequest>(
+      CommandTopics.paymentCreate,
+      payload
+    );
+  }
+
+  public async sendPaymentFulfill(
+    payload: PaymentFulfillCommandRequest
+  ): Promise<PaymentFulfillCommandResponse> {
+    return this.send<
+      PaymentFulfillCommandResponse,
+      PaymentFulfillCommandRequest
+    >(CommandTopics.paymentFulfill, payload);
   }
 }

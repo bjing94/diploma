@@ -1,82 +1,110 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  OrderCompleted,
-  OrderCreate,
-  OrderCreateCommandRequest,
-  OrderCreated,
-  OrderPayed,
-} from '@burger-shop/contracts';
 import OrderDomainEntity from '../domain/entity/order.domain-entity';
-import { ClientProxy } from '@nestjs/microservices';
-import { generateOrderId } from './helper/generate-order-id';
-import OrderRepositoryProvider from './providers/order.repository-provider';
-import CreateOrderSagaRepository from '../infrastructure/database/mongo/repository/create-order-saga.repository';
-import CreateOrderSaga from './sagas/create-order/create-order.saga';
-import { OrderStatus } from '@burger-shop/interfaces';
-import CreateOrderSagaRepositoryProvider from './providers/order.create-order-saga.repository-provider';
 import ProductAdapterService from './adapter/product.service';
+import {
+  OrderCreateCommandRequest,
+  OrderCreateCommandResponse,
+  OrderCreatedDto,
+  OrderPayCommandResponse,
+  OrderPayedEventPayload,
+} from '@burger-shop/contracts';
+import OrderItemDomainEntity from '../domain/entity/order-item.domain-entity';
+import { KafkaProducerService } from '@burger-shop/kafka-module';
+import OrderAbstractRepository from './repository/order.abstract-repository';
+import { OrderStatus } from '@burger-shop/interfaces';
 
 @Injectable()
 export default class OrderCommandService {
   constructor(
-    @Inject('KAFKA_CLIENT') private readonly kafka: ClientProxy,
-    // private readonly productRepoProvider: ProductRepositoryProvider,
-    private readonly orderRepoProvider: OrderRepositoryProvider,
-    private readonly createOrderSagaRepo: CreateOrderSagaRepositoryProvider,
-    private readonly productAdapterService: ProductAdapterService
+    private readonly productAdapterService: ProductAdapterService,
+    private readonly kafkaProducerService: KafkaProducerService,
+    @Inject('OrderRepository')
+    private readonly orderRepository: OrderAbstractRepository
   ) {}
 
-  public async createOrder(dto: OrderCreateCommandRequest) {
-    const saga = new CreateOrderSaga(
-      this.createOrderSagaRepo.repository,
-      this.orderRepoProvider,
-      this.productAdapterService
-    );
-    saga.setState(OrderStatus.CREATED);
-    const result = await saga.getState().create(dto);
-    if (!result) return result;
-
-    await this.kafka.emit<void, OrderCreated.Payload>(OrderCreated.topic, {
-      order: result,
+  public async createOrder(
+    dto: OrderCreateCommandRequest
+  ): Promise<OrderCreateCommandResponse> {
+    const { orderItems, paymentInfo } = dto;
+    const orderDomainItems: OrderItemDomainEntity[] = [];
+    console.log({ orderItems, paymentInfo });
+    let idx = 0;
+    let sum = 0;
+    for (const item of orderItems) {
+      const response = await this.kafkaProducerService.sendMenuItemGet({
+        id: item.productId,
+      });
+      if (!response || !response.product) return null;
+      const { price, id } = response.product;
+      const { name } = response.product.product;
+      orderDomainItems.push(
+        new OrderItemDomainEntity({
+          product: { name, price, id },
+          quantity: item.count,
+          id: idx,
+        })
+      );
+      idx++;
+      sum += item.count * price;
+    }
+    const response = await this.kafkaProducerService.sendPaymentCreate({
+      sum,
+      type: paymentInfo.type,
     });
-    return result;
+    if (!response) return null;
+
+    const order = new OrderDomainEntity({
+      paymentId: response.id,
+      items: orderDomainItems,
+    });
+    console.log('dto is ok', order.orderItems);
+    const eventPayload: OrderCreatedDto = {
+      id: order.id,
+      status: order.status,
+      orderItems: order.orderItems.map((item) => {
+        return {
+          id: item.id,
+          productId: item.product.id,
+          quantity: item.quantity,
+        };
+      }),
+      paymentId: order.paymentId,
+    };
+    console.log('Created order:', order);
+    console.log('Order event:', JSON.stringify(eventPayload));
+
+    await this.kafkaProducerService.emitOrderCreated({ order: eventPayload });
+
+    return null;
   }
 
-  public async payOrder(orderId: string) {
-    const sagaInfo = await (
-      await this.createOrderSagaRepo.repository.getSaga(orderId)
-    ).toObject();
-    if (!sagaInfo) return null;
-    const saga = new CreateOrderSaga(
-      this.createOrderSagaRepo.repository,
-      this.orderRepoProvider,
-      this.productAdapterService
-    );
-    saga.setState(sagaInfo.status);
-    const result = saga.getState().pay(orderId);
-    if (!result) return result;
+  public async payOrder(orderId: string): Promise<OrderPayCommandResponse> {
+    const order = await this.orderRepository.find(orderId);
+    console.log('order', order);
+    if (!order || order.status !== OrderStatus.CREATED) return null;
 
-    await this.kafka.emit<void, OrderPayed.Payload>(OrderPayed.topic, {
-      orderId,
+    const paymentId = order.paymentId;
+    const paymentResponse = await this.kafkaProducerService.sendPaymentFulfill({
+      id: paymentId,
+      hash: '',
     });
-    return result;
+    console.log('succes payment', paymentResponse);
+    if (!paymentResponse.success) return null;
+    const payload: OrderPayedEventPayload = {
+      orderId: order.id,
+    };
+    await this.kafkaProducerService.emitOrderPayed(payload);
+    return { orderId };
   }
 
   public async completeOrder(orderId: string) {
-    const sagaInfo = await this.createOrderSagaRepo.repository.getSaga(orderId);
-    if (!sagaInfo) return null;
-    const saga = new CreateOrderSaga(
-      this.createOrderSagaRepo.repository,
-      this.orderRepoProvider,
-      this.productAdapterService
-    );
-    saga.setState(sagaInfo.status);
-    const result = saga.getState().complete(orderId);
-    if (!result) return result;
+    const order = await this.orderRepository.find(orderId);
+    if (!order || order.status !== OrderStatus.PAYED) return null;
 
-    await this.kafka.emit<void, OrderCompleted.Payload>(OrderCompleted.topic, {
-      orderId,
-    });
-    return result;
+    const payload: OrderPayedEventPayload = {
+      orderId: order.id,
+    };
+    await this.kafkaProducerService.emitOrderCompleted(payload);
+    return { orderId };
   }
 }

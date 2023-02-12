@@ -30,6 +30,9 @@ export class KafkaProducerModule {
                 clientId: clientId,
                 brokers,
               },
+              consumer: {
+                groupId: `${clientId}-consumer`,
+              },
               producerOnlyMode: false,
             },
           },

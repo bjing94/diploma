@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppCommand } from './app.command';
-import getMongoEventStoreConnectionStringOrder from '../config/mongoose.config';
+import getMongoEventStoreConnectionStringEventStore from '../config/mongoose.config';
 import { CommandModule } from 'nestjs-command';
 import OrderEventSourceRepositoryProvider from './providers/order.event-source.repository-provider';
 import { Event, EventSchema } from '@burger-shop/models';

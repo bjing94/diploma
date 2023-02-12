@@ -18,6 +18,7 @@ export enum QueryTopics {
   menuGet = 'menu.get.query',
   productGet = 'product.get.query',
   productFind = 'product.find.query',
+  menuItemGet = 'menu-item.get.query',
 }
 
 export enum EventTopics {

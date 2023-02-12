@@ -8,6 +8,8 @@ import {
   ProductFindQueryResponse,
   ProductGetByIdQueryRequest,
   ProductGetByIdQueryResponse,
+  ProductGetMenuItemQueryRequest,
+  ProductGetMenuItemQueryResponse,
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { EventTopics, QueryTopics } from '@burger-shop/kafka-module';
@@ -66,5 +68,12 @@ export default class ProductQueryController {
     @Payload() payload: MenuCreatedEventPayload
   ): Promise<void> {
     return this.productQueryService.onMenuCreated(payload);
+  }
+
+  @MessagePattern(QueryTopics.menuItemGet)
+  public async getMenuItemById(
+    @Payload() payload: ProductGetMenuItemQueryRequest
+  ): Promise<ProductGetMenuItemQueryResponse> {
+    return this.productQueryService.getItemFromMenu(payload.id);
   }
 }

@@ -1,31 +1,37 @@
-import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import PaymentAbstractRepository from '../../../application/repository/payment.abstract-repository';
+import { READ_CONNECTION_NAME } from '../../../config/mongoose.config';
 import PaymentModel, { PaymentDocument } from '../model/payment.model';
 
 export default class PaymentRepository implements PaymentAbstractRepository {
-  private _repository: Model<PaymentDocument>;
-
-  constructor(repository: Model<PaymentDocument>) {
-    this._repository = repository;
-  }
+  constructor(
+    @InjectModel(PaymentModel.name, READ_CONNECTION_NAME)
+    private readonly model: Model<PaymentDocument>
+  ) {}
 
   public async find(id: string): Promise<PaymentDocument> {
-    const payment = await this._repository.findById(id).exec();
+    const payment = await this.model.findById(id).exec();
     return payment;
   }
 
   public async create(payment: PaymentModel): Promise<PaymentDocument> {
-    return this._repository.create(payment);
+    const { id, ...rest } = payment;
+    console.log(id);
+    return this.model.create({
+      ...rest,
+      _id: id,
+    });
   }
 
   public async update(
     id: string,
     payment: PaymentModel
   ): Promise<PaymentDocument> {
-    return this._repository.findByIdAndUpdate(id, payment);
+    return this.model.findByIdAndUpdate(id, payment);
   }
 
   public async delete(id: string): Promise<void> {
-    await this._repository.findByIdAndDelete(id);
+    await this.model.findByIdAndDelete(id);
   }
 }

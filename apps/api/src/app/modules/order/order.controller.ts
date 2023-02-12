@@ -1,47 +1,54 @@
-// import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-// import {
-//   OrderComplete,
-//   OrderCreate,
-//   OrderGetOrder,
-//   OrderPay,
-// } from '@burger-shop/contracts';
-// import OrderService from './order.service';
-// import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
-// @ApiTags('Order')
-// @Controller('order')
-// export default class OrderController {
-//   constructor(private readonly orderService: OrderService) {}
+import OrderService from './order.service';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  OrderCompleteCommandRequest,
+  OrderCompleteCommandResponse,
+  OrderCreateCommandRequest,
+  OrderCreateCommandResponse,
+  OrderGetQueryRequest,
+  OrderGetQueryResponse,
+  OrderPayCommandRequest,
+  OrderPayCommandResponse,
+} from '@burger-shop/contracts';
 
-//   @Get('health')
-//   async healthcheck() {
-//     return { data: 'OK' };
-//   }
+@ApiTags('Order')
+@Controller('order')
+export default class OrderController {
+  constructor(private readonly orderService: OrderService) {}
 
-//   @ApiResponse({ type: OrderCreate.Response })
-//   @ApiBody({ type: OrderCreate.Request })
-//   @Post('create')
-//   async create(
-//     @Body() dto: OrderCreate.Request
-//   ): Promise<OrderCreate.Response> {
-//     return this.orderService.create(dto);
-//   }
+  @Get('health')
+  async healthcheck() {
+    return { data: 'OK' };
+  }
 
-//   @ApiResponse({ type: OrderGetOrder.Response })
-//   @Get(':id')
-//   async get(@Param('id') id: string): Promise<OrderGetOrder.Response> {
-//     return this.orderService.get(id);
-//   }
+  @ApiResponse({ type: OrderCreateCommandResponse })
+  @ApiBody({ type: OrderCreateCommandRequest })
+  @Post('create')
+  async create(
+    @Body() dto: OrderCreateCommandRequest
+  ): Promise<OrderCreateCommandResponse> {
+    return this.orderService.create(dto);
+  }
 
-//   @ApiResponse({ type: OrderPay.Response })
-//   @Post(':id/pay')
-//   async pay(@Param('id') id: string): Promise<OrderPay.Response> {
-//     return this.orderService.pay(id);
-//   }
+  @ApiResponse({ type: OrderGetQueryRequest })
+  @Get(':id')
+  async get(@Param('id') id: string): Promise<OrderGetQueryResponse> {
+    return this.orderService.get(id);
+  }
 
-//   @ApiResponse({ type: OrderComplete.Response })
-//   @Post(':id/complete')
-//   async complete(@Param('id') id: string): Promise<OrderComplete.Response> {
-//     return this.orderService.complete(id);
-//   }
-// }
+  @ApiResponse({ type: OrderPayCommandRequest })
+  @Post(':id/pay')
+  async pay(@Param('id') id: string): Promise<OrderPayCommandResponse> {
+    return this.orderService.pay(id);
+  }
+
+  @ApiResponse({ type: OrderCompleteCommandRequest })
+  @Post(':id/complete')
+  async complete(
+    @Param('id') id: string
+  ): Promise<OrderCompleteCommandResponse> {
+    return this.orderService.complete(id);
+  }
+}

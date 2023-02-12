@@ -7,4 +7,7 @@ export class MenuCreatedDto {
 
   @ApiProperty()
   public readonly id: string;
+
+  @ApiProperty()
+  public readonly active: boolean;
 }

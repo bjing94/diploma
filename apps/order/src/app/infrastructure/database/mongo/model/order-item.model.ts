@@ -5,13 +5,13 @@ export type OrderItemDocument = OrderItem & Document;
 @Schema()
 export class OrderItem {
   @Prop()
-  level: number;
+  id: number;
 
   @Prop()
-  count: number;
+  quantity: number;
 
   @Prop()
-  productId: number;
+  productId: string;
 }
 
 export const OrderItemSchema = SchemaFactory.createForClass(OrderItem);

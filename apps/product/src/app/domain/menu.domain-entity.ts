@@ -6,9 +6,12 @@ export default class MenuDomainEntity {
 
   private _items: MenuItemDomainEntity[];
 
-  constructor(items: MenuItemDomainEntity[], id?: string) {
+  private _active: boolean;
+
+  constructor(items: MenuItemDomainEntity[], id?: string, active?: boolean) {
     this.id = id ?? new Types.ObjectId(id).toString();
     this.items = items;
+    this.active = active ?? false;
   }
 
   public get id(): string {
@@ -23,6 +26,13 @@ export default class MenuDomainEntity {
   }
   public set items(value: MenuItemDomainEntity[]) {
     this._items = value;
+  }
+
+  public get active(): boolean {
+    return this._active;
+  }
+  public set active(value: boolean) {
+    this._active = value;
   }
 
   public async addItem(item: MenuItemDomainEntity) {

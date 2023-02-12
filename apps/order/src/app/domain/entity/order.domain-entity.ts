@@ -1,103 +1,71 @@
-import { ProductDomainEntity } from '@burger-shop/domain-entities';
-import {
-  DeliveryStatus,
-  OrderStatus,
-  PaymentStatus,
-  PaymentType,
-} from '@burger-shop/interfaces';
-import DeliveryInfoDomainEntity from './delivery-info.domain-entiy';
+import { OrderStatus } from '@burger-shop/interfaces';
+import { generateObjectId } from '@burger-shop/helpers';
 import OrderItemDomainEntity from './order-item.domain-entity';
-import PaymentInfoDomainEntity from './payment-info.domain.entity';
 
 export default class OrderDomainEntity {
-  private id: string;
+  private _id: string;
 
-  private status: OrderStatus = OrderStatus.CREATED;
+  private _status: OrderStatus = OrderStatus.CREATED;
 
-  private orderItems: OrderItemDomainEntity[];
+  private _orderItems: OrderItemDomainEntity[];
 
-  private paymentId: string;
+  private _paymentId: string;
 
-  private deliveryId?: string;
+  private _deliveryId?: string;
 
-  private createdAt: Date;
+  private _createdAt: Date;
 
-  constructor(
-    id: string,
-    items: {
-      product: ProductDomainEntity;
-      count: number;
-    }[],
-    paymentId: string,
-    deliveryId?: string
-  ) {
-    this.id = id;
-    this.orderItems = [];
-    let totalPrice = 0;
-    for (let i = 0; i < items.length; i++) {
-      totalPrice += items[i].product.price * items[i].count;
-      this.addItem(items[i].product);
-    }
+  constructor(data: {
+    id?: string;
+    items: OrderItemDomainEntity[];
+    paymentId: string;
+    deliveryId?: string;
+  }) {
+    this.id = data.id ?? generateObjectId();
+    this._orderItems = data.items;
 
-    this.paymentId = paymentId;
+    this.paymentId = data.paymentId;
 
-    this.deliveryId = deliveryId;
+    this.deliveryId = data.deliveryId;
   }
 
-  public addItem(item: ProductDomainEntity): void {
-    let maxLevel;
-    if (this.orderItems.length === 0) {
-      maxLevel = 0;
-    } else {
-      maxLevel = this.orderItems
-        .sort((a, b) => a.getLevel() - b.getLevel())[0]
-        .getLevel();
-    }
-
-    const newOrderItem = new OrderItemDomainEntity(maxLevel + 1, 1, item);
-    this.orderItems.push(newOrderItem);
+  public get orderItems(): OrderItemDomainEntity[] {
+    return this._orderItems;
   }
 
-  public removeItem(level: number): OrderItemDomainEntity | null {
-    const newOrderItems = [];
-    let currentLevel = 0;
-    let removedItem = null;
-    this.orderItems.forEach((orderItem) => {
-      if (orderItem.getLevel() !== level) {
-        orderItem.changeLevel(currentLevel);
-        newOrderItems.push(orderItem);
-        currentLevel++;
-      } else {
-        removedItem = orderItem;
-      }
-    });
-    this.orderItems = newOrderItems;
-    return removedItem;
+  public set status(newStatus: OrderStatus) {
+    this._status = newStatus;
   }
 
-  public getOrderItems(): OrderItemDomainEntity[] {
-    return this.orderItems;
+  public get status(): OrderStatus {
+    return this._status;
   }
 
-  public setStatus(newStatus: OrderStatus): void {
-    this.status = newStatus;
+  public set id(id: string) {
+    this._id = id;
+  }
+  public get id(): string {
+    return this._id;
   }
 
-  public getStatus(): OrderStatus {
-    return this.status;
+  public set createdAt(date: Date) {
+    this._createdAt = date;
+  }
+  public get createdAt(): Date {
+    return this._createdAt;
   }
 
-  public setId(id: string): void {
-    this.id = id;
+  public set paymentId(id: string) {
+    this._paymentId = id;
   }
-  public getId(): string {
-    return this.id;
+  public get paymentId(): string {
+    return this._paymentId;
   }
 
-  public setCreatedAt(date: Date): void {
-    this.createdAt = date;
+  public get deliveryId(): string {
+    return this._deliveryId;
   }
-  public getCreatedAt(): Date {
-    return this.createdAt;
+  public set deliveryId(value: string) {
+    this._deliveryId = value;
   }
 }

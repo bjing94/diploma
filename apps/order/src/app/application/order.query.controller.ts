@@ -1,31 +1,38 @@
 import {
-  OrderCompleted,
-  OrderCreated,
-  OrderPayed,
+  OrderCompletedEventPayload,
+  OrderCreatedEventPayload,
+  OrderGetQueryRequest,
+  OrderPayedEventPayload,
 } from '@burger-shop/contracts';
+import { EventTopics, QueryTopics } from '@burger-shop/kafka-module';
 import { Controller, UseInterceptors } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import LoggerInterceptor from './interceptors/logger.interceptor';
 import OrderQueryService from './order.query.service';
-import OrderAbstractRepository from './repository/order.abstract-repository';
 
 @UseInterceptors(LoggerInterceptor)
 @Controller()
 export default class OrderQueryController {
   constructor(private readonly orderQueryService: OrderQueryService) {}
 
-  @MessagePattern(OrderCreated.topic)
-  async onCreated(@Payload() data: OrderCreated.Payload) {
+  @MessagePattern(EventTopics.orderCreated)
+  async onCreated(@Payload() data: OrderCreatedEventPayload) {
+    console.log('Order create event', data);
     await this.orderQueryService.onCreated(data);
   }
 
-  @MessagePattern(OrderPayed.topic)
-  async onPayed(@Payload() data: OrderPayed.Payload) {
+  @MessagePattern(QueryTopics.orderGet)
+  async getOrder(@Payload() data: OrderGetQueryRequest) {
+    await this.orderQueryService.getOrder(data);
+  }
+
+  @MessagePattern(EventTopics.orderPayed)
+  async onPayed(@Payload() data: OrderPayedEventPayload) {
     await this.orderQueryService.onPayed(data);
   }
 
-  @MessagePattern(OrderCompleted.topic)
-  async onCompleted(@Payload() data: OrderCompleted.Payload) {
+  @MessagePattern(EventTopics.orderCompleted)
+  async onCompleted(@Payload() data: OrderCompletedEventPayload) {
     await this.orderQueryService.onCompleted(data);
   }
 }

@@ -7,8 +7,10 @@ import ProductCommandController from './application/product.command.controller';
 import ProductCommandService from './application/product.command.service';
 import ProductQueryController from './application/product.query.controller';
 import ProductQueryService from './application/product.query.service';
-import MenuRepositoryProvider from './application/provider/menu.repository-provider';
-import getMongoEventStoreConnectionString from './config/mongoose.config';
+import {
+  getMongoConnectionStringReadDb,
+  READ_CONNECTION_NAME,
+} from './config/mongoose.config';
 import {
   MenuModel,
   MenuSchema,
@@ -18,14 +20,19 @@ import ProductRepository from './infrastructure/database/repository/product.repo
 
 @Module({
   imports: [
-    MongooseModule.forRoot(getMongoEventStoreConnectionString()),
-    MongooseModule.forFeature([
-      { name: Product.name, schema: ProductSchema },
-      {
-        name: MenuModel.name,
-        schema: MenuSchema,
-      },
-    ]),
+    MongooseModule.forRoot(getMongoConnectionStringReadDb(), {
+      connectionName: READ_CONNECTION_NAME,
+    }),
+    MongooseModule.forFeature(
+      [
+        { name: Product.name, schema: ProductSchema },
+        {
+          name: MenuModel.name,
+          schema: MenuSchema,
+        },
+      ],
+      READ_CONNECTION_NAME
+    ),
     KafkaProducerModule.register('product-consumer', ['localhost:29092'], []),
     EventStoreRootModule,
   ],
@@ -41,7 +48,6 @@ import ProductRepository from './infrastructure/database/repository/product.repo
       provide: 'MenuRepository',
       useClass: MenuRepository,
     },
-    MenuRepositoryProvider,
   ],
 })
 export class AppModule {}

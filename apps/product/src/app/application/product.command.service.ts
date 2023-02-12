@@ -11,8 +11,8 @@ import {
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
 import { EventStoreService } from '@burger-shop/event-store';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
-import { Product, ProductDocument } from '@burger-shop/models';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { ProductDocument } from '@burger-shop/models';
+import { Inject, Injectable } from '@nestjs/common';
 import MenuItemDomainEntity from '../domain/menu-item.domain-entity';
 import MenuDomainEntity from '../domain/menu.domain-entity';
 import MenuRepositoryProvider from './provider/menu.repository-provider';
@@ -27,7 +27,6 @@ export default class ProductCommandService {
     @Inject('MenuRepository')
     private readonly menuRepository: MenuAbstractRepository,
     private readonly kafkaProducerService: KafkaProducerService,
-    private readonly menuRepoProvider: MenuRepositoryProvider,
     private readonly eventStoreService: EventStoreService
   ) {}
 
@@ -125,7 +124,7 @@ export default class ProductCommandService {
         idx
       );
     });
-    const menuDomain = new MenuDomainEntity(menuItems);
+    const menuDomain = new MenuDomainEntity(menuItems, null, true);
     console.log(menuDomain);
     const payload = {
       menu: {
@@ -135,6 +134,7 @@ export default class ProductCommandService {
           product: { _id: item.product.id },
         })),
         id: menuDomain.id,
+        active: menuDomain.active,
       },
     };
     await this.kafkaProducerService.emitMenuCreated(payload);

@@ -7,4 +7,7 @@ export class MenuResponseDto {
 
   @ApiProperty({ type: MenuItemResponseDto, isArray: true })
   public readonly items: MenuItemResponseDto[];
+
+  @ApiProperty()
+  public readonly active: boolean;
 }

@@ -17,16 +17,16 @@ class PaymentInfo {
   public readonly type: PaymentType;
 }
 
-class DeliveryInfo {
-  @ApiProperty()
-  @IsString()
-  public readonly tableId: string;
-}
+// class DeliveryInfo {
+//   @ApiProperty()
+//   @IsString()
+//   public readonly tableId: string;
+// }
 
 class OrderItem {
-  @IsNumber()
+  @IsString()
   @ApiProperty()
-  public readonly foodId: number;
+  public readonly productId: string;
 
   @IsNumber()
   @ApiProperty()
@@ -40,11 +40,11 @@ export class OrderCreateCommandRequest {
   @ApiProperty({ type: OrderItem, isArray: true })
   public readonly orderItems: OrderItem[];
 
-  @ValidateNested()
-  @Type(() => DeliveryInfo)
-  @IsOptional()
-  @ApiPropertyOptional({ type: DeliveryInfo })
-  public readonly deliveryInfo?: DeliveryInfo;
+  // @ValidateNested()
+  // @Type(() => DeliveryInfo)
+  // @IsOptional()
+  // @ApiPropertyOptional({ type: DeliveryInfo })
+  // public readonly deliveryInfo?: DeliveryInfo;
 
   @ValidateNested()
   @Type(() => PaymentInfo)

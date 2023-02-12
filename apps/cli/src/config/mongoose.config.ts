@@ -1,7 +1,6 @@
-export default function getMongoEventStoreConnectionStringOrder() {
+export function getMongoEventStoreConnectionStringEventStore() {
   return `mongodb://root:root@localhost:27017/?authMechanism=DEFAULT`;
 }
-
-export enum DatabaseNames {
-  orderEvents = 'order-events',
+export function getMongoEventStoreConnectionStringReadDb() {
+  return `mongodb://root:root@localhost:27018/?authMechanism=DEFAULT`;
 }

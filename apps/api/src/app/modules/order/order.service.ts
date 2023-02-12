@@ -27,7 +27,7 @@ export default class OrderService {
     return result;
   }
 
-  public async get(id: number) {
+  public async get(id: string) {
     const result = this.kafkaProducerService.send<
       OrderGetQueryResponse,
       OrderGetQueryRequest
@@ -39,11 +39,11 @@ export default class OrderService {
     return result;
   }
 
-  //   public async pay(id: string) {
-  //     return this.kafkaProducerService.sendOrderPay({ orderId: id });
-  //   }
+  public async pay(id: string) {
+    return this.kafkaProducerService.sendOrderPay({ orderId: id });
+  }
 
-  //   public async complete(id: string) {
-  //    return this.kafkaProducerService.sendProductUpdate({})
-  //   }
+  public async complete(id: string) {
+    return this.kafkaProducerService.sendOrderComplete({ orderId: id });
+  }
 }

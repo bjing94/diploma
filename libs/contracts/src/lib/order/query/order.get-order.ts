@@ -18,7 +18,8 @@ class OrderItem {
 
 export class OrderGetQueryRequest {
   @IsString()
-  public readonly id: number;
+  @ApiProperty()
+  public readonly id: string;
 }
 
 export class OrderGetQueryResponse {
@@ -28,15 +29,15 @@ export class OrderGetQueryResponse {
   @ApiProperty()
   status: OrderStatus;
 
-  @ApiProperty({ isArray: true })
-  orderItems: OrderItem[];
+  // @ApiProperty({ isArray: true })
+  // orderItems: OrderItem[];
 
-  @ApiProperty()
-  paymentInfo: PaymentInfoResponse;
+  // @ApiProperty()
+  // paymentInfo: PaymentInfoResponse;
 
-  @ApiProperty()
-  deliveryInfo: DeliveryInfoResponse;
+  // @ApiProperty()
+  // deliveryInfo: DeliveryInfoResponse;
 
-  @ApiProperty()
-  createdAt: Date;
+  // @ApiProperty()
+  // createdAt: Date;
 }

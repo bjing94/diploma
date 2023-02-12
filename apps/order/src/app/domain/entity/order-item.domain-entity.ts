@@ -1,36 +1,43 @@
 import { ProductDomainEntity } from '@burger-shop/domain-entities';
-import { MIN_ORDER_ITEM_LEVEL } from '../const/order.const';
 
 export default class OrderItemDomainEntity {
-  private level: number;
-  private count: number;
-  private product: ProductDomainEntity;
+  private _id: number;
+  private _quantity: number;
+  private _product: { name: string; price: number; id: string };
 
-  constructor(level: number, count: number, product: ProductDomainEntity) {
-    this.level = level;
-    this.count = count;
-    this.product = product;
+  constructor(data: {
+    quantity: number;
+    product: { name: string; price: number; id: string };
+    id?: number;
+  }) {
+    this.quantity = data.quantity;
+    this.product = data.product;
+    this.id = data.id;
   }
 
   get totalPrice(): number {
-    return this.product.price * this.count;
+    return this.product.price * this.quantity;
   }
 
-  public getLevel(): number {
-    return this.level;
+  public get quantity(): number {
+    return this._quantity;
   }
 
-  public changeLevel(newLevel: number): void {
-    if (newLevel >= MIN_ORDER_ITEM_LEVEL) {
-      this.level = newLevel;
-    }
+  public set quantity(value: number) {
+    this._quantity = value;
   }
 
-  public getProduct() {
-    return this.product;
+  public get id(): number {
+    return this._id;
+  }
+  public set id(value: number) {
+    this._id = value;
   }
 
-  public getCount() {
-    return this.count;
+  public get product(): { name: string; price: number; id: string } {
+    return this._product;
+  }
+  public set product(value: { name: string; price: number; id: string }) {
+    this._product = value;
   }
 }

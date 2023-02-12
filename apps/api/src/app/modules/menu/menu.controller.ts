@@ -2,6 +2,8 @@ import {
   MenuCreateCommandRequest,
   MenuGetQueryRequest,
   MenuGetQueryResponse,
+  ProductGetMenuItemQueryRequest,
+  ProductGetMenuItemQueryResponse,
 } from '@burger-shop/contracts';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Param } from '@nestjs/common/decorators';
@@ -17,6 +19,14 @@ export default class MenuController {
   @Post()
   public async create(@Body() dto: MenuCreateCommandRequest): Promise<any> {
     return this.menuService.create(dto);
+  }
+
+  @ApiOperation({ description: 'Get item from menu' })
+  @Get('item/:id')
+  public async getItem(
+    @Param('id') id: string
+  ): Promise<ProductGetMenuItemQueryResponse> {
+    return this.menuService.getMenuItem({ id });
   }
 
   @ApiOperation({ description: 'Get menu' })

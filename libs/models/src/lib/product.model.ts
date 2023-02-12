@@ -9,6 +9,8 @@ export class Product {
     Object.assign(this, part);
   }
 
+  id: string;
+
   @Prop()
   price: number;
 

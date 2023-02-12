@@ -5,8 +5,7 @@ export type PaymentDocument = PaymentModel & Document;
 
 @Schema()
 export default class PaymentModel {
-  @Prop()
-  public id: number;
+  public id: string;
 
   @Prop({ type: String })
   public status: PaymentStatus;
@@ -21,4 +20,4 @@ export default class PaymentModel {
   public link?: string;
 }
 
-export const CreateOrderSagaSchema = SchemaFactory.createForClass(PaymentModel);
+export const PaymentSchema = SchemaFactory.createForClass(PaymentModel);

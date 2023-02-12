@@ -7,6 +7,7 @@ export * from './lib/order/event/order.payed';
 export * from './lib/order/event/order.completed';
 
 export * from './lib/product/query/product.get-by-id';
+export * from './lib/product/query/product.get-menu-item';
 export * from './lib/product/query/product.find';
 export * from './lib/product/query/menu.get';
 export * from './lib/product/command/product.create';

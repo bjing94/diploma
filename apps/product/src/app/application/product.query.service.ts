@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import ProductAbstractRepository from './repository/product.abstract-repository';
 import {
   MenuCreateCommandRequest,
@@ -10,6 +10,7 @@ import {
   ProductFindQueryRequest,
   ProductFindQueryResponse,
   ProductGetByIdQueryResponse,
+  ProductGetMenuItemQueryResponse,
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { EventStoreService } from '@burger-shop/event-store';
@@ -30,6 +31,29 @@ export default class ProductQueryService {
 
     return {
       product,
+    };
+  }
+
+  public async getItemFromMenu(
+    id: string
+  ): Promise<ProductGetMenuItemQueryResponse> {
+    const mainMenu = await this.menuRepository.getActiveMenu();
+    Logger.log(`Got menu ${mainMenu}`);
+    if (!mainMenu) return null;
+    const item = mainMenu.items.find((item) => item.id === id);
+    if (!item) return null;
+    const { product, ...rest } = item;
+    return {
+      product: {
+        id: item.id,
+        available: item.available,
+        price: item.price,
+        product: {
+          id: product.id,
+          price: product.price,
+          name: product.name,
+        },
+      },
     };
   }
 
@@ -64,6 +88,7 @@ export default class ProductQueryService {
       items: menu.items.map((item, idx) => {
         return { ...item, id: idx };
       }),
+      active: menu.active,
     });
     console.log(result);
   }

@@ -17,6 +17,9 @@ export class MenuModel {
     ref: MenuItemModel.name,
   })
   items: MenuItemModel[];
+
+  @Prop()
+  active: boolean;
 }
 
 export const MenuSchema = SchemaFactory.createForClass(MenuModel);
