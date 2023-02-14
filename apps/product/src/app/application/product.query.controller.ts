@@ -1,7 +1,10 @@
 import {
   MenuCreatedEventPayload,
+  MenuFindQueryRequest,
+  MenuFindQueryResponse,
   MenuGetQueryRequest,
   MenuGetQueryResponse,
+  MenuUpdatedEventPayload,
   ProductCreatedEventPayload,
   ProductDeletedEventPayload,
   ProductFindQueryRequest,
@@ -68,6 +71,20 @@ export default class ProductQueryController {
     @Payload() payload: MenuCreatedEventPayload
   ): Promise<void> {
     return this.productQueryService.onMenuCreated(payload);
+  }
+
+  @MessagePattern(EventTopics.menuUpdated)
+  public async onMenuUpdated(
+    @Payload() payload: MenuUpdatedEventPayload
+  ): Promise<void> {
+    return this.productQueryService.onMenuUpdated(payload);
+  }
+
+  @MessagePattern(QueryTopics.menuFind)
+  public async findMenu(
+    @Payload() payload: MenuFindQueryRequest
+  ): Promise<MenuFindQueryResponse> {
+    return this.productQueryService.findMenu(payload);
   }
 
   @MessagePattern(QueryTopics.menuItemGet)

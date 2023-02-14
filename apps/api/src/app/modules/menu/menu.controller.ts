@@ -1,12 +1,17 @@
 import {
   MenuCreateCommandRequest,
+  MenuFindQueryRequest,
+  MenuFindQueryResponse,
   MenuGetQueryRequest,
   MenuGetQueryResponse,
+  MenuUpdateCommandRequest,
+  MenuUpdateCommandResponse,
   ProductGetMenuItemQueryRequest,
   ProductGetMenuItemQueryResponse,
 } from '@burger-shop/contracts';
+import { MenuUpdateRequestDto } from '@burger-shop/interfaces';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { Param } from '@nestjs/common/decorators';
+import { Param, Put, Query } from '@nestjs/common/decorators';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import MenuService from './menu.service';
 
@@ -21,6 +26,20 @@ export default class MenuController {
     return this.menuService.create(dto);
   }
 
+  @ApiOperation({ description: 'Get menus' })
+  @Get()
+  public async find(
+    @Query('filter') filters: MenuFindQueryRequest = {}
+  ): Promise<MenuFindQueryResponse> {
+    return this.menuService.findMenu(filters);
+  }
+
+  @ApiOperation({ description: 'Get active menu' })
+  @Get('active')
+  public async getActive(): Promise<MenuFindQueryResponse> {
+    return this.menuService.findMenu({ active: true });
+  }
+
   @ApiOperation({ description: 'Get item from menu' })
   @Get('item/:id')
   public async getItem(
@@ -33,5 +52,14 @@ export default class MenuController {
   @Get(':id')
   public async get(@Param('id') id: string): Promise<MenuGetQueryResponse> {
     return this.menuService.getMenu({ id });
+  }
+
+  @ApiOperation({ description: 'Update menu' })
+  @Put(':id')
+  public async update(
+    @Param('id') id: string,
+    @Body() dto: MenuUpdateRequestDto
+  ): Promise<MenuUpdateCommandResponse> {
+    return this.menuService.updateMenu({ data: dto, id });
   }
 }

@@ -5,7 +5,7 @@ export type PaymentDocument = PaymentModel & Document;
 
 @Schema()
 export default class PaymentModel {
-  public id: string;
+  public _id: string;
 
   @Prop({ type: String })
   public status: PaymentStatus;

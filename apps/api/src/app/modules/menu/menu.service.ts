@@ -1,8 +1,12 @@
 import {
   MenuCreateCommandRequest,
   MenuCreateCommandResponse,
+  MenuFindQueryRequest,
+  MenuFindQueryResponse,
   MenuGetQueryRequest,
   MenuGetQueryResponse,
+  MenuUpdateCommandRequest,
+  MenuUpdateCommandResponse,
   ProductGetMenuItemQueryRequest,
   ProductGetMenuItemQueryResponse,
 } from '@burger-shop/contracts';
@@ -28,9 +32,21 @@ export default class MenuService {
     return this.kafkaProducerService.sendMenuGet(dto);
   }
 
+  public async findMenu(
+    dto: MenuFindQueryRequest
+  ): Promise<MenuFindQueryResponse> {
+    return this.kafkaProducerService.sendMenuFind(dto);
+  }
+
   public async getMenuItem(
     dto: ProductGetMenuItemQueryRequest
   ): Promise<ProductGetMenuItemQueryResponse> {
     return this.kafkaProducerService.sendMenuItemGet(dto);
+  }
+
+  public async updateMenu(
+    dto: MenuUpdateCommandRequest
+  ): Promise<MenuUpdateCommandResponse> {
+    return this.kafkaProducerService.sendMenuUpdate(dto);
   }
 }

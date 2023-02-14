@@ -23,7 +23,7 @@ export default class OrderQueryController {
 
   @MessagePattern(QueryTopics.orderGet)
   async getOrder(@Payload() data: OrderGetQueryRequest) {
-    await this.orderQueryService.getOrder(data);
+    return this.orderQueryService.getOrder(data);
   }
 
   @MessagePattern(EventTopics.orderPayed)

@@ -3,8 +3,11 @@ import ProductAbstractRepository from './repository/product.abstract-repository'
 import {
   MenuCreateCommandRequest,
   MenuCreatedEventPayload,
+  MenuFindQueryRequest,
+  MenuFindQueryResponse,
   MenuGetQueryRequest,
   MenuGetQueryResponse,
+  MenuUpdatedEventPayload,
   ProductCreatedEventPayload,
   ProductDeletedEventPayload,
   ProductFindQueryRequest,
@@ -66,6 +69,15 @@ export default class ProductQueryService {
     };
   }
 
+  public async findMenu(
+    dto: MenuFindQueryRequest
+  ): Promise<MenuFindQueryResponse> {
+    const menus = await this.menuRepository.findMany(dto);
+    return {
+      menus,
+    };
+  }
+
   public async onCreated(dto: ProductCreatedEventPayload): Promise<void> {
     const { price, name, id } = dto.product;
     const result = await this.productRepository.create({ id, price, name });
@@ -93,10 +105,21 @@ export default class ProductQueryService {
     console.log(result);
   }
 
+  public async onMenuUpdated(dto: MenuUpdatedEventPayload): Promise<void> {
+    const { menu } = dto;
+    const result = await this.menuRepository.update(menu.id, {
+      items: menu.items.map((item, idx) => {
+        return { ...item, id: idx };
+      }),
+      active: menu.active,
+    });
+    console.log(result);
+  }
+
   public async getMenu(
     dto: MenuGetQueryRequest
   ): Promise<MenuGetQueryResponse> {
-    const result = await this.menuRepository.find(dto.id);
+    const result = await this.menuRepository.get(dto.id);
 
     return { menu: result };
   }

@@ -15,6 +15,7 @@ import { Module } from '@nestjs/common';
         CommandTopics.productDelete,
         CommandTopics.productUpdate,
         CommandTopics.menuCreate,
+        CommandTopics.menuUpdate,
         CommandTopics.orderCreate,
         CommandTopics.orderPay,
         CommandTopics.orderComplete,
@@ -23,6 +24,7 @@ import { Module } from '@nestjs/common';
         QueryTopics.productFind,
         QueryTopics.orderGet,
         QueryTopics.menuItemGet,
+        QueryTopics.menuFind,
       ]
     ),
   ],

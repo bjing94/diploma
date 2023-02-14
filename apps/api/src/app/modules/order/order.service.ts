@@ -28,10 +28,7 @@ export default class OrderService {
   }
 
   public async get(id: string) {
-    const result = this.kafkaProducerService.send<
-      OrderGetQueryResponse,
-      OrderGetQueryRequest
-    >(QueryTopics.orderGet, { id });
+    const result = await this.kafkaProducerService.sendOrderGet({ id });
 
     if (!result) {
       throw new BadRequestException('Order not found!');
@@ -44,6 +41,14 @@ export default class OrderService {
   }
 
   public async complete(id: string) {
-    return this.kafkaProducerService.sendOrderComplete({ orderId: id });
+    try {
+      const result = await this.kafkaProducerService.sendOrderComplete({
+        orderId: id,
+      });
+      console.log(result);
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

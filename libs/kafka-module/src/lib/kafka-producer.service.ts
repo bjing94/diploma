@@ -4,10 +4,13 @@ import {
   MenuCreatedEventPayload,
   MenuDeleteCommandRequest,
   MenuDeleteCommandResponse,
+  MenuFindQueryRequest,
+  MenuFindQueryResponse,
   MenuGetQueryRequest,
   MenuGetQueryResponse,
   MenuUpdateCommandRequest,
   MenuUpdateCommandResponse,
+  MenuUpdatedEventPayload,
   OrderCompleteCommandRequest,
   OrderCompleteCommandResponse,
   OrderCompletedEventPayload,
@@ -126,6 +129,15 @@ export class KafkaProducerService {
   ): Promise<void> {
     await this.kafka.emit<void, MenuCreatedEventPayload>(
       EventTopics.menuCreated,
+      payload
+    );
+  }
+
+  public async emitMenuUpdated(
+    payload: MenuUpdatedEventPayload
+  ): Promise<void> {
+    await this.kafka.emit<void, MenuUpdatedEventPayload>(
+      EventTopics.menuUpdated,
       payload
     );
   }
@@ -273,6 +285,7 @@ export class KafkaProducerService {
     );
   }
 
+  // Menu
   public async sendMenuItemGet(
     payload: ProductGetMenuItemQueryRequest
   ): Promise<ProductGetMenuItemQueryResponse> {
@@ -280,6 +293,15 @@ export class KafkaProducerService {
       ProductGetMenuItemQueryResponse,
       ProductGetMenuItemQueryRequest
     >(QueryTopics.menuItemGet, payload);
+  }
+
+  public async sendMenuFind(
+    payload: MenuFindQueryRequest
+  ): Promise<MenuFindQueryResponse> {
+    return this.send<MenuFindQueryResponse, MenuFindQueryRequest>(
+      QueryTopics.menuFind,
+      payload
+    );
   }
 
   // Payment

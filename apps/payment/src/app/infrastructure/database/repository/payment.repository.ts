@@ -16,11 +16,10 @@ export default class PaymentRepository implements PaymentAbstractRepository {
   }
 
   public async create(payment: PaymentModel): Promise<PaymentDocument> {
-    const { id, ...rest } = payment;
-    console.log(id);
+    const { _id, ...rest } = payment;
     return this.model.create({
       ...rest,
-      _id: id,
+      _id: _id,
     });
   }
 

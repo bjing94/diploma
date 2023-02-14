@@ -1,4 +1,5 @@
-import { MenuCreateDto } from '@burger-shop/interfaces';
+import { MenuFindQueryRequest } from '@burger-shop/contracts';
+import { MenuCreatedDto, MenuCreateDto } from '@burger-shop/interfaces';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import MenuAbstractRepository from '../../../application/repository/menu.abstract-repository';
@@ -11,12 +12,19 @@ export default class MenuRepository implements MenuAbstractRepository {
     private readonly _repository: Model<MenuDocument>
   ) {}
 
-  public async find(id: string): Promise<MenuDocument> {
+  public async get(id: string): Promise<MenuDocument> {
     return this._repository.findById(id).populate('items.product').exec();
   }
 
-  public async findMany(take: number, skip: number): Promise<MenuDocument[]> {
-    return this._repository.find().limit(take).skip(skip).exec();
+  public findOne(data: {
+    id?: string;
+    active?: boolean;
+  }): Promise<MenuDocument> {
+    return this._repository.findOne(data).exec();
+  }
+
+  public async findMany(dto: MenuFindQueryRequest): Promise<MenuDocument[]> {
+    return this._repository.find(dto).exec();
   }
 
   public async create(menu: MenuCreateDto): Promise<MenuDocument> {
@@ -29,7 +37,7 @@ export default class MenuRepository implements MenuAbstractRepository {
 
   public async update(
     id: string,
-    menu: any & { id: number }
+    menu: Omit<MenuCreatedDto, 'id'>
   ): Promise<MenuDocument> {
     return this._repository.findByIdAndUpdate(id, menu).exec();
   }

@@ -1,9 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MenuUpdateRequestDto } from '@burger-shop/interfaces';
+import { IsString } from 'class-validator';
 
 export class MenuUpdateCommandRequest {
+  @ApiProperty()
+  @IsString()
+  public readonly id: string;
+
   @ApiProperty({ type: MenuUpdateRequestDto })
-  public readonly menu: MenuUpdateRequestDto;
+  public readonly data: MenuUpdateRequestDto;
 }
 
 export class MenuUpdateCommandResponse {

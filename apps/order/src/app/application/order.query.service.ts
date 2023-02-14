@@ -28,17 +28,16 @@ export default class OrderQueryService {
   }
 
   async onPayed(data: OrderPayedEventPayload) {
-    const order = await this.repository.find(data.orderId);
-    if (!order) return;
-    order.status = OrderStatus.PAYED;
-    const { id, ...rest } = order;
-    await this.repository.update(data.orderId, { ...rest });
+    const result = await this.repository.update(data.orderId, {
+      status: OrderStatus.PAYED,
+    });
+    console.log('Updated order', result);
   }
 
   async onCompleted(data: OrderCompletedEventPayload) {
-    const order = await this.repository.find(data.orderId);
-    if (!order) return;
-    order.status = OrderStatus.COMPLETED;
-    await this.repository.update(data.orderId, order);
+    const result = await this.repository.update(data.orderId, {
+      status: OrderStatus.COMPLETED,
+    });
+    console.log('Updated order', result);
   }
 }

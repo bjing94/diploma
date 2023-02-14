@@ -2,7 +2,7 @@ import { PaymentStatus, PaymentType } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
 
 interface PaymentCreatedDto {
-  id: string;
+  _id: string;
   link?: string;
   status: PaymentStatus;
   sum: number;

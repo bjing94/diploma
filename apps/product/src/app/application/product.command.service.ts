@@ -1,6 +1,8 @@
 import {
   MenuCreateCommandRequest,
   MenuCreateCommandResponse,
+  MenuUpdateCommandRequest,
+  MenuUpdateCommandResponse,
   ProductCreateRequest,
   ProductCreateResponse,
   ProductDeleteRequest,
@@ -145,6 +147,54 @@ export default class ProductCommandService {
     return {
       success: true,
       id: menuDomain.id,
+    };
+  }
+
+  public async updateMenu(
+    dto: MenuUpdateCommandRequest
+  ): Promise<MenuUpdateCommandResponse> {
+    const { id, data } = dto;
+    const { items, active } = data;
+    const menu = await this.menuRepository.get(id);
+    if (!menu) return { success: false };
+
+    const productsMap = new Map<string, ProductDocument>();
+    for (const item of items) {
+      const product = await this.productRepository.find(item.productId);
+      if (!product) {
+        return { success: false };
+      }
+      productsMap.set(item.productId, product);
+    }
+
+    const menuItems = items.map((item, idx) => {
+      const product = productsMap.get(item.productId);
+      return new MenuItemDomainEntity(
+        new ProductDomainEntity(product.name, product.price, product.id),
+        item.available,
+        item.price,
+        idx
+      );
+    });
+    const menuDomain = new MenuDomainEntity(menuItems, menu.id, active);
+    const payload = {
+      menu: {
+        items: menuDomain.items.map((item) => ({
+          available: item.available,
+          price: item.price,
+          product: { _id: item.product.id },
+        })),
+        id: menuDomain.id,
+        active: menuDomain.active,
+      },
+    };
+    await this.kafkaProducerService.emitMenuUpdated(payload);
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.menuUpdated,
+      payload: JSON.stringify(payload),
+    });
+    return {
+      success: true,
     };
   }
 }

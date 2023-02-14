@@ -12,6 +12,7 @@ import OrderItemDomainEntity from '../domain/entity/order-item.domain-entity';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
 import OrderAbstractRepository from './repository/order.abstract-repository';
 import { OrderStatus } from '@burger-shop/interfaces';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export default class OrderCommandService {
@@ -99,7 +100,9 @@ export default class OrderCommandService {
 
   public async completeOrder(orderId: string) {
     const order = await this.orderRepository.find(orderId);
-    if (!order || order.status !== OrderStatus.PAYED) return null;
+    if (!order || order.status !== OrderStatus.PAYED) {
+      throw new RpcException('Wrong order status');
+    }
 
     const payload: OrderPayedEventPayload = {
       orderId: order.id,

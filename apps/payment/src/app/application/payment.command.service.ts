@@ -27,7 +27,7 @@ export default class PaymentCommandService {
     const payment = new PaymentDomainEntity(sum, type, PaymentStatus.PENDING);
     await this.kafkaManagerService.emitPaymentCreated({
       payment: {
-        id: payment.id,
+        _id: payment.id,
         status: payment.status,
         sum: payment.sum,
         type: payment.type,
@@ -43,9 +43,6 @@ export default class PaymentCommandService {
     const payment = await this.paymentRepository.find(id);
     console.log(payment);
     if (!payment) return { success: false };
-    // const domain = PaymentMapper.toDomain(payment);
-    // domain.status = PaymentStatus.FULFILLED;
-    console.log('fulfill payment');
     await this.kafkaManagerService.emitPaymentStatusUpdated({
       id,
       status: PaymentStatus.FULFILLED,

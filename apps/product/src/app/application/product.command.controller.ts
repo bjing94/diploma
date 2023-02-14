@@ -1,6 +1,8 @@
 import {
   MenuCreateCommandRequest,
   MenuCreateCommandResponse,
+  MenuUpdateCommandRequest,
+  MenuUpdateCommandResponse,
   ProductCreateRequest,
   ProductCreateResponse,
   ProductDeleteRequest,
@@ -48,5 +50,12 @@ export default class ProductCommandController {
     @Payload() payload: MenuCreateCommandRequest
   ): Promise<MenuCreateCommandResponse> {
     return this.productCommandService.createMenu(payload);
+  }
+
+  @MessagePattern(CommandTopics.menuUpdate)
+  public async updateMenu(
+    @Payload() payload: MenuUpdateCommandRequest
+  ): Promise<MenuUpdateCommandResponse> {
+    return this.productCommandService.updateMenu(payload);
   }
 }
