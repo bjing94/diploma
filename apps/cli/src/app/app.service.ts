@@ -2,15 +2,7 @@
 https://docs.nestjs.com/providers#services
 */
 
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
-import { InjectConnection } from '@nestjs/mongoose';
-import mongoose, { Connection } from 'mongoose';
-import getMongoEventStoreConnectionStringEventStore, {
-  DatabaseNames,
-} from '../config/mongoose.config';
-import { kafkaConfig } from './config/provide-kafka-config';
-import OrderEventSourceRepositoryProvider from './providers/order.event-source.repository-provider';
+import { Injectable } from '@nestjs/common';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
 import { EventStoreService } from '@burger-shop/event-store';
 
@@ -25,6 +17,11 @@ export class AppService {
     try {
       const events = await this.eventStoreService.getEvents();
       for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
         await this.kafkaProducer.emit(event.name, event.payload);
       }
       return;

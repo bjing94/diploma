@@ -5,14 +5,16 @@ import {
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
   OrderCreatedDto,
+  OrderCreatedEventPayload,
   OrderPayCommandResponse,
   OrderPayedEventPayload,
 } from '@burger-shop/contracts';
 import OrderItemDomainEntity from '../domain/entity/order-item.domain-entity';
-import { KafkaProducerService } from '@burger-shop/kafka-module';
+import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import OrderAbstractRepository from './repository/order.abstract-repository';
 import { OrderStatus } from '@burger-shop/interfaces';
 import { RpcException } from '@nestjs/microservices';
+import { EventStoreService } from '@burger-shop/event-store';
 
 @Injectable()
 export default class OrderCommandService {
@@ -20,7 +22,8 @@ export default class OrderCommandService {
     private readonly productAdapterService: ProductAdapterService,
     private readonly kafkaProducerService: KafkaProducerService,
     @Inject('OrderRepository')
-    private readonly orderRepository: OrderAbstractRepository
+    private readonly orderRepository: OrderAbstractRepository,
+    private readonly eventStoreService: EventStoreService
   ) {}
 
   public async createOrder(
@@ -28,7 +31,6 @@ export default class OrderCommandService {
   ): Promise<OrderCreateCommandResponse> {
     const { orderItems, paymentInfo } = dto;
     const orderDomainItems: OrderItemDomainEntity[] = [];
-    console.log({ orderItems, paymentInfo });
     let idx = 0;
     let sum = 0;
     for (const item of orderItems) {
@@ -58,30 +60,31 @@ export default class OrderCommandService {
       paymentId: response.id,
       items: orderDomainItems,
     });
-    console.log('dto is ok', order.orderItems);
-    const eventPayload: OrderCreatedDto = {
-      id: order.id,
-      status: order.status,
-      orderItems: order.orderItems.map((item) => {
-        return {
-          id: item.id,
-          productId: item.product.id,
-          quantity: item.quantity,
-        };
-      }),
-      paymentId: order.paymentId,
+    const payload: OrderCreatedEventPayload = {
+      order: {
+        id: order.id,
+        status: order.status,
+        orderItems: order.orderItems.map((item) => {
+          return {
+            id: item.id,
+            productId: item.product.id,
+            quantity: item.quantity,
+          };
+        }),
+        paymentId: order.paymentId,
+      },
     };
-    console.log('Created order:', order);
-    console.log('Order event:', JSON.stringify(eventPayload));
 
-    await this.kafkaProducerService.emitOrderCreated({ order: eventPayload });
-
-    return null;
+    await this.kafkaProducerService.emitOrderCreated(payload);
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.orderCreated,
+      payload: JSON.stringify(payload),
+    });
+    return { orderId: order.id };
   }
 
   public async payOrder(orderId: string): Promise<OrderPayCommandResponse> {
     const order = await this.orderRepository.find(orderId);
-    console.log('order', order);
     if (!order || order.status !== OrderStatus.CREATED) return null;
 
     const paymentId = order.paymentId;
@@ -89,12 +92,15 @@ export default class OrderCommandService {
       id: paymentId,
       hash: '',
     });
-    console.log('succes payment', paymentResponse);
     if (!paymentResponse.success) return null;
     const payload: OrderPayedEventPayload = {
       orderId: order.id,
     };
     await this.kafkaProducerService.emitOrderPayed(payload);
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.orderPayed,
+      payload: JSON.stringify(payload),
+    });
     return { orderId };
   }
 
@@ -108,6 +114,10 @@ export default class OrderCommandService {
       orderId: order.id,
     };
     await this.kafkaProducerService.emitOrderCompleted(payload);
+    await this.eventStoreService.saveEvent({
+      name: EventTopics.orderCompleted,
+      payload: JSON.stringify(payload),
+    });
     return { orderId };
   }
 }

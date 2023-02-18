@@ -1,3 +1,4 @@
+import { EventStoreModule } from '@burger-shop/event-store';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
@@ -8,6 +9,7 @@ import PaymentModel, {
   PaymentSchema,
 } from '../infrastructure/database/model/payment.model';
 import PaymentRepository from '../infrastructure/database/repository/payment.repository';
+import EventStoreRootModule from './event-store/event-store-root.module';
 import KafkaRootModule from './kafka/kafka.module';
 import PaymentCommandController from './payment.command.controller';
 import PaymentCommandService from './payment.command.service';
@@ -29,6 +31,7 @@ import PaymentQueryService from './payment.query.service';
       READ_CONNECTION_NAME
     ),
     KafkaRootModule,
+    EventStoreRootModule,
   ],
   controllers: [PaymentCommandController, PaymentQueryController],
   providers: [

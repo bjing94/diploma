@@ -36,22 +36,17 @@ export default class ProductCommandService {
     dto: ProductCreateRequest
   ): Promise<ProductCreateResponse> {
     const domain = new ProductDomainEntity(dto.name, dto.price);
-    await this.kafkaProducerService.emitProductCreated({
+    const payload = {
       product: {
         name: domain.name,
         price: domain.price,
         id: domain.id,
       },
-    });
+    };
+    await this.kafkaProducerService.emitProductCreated(payload);
     await this.eventStoreService.saveEvent({
       name: EventTopics.productCreated,
-      payload: JSON.stringify({
-        product: {
-          name: domain.name,
-          price: domain.price,
-          id: domain.id,
-        },
-      }),
+      payload: JSON.stringify(payload),
     });
     return {
       succes: true,
@@ -65,22 +60,17 @@ export default class ProductCommandService {
     const product = await this.productRepository.find(id);
     if (!product) return { success: false };
 
-    await this.kafkaProducerService.emitProductUpdated({
+    const payload = {
       product: {
         id,
         name,
         price,
       },
-    });
+    };
+    await this.kafkaProducerService.emitProductUpdated(payload);
     await this.eventStoreService.saveEvent({
       name: EventTopics.productUpdated,
-      payload: JSON.stringify({
-        product: {
-          id,
-          name,
-          price,
-        },
-      }),
+      payload: JSON.stringify(payload),
     });
     return { success: true };
   }
@@ -91,15 +81,11 @@ export default class ProductCommandService {
     const { id } = dto;
     const product = await this.productRepository.find(id);
     if (!product) return { success: false };
-
-    await this.kafkaProducerService.emitProductDeleted({
-      id,
-    });
+    const payload = { id };
+    await this.kafkaProducerService.emitProductDeleted(payload);
     await this.eventStoreService.saveEvent({
       name: EventTopics.productDeleted,
-      payload: JSON.stringify({
-        id,
-      }),
+      payload: JSON.stringify(payload),
     });
     return { success: true };
   }
@@ -127,7 +113,6 @@ export default class ProductCommandService {
       );
     });
     const menuDomain = new MenuDomainEntity(menuItems, null, true);
-    console.log(menuDomain);
     const payload = {
       menu: {
         items: menuDomain.items.map((item) => ({
@@ -144,6 +129,7 @@ export default class ProductCommandService {
       name: EventTopics.menuCreated,
       payload: JSON.stringify(payload),
     });
+
     return {
       success: true,
       id: menuDomain.id,
