@@ -16,8 +16,10 @@ import {
   ProductGetMenuItemQueryResponse,
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
-import { EventStoreService } from '@burger-shop/event-store';
 import MenuAbstractRepository from './repository/menu.abstract-repository';
+import { EventStoreProductService, ISaveEvent } from '@burger-shop/event-store';
+import { ProductDomainEntity } from '../domain/product.domain-entity';
+import { EventTopics } from '@burger-shop/kafka-module';
 
 @Injectable()
 export default class ProductQueryService {
@@ -26,11 +28,14 @@ export default class ProductQueryService {
     private readonly productRepository: ProductAbstractRepository,
     @Inject('MenuRepository')
     private readonly menuRepository: MenuAbstractRepository,
-    private readonly eventStoreService: EventStoreService
+    private readonly eventStoreProductService: EventStoreProductService
   ) {}
 
   public async getById(id: string): Promise<ProductGetByIdQueryResponse> {
-    const product = await this.productRepository.find(id);
+    const eventStream =
+      await this.eventStoreProductService.getProductEventStream(id);
+    const product = ProductDomainEntity.hydrate(eventStream);
+    // const product = await this.productRepository.find(id);
 
     return {
       product,
@@ -102,7 +107,6 @@ export default class ProductQueryService {
       }),
       active: menu.active,
     });
-    console.log(result);
   }
 
   public async onMenuUpdated(dto: MenuUpdatedEventPayload): Promise<void> {
@@ -113,7 +117,6 @@ export default class ProductQueryService {
       }),
       active: menu.active,
     });
-    console.log(result);
   }
 
   public async getMenu(
@@ -122,5 +125,23 @@ export default class ProductQueryService {
     const result = await this.menuRepository.get(dto.id);
 
     return { menu: result };
+  }
+
+  private async makeSnapshot() {
+    const events = await this.eventStoreProductService.getProductEvents();
+  }
+
+  private applyEventToSnapshot(event: ISaveEvent) {
+    if (event.name === EventTopics.productCreated) {
+      const { product } = JSON.parse(
+        event.payload
+      ) as ProductCreatedEventPayload;
+      const { id, name, price } = product;
+      this.productRepository.create({
+        id,
+        name,
+        price,
+      });
+    }
   }
 }

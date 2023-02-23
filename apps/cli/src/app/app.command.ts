@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Command } from 'nestjs-command';
+import { Command, Positional } from 'nestjs-command';
 import { AppService } from './app.service';
 
 @Injectable()
@@ -12,7 +12,25 @@ export class AppCommand {
 
   @Command({ command: 'order-events:run' })
   async runEvents() {
-    await this.appService.loadOrderEvents();
+    // await this.appService.loadOrderEvents();
+    return;
+  }
+
+  @Command({ command: 'product-events:run-many' })
+  async runProductEventsMany() {
+    await this.appService.loadProductEventsMany();
+    return;
+  }
+
+  @Command({ command: 'product-events:run <id>' })
+  async runProductEvents(
+    @Positional({
+      type: 'string',
+      name: 'id',
+    })
+    id: string
+  ) {
+    await this.appService.loadProductEvents(id);
     return;
   }
 }

@@ -20,11 +20,9 @@ async function bootstrap() {
   const port = process.env.PORT || 3333;
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(port);
+  Logger.log(`🚀 Api is running on: http://localhost:${port}/${globalPrefix}`);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
-  );
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}/swagger`
+    `🚀 Api swagger is running on: http://localhost:${port}/${globalPrefix}/swagger`
   );
 }
 

@@ -18,11 +18,6 @@ import {
 export default class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Get('health')
-  async healthcheck() {
-    return { data: 'OK' };
-  }
-
   @ApiResponse({ type: OrderCreateCommandResponse })
   @ApiBody({ type: OrderCreateCommandRequest })
   @Post('create')
@@ -42,13 +37,5 @@ export default class OrderController {
   @Post(':id/pay')
   async pay(@Param('id') id: string): Promise<OrderPayCommandResponse> {
     return this.orderService.pay(id);
-  }
-
-  @ApiResponse({ type: OrderCompleteCommandRequest })
-  @Post(':id/complete')
-  async complete(
-    @Param('id') id: string
-  ): Promise<OrderCompleteCommandResponse> {
-    return this.orderService.complete(id);
   }
 }

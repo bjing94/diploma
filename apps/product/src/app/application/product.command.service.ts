@@ -10,14 +10,13 @@ import {
   ProductUpdateRequest,
   ProductUpdateResponse,
 } from '@burger-shop/contracts';
-import { ProductDomainEntity } from '@burger-shop/domain-entities';
-import { EventStoreService } from '@burger-shop/event-store';
+import { ProductDomainEntity } from '../domain/product.domain-entity';
+import { EventStoreProductService } from '@burger-shop/event-store';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { ProductDocument } from '@burger-shop/models';
 import { Inject, Injectable } from '@nestjs/common';
 import MenuItemDomainEntity from '../domain/menu-item.domain-entity';
 import MenuDomainEntity from '../domain/menu.domain-entity';
-import MenuRepositoryProvider from './provider/menu.repository-provider';
 import MenuAbstractRepository from './repository/menu.abstract-repository';
 import ProductAbstractRepository from './repository/product.abstract-repository';
 
@@ -29,7 +28,7 @@ export default class ProductCommandService {
     @Inject('MenuRepository')
     private readonly menuRepository: MenuAbstractRepository,
     private readonly kafkaProducerService: KafkaProducerService,
-    private readonly eventStoreService: EventStoreService
+    private readonly eventStoreService: EventStoreProductService
   ) {}
 
   public async create(
@@ -44,7 +43,8 @@ export default class ProductCommandService {
       },
     };
     await this.kafkaProducerService.emitProductCreated(payload);
-    await this.eventStoreService.saveEvent({
+    await this.eventStoreService.saveProductEvent({
+      id: domain.id,
       name: EventTopics.productCreated,
       payload: JSON.stringify(payload),
     });
@@ -68,7 +68,8 @@ export default class ProductCommandService {
       },
     };
     await this.kafkaProducerService.emitProductUpdated(payload);
-    await this.eventStoreService.saveEvent({
+    await this.eventStoreService.saveProductEvent({
+      id: id,
       name: EventTopics.productUpdated,
       payload: JSON.stringify(payload),
     });
@@ -83,7 +84,8 @@ export default class ProductCommandService {
     if (!product) return { success: false };
     const payload = { id };
     await this.kafkaProducerService.emitProductDeleted(payload);
-    await this.eventStoreService.saveEvent({
+    await this.eventStoreService.saveProductEvent({
+      id: id,
       name: EventTopics.productDeleted,
       payload: JSON.stringify(payload),
     });
@@ -125,7 +127,8 @@ export default class ProductCommandService {
       },
     };
     await this.kafkaProducerService.emitMenuCreated(payload);
-    await this.eventStoreService.saveEvent({
+    await this.eventStoreService.saveMenuEvent({
+      id: menuDomain.id,
       name: EventTopics.menuCreated,
       payload: JSON.stringify(payload),
     });
@@ -175,7 +178,8 @@ export default class ProductCommandService {
       },
     };
     await this.kafkaProducerService.emitMenuUpdated(payload);
-    await this.eventStoreService.saveEvent({
+    await this.eventStoreService.saveMenuEvent({
+      id: menuDomain.id,
       name: EventTopics.menuUpdated,
       payload: JSON.stringify(payload),
     });

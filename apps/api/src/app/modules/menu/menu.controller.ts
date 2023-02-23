@@ -20,20 +20,6 @@ import MenuService from './menu.service';
 export default class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
-  @ApiOperation({ description: 'Create menu' })
-  @Post()
-  public async create(@Body() dto: MenuCreateCommandRequest): Promise<any> {
-    return this.menuService.create(dto);
-  }
-
-  @ApiOperation({ description: 'Get menus' })
-  @Get()
-  public async find(
-    @Query('filter') filters: MenuFindQueryRequest = {}
-  ): Promise<MenuFindQueryResponse> {
-    return this.menuService.findMenu(filters);
-  }
-
   @ApiOperation({ description: 'Get active menu' })
   @Get('active')
   public async getActive(): Promise<MenuFindQueryResponse> {
@@ -46,20 +32,5 @@ export default class MenuController {
     @Param('id') id: string
   ): Promise<ProductGetMenuItemQueryResponse> {
     return this.menuService.getMenuItem({ id });
-  }
-
-  @ApiOperation({ description: 'Get menu' })
-  @Get(':id')
-  public async get(@Param('id') id: string): Promise<MenuGetQueryResponse> {
-    return this.menuService.getMenu({ id });
-  }
-
-  @ApiOperation({ description: 'Update menu' })
-  @Put(':id')
-  public async update(
-    @Param('id') id: string,
-    @Body() dto: MenuUpdateRequestDto
-  ): Promise<MenuUpdateCommandResponse> {
-    return this.menuService.updateMenu({ data: dto, id });
   }
 }

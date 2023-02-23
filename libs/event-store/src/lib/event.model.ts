@@ -10,6 +10,9 @@ export class EventModel {
   }
 
   @Prop()
+  public id: string; // object identifier for convenience
+
+  @Prop()
   public name: string;
 
   @Prop()
