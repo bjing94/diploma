@@ -26,15 +26,39 @@ export class EventStoreProductService {
     return this.menuModel.find().sort({ createdAt: 'asc' });
   }
 
-  public async getProductEvents() {
-    return this.productModel.find().sort({ createdAt: 'asc' });
+  public async getProductEvents(from?: Date, to?: Date) {
+    const filter: any = {};
+    if (from) {
+      filter['updatedAt'] = {};
+      filter['updatedAt']['$gte'] = from;
+    }
+    if (to) {
+      filter['updatedAt'] = filter['updatedAt'] ?? {};
+      filter['updatedAt']['$lt'] = to;
+    }
+    return this.productModel.find(filter).sort({ createdAt: 'asc' });
   }
 
-  public async getProductEventStream(id: string) {
-    return this.productModel.find({ id: id }).sort({ createdAt: 'asc' });
+  public async getProductEventStream(id: string, from?: Date, to?: Date) {
+    const filter: any = { id: id };
+    if (from) {
+      filter['updatedAt'] = {};
+      filter['updatedAt']['$gte'] = from;
+    }
+    if (to) {
+      filter['updatedAt'] = filter['updatedAt'] ?? {};
+      filter['updatedAt']['$lt'] = to;
+    }
+    return this.productModel.find(filter).sort({ createdAt: 'asc' });
   }
 
   public async getMenuEventStream(id: string) {
     return this.menuModel.find({ id: id }).sort({ createdAt: 'asc' });
+  }
+
+  public async getEventsCount() {
+    const productEvents = await this.productModel.count();
+    const menuEvents = await this.menuModel.count();
+    return productEvents + menuEvents;
   }
 }

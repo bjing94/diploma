@@ -59,6 +59,12 @@ export class ProductDomainEntity {
     return product;
   }
 
+  public applyEvents(events: ISaveEvent[]) {
+    events.forEach((event) => {
+      this.applyEvent(event);
+    });
+  }
+
   private applyEvent(event: ISaveEvent) {
     if (event.name === EventTopics.productCreated) {
       const { product } = JSON.parse(

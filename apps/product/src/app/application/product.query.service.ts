@@ -32,14 +32,31 @@ export default class ProductQueryService {
   ) {}
 
   public async getById(id: string): Promise<ProductGetByIdQueryResponse> {
-    const eventStream =
-      await this.eventStoreProductService.getProductEventStream(id);
-    const product = ProductDomainEntity.hydrate(eventStream);
-    // const product = await this.productRepository.find(id);
+    const snapshotProduct = await this.productRepository.find(id);
 
-    return {
-      product,
-    };
+    if (snapshotProduct) {
+      const eventStream =
+        await this.eventStoreProductService.getProductEventStream(
+          id,
+          snapshotProduct.updatedAt
+        );
+      const product = new ProductDomainEntity(
+        snapshotProduct.name,
+        snapshotProduct.price,
+        snapshotProduct.id
+      );
+      product.applyEvents(eventStream);
+      return {
+        product,
+      };
+    } else {
+      const eventStream =
+        await this.eventStoreProductService.getProductEventStream(id);
+      const product = ProductDomainEntity.hydrate(eventStream);
+      return {
+        product,
+      };
+    }
   }
 
   public async getItemFromMenu(
@@ -86,7 +103,6 @@ export default class ProductQueryService {
   public async onCreated(dto: ProductCreatedEventPayload): Promise<void> {
     const { price, name, id } = dto.product;
     const result = await this.productRepository.create({ id, price, name });
-    console.log(result);
   }
 
   public async onDeleted(dto: ProductDeletedEventPayload): Promise<void> {
@@ -128,16 +144,30 @@ export default class ProductQueryService {
   }
 
   private async makeSnapshot() {
-    const events = await this.eventStoreProductService.getProductEvents();
+    const products = await this.productRepository.findMany(1, 0);
+    let minDate = null;
+    if (products.length > 0) {
+      minDate = products[0].updatedAt;
+    }
+    console.log(minDate);
+    const events = await this.eventStoreProductService.getProductEvents(
+      minDate
+    );
+    // const events = await this.eventStoreProductService.getProductEvents();
+    console.log('Events for snapshot', events);
+    for (const event of events) {
+      await this.applyEventToSnapshot(event);
+    }
+    Logger.log(`Snapshot created at ${new Date()}`);
   }
 
-  private applyEventToSnapshot(event: ISaveEvent) {
+  private async applyEventToSnapshot(event: ISaveEvent) {
     if (event.name === EventTopics.productCreated) {
       const { product } = JSON.parse(
         event.payload
       ) as ProductCreatedEventPayload;
       const { id, name, price } = product;
-      this.productRepository.create({
+      await this.productRepository.create({
         id,
         name,
         price,

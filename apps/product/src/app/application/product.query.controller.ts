@@ -17,9 +17,12 @@ import {
 } from '@burger-shop/contracts';
 import { EventTopics, QueryTopics } from '@burger-shop/kafka-module';
 import { Controller } from '@nestjs/common';
+import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import EventSnapshotInterceptor from './interceptor/event-snapshot.interceptor';
 import ProductQueryService from './product.query.service';
 
+@UseInterceptors(EventSnapshotInterceptor)
 @Controller()
 export default class ProductQueryController {
   constructor(private readonly productQueryService: ProductQueryService) {}
@@ -38,26 +41,26 @@ export default class ProductQueryController {
     return this.productQueryService.find(payload);
   }
 
-  @MessagePattern(EventTopics.productCreated)
-  public async onProductCreated(
-    @Payload() payload: ProductCreatedEventPayload
-  ): Promise<void> {
-    return this.productQueryService.onCreated(payload);
-  }
+  // @MessagePattern(EventTopics.productCreated)
+  // public async onProductCreated(
+  //   @Payload() payload: ProductCreatedEventPayload
+  // ): Promise<void> {
+  //   return this.productQueryService.onCreated(payload);
+  // }
 
-  @MessagePattern(EventTopics.productUpdated)
-  public async onProductUpdated(
-    @Payload() payload: ProductUpdatedEventPayload
-  ): Promise<void> {
-    return this.productQueryService.onUpdated(payload);
-  }
+  // @MessagePattern(EventTopics.productUpdated)
+  // public async onProductUpdated(
+  //   @Payload() payload: ProductUpdatedEventPayload
+  // ): Promise<void> {
+  //   return this.productQueryService.onUpdated(payload);
+  // }
 
-  @MessagePattern(EventTopics.productDeleted)
-  public async onProductDeleted(
-    @Payload() payload: ProductDeletedEventPayload
-  ): Promise<void> {
-    return this.productQueryService.onDeleted(payload);
-  }
+  // @MessagePattern(EventTopics.productDeleted)
+  // public async onProductDeleted(
+  //   @Payload() payload: ProductDeletedEventPayload
+  // ): Promise<void> {
+  //   return this.productQueryService.onDeleted(payload);
+  // }
 
   @MessagePattern(QueryTopics.menuGet)
   public async getProductMenuById(
@@ -66,19 +69,19 @@ export default class ProductQueryController {
     return this.productQueryService.getMenu(payload);
   }
 
-  @MessagePattern(EventTopics.menuCreated)
-  public async onMenuCreated(
-    @Payload() payload: MenuCreatedEventPayload
-  ): Promise<void> {
-    return this.productQueryService.onMenuCreated(payload);
-  }
+  // @MessagePattern(EventTopics.menuCreated)
+  // public async onMenuCreated(
+  //   @Payload() payload: MenuCreatedEventPayload
+  // ): Promise<void> {
+  //   return this.productQueryService.onMenuCreated(payload);
+  // }
 
-  @MessagePattern(EventTopics.menuUpdated)
-  public async onMenuUpdated(
-    @Payload() payload: MenuUpdatedEventPayload
-  ): Promise<void> {
-    return this.productQueryService.onMenuUpdated(payload);
-  }
+  // @MessagePattern(EventTopics.menuUpdated)
+  // public async onMenuUpdated(
+  //   @Payload() payload: MenuUpdatedEventPayload
+  // ): Promise<void> {
+  //   return this.productQueryService.onMenuUpdated(payload);
+  // }
 
   @MessagePattern(QueryTopics.menuFind)
   public async findMenu(

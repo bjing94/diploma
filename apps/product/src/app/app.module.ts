@@ -16,8 +16,13 @@ import {
   MenuModel,
   MenuSchema,
 } from './infrastructure/database/model/menu.model';
+import {
+  SnapshotModel,
+  SnapshotSchema,
+} from './infrastructure/database/model/snapshot.model';
 import MenuRepository from './infrastructure/database/repository/menu.repository';
 import ProductRepository from './infrastructure/database/repository/product.repository';
+import SnapshotRepository from './infrastructure/database/repository/snapshot.repository';
 
 @Module({
   imports: [
@@ -30,6 +35,10 @@ import ProductRepository from './infrastructure/database/repository/product.repo
         {
           name: MenuModel.name,
           schema: MenuSchema,
+        },
+        {
+          name: SnapshotModel.name,
+          schema: SnapshotSchema,
         },
       ],
       READ_CONNECTION_NAME
@@ -48,6 +57,10 @@ import ProductRepository from './infrastructure/database/repository/product.repo
     {
       provide: 'MenuRepository',
       useClass: MenuRepository,
+    },
+    {
+      provide: 'SnapshotRepository',
+      useClass: SnapshotRepository,
     },
   ],
 })
