@@ -17,6 +17,9 @@ export class Product {
   @Prop()
   name: string;
 
+  @Prop()
+  active: boolean;
+
   createdAt: Date;
   updatedAt: Date;
 }

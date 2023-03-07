@@ -1,8 +1,8 @@
+import { ISaveEvent } from '@burger-shop/interfaces';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CONNECTION_NAME, ResourceNames } from './event-store.const';
-import { ISaveEvent } from './event-store.interface';
 import { EventDocument } from './event.model';
 
 @Injectable()

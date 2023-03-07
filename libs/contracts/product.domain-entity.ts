@@ -1,11 +1,18 @@
+// import {
+//   ProductCreatedEventPayload,
+//   ProductDeletedEventPayload,
+//   ProductUpdatedEventPayload,
+// } from '@burger-shop/contracts';
+// import { ISaveEvent } from '@burger-shop/event-store';
+// import { EventTopics } from '@burger-shop/kafka-module';
+import { Types } from 'mongoose';
 import {
   ProductCreatedEventPayload,
-  ProductDeletedEventPayload,
   ProductUpdatedEventPayload,
-} from '@burger-shop/contracts';
-import { ISaveEvent } from '@burger-shop/event-store';
-import { EventTopics } from '@burger-shop/kafka-module';
-import { Types } from 'mongoose';
+  ProductDeletedEventPayload,
+} from '../../contracts/src';
+import { ISaveEvent } from '../../event-store/src';
+import { EventTopics } from '../../kafka-module/src';
 
 export class ProductDomainEntity {
   private _id: string;

@@ -2,7 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class MenuItemCreatedDto {
   @ApiProperty()
-  public readonly product: { _id: string };
+  public readonly id: number;
+
+  @ApiProperty()
+  public readonly productId: string;
 
   @ApiProperty()
   public readonly available: boolean;

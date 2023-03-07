@@ -10,13 +10,16 @@ export class EventModel {
   }
 
   @Prop()
-  public id: string; // object identifier for convenience
+  public objectId: string; // object identifier for convenience
 
   @Prop()
   public name: string;
 
   @Prop()
   public payload: string;
+
+  public createdAt: Date;
+  public updatedAt: Date;
 }
 
 export const EventSchema = SchemaFactory.createForClass(EventModel);

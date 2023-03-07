@@ -58,6 +58,14 @@ export class EventStoreModule {
               name: ResourceNames.MENU,
               schema: EventSchema,
             },
+            {
+              name: ResourceNames.PRODUCT + '_snapshot',
+              schema: EventSchema,
+            },
+            {
+              name: ResourceNames.MENU + '_snapshot',
+              schema: EventSchema,
+            },
           ],
           CONNECTION_NAME
         ),

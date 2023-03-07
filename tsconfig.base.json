@@ -17,6 +17,7 @@
     "paths": {
       "@burger-shop/contracts": ["libs/contracts/src/index.ts"],
       "@burger-shop/domain-entities": ["libs/domain-entities/src/index.ts"],
+      "@burger-shop/domain-entity": ["libs/domain-entity/src/index.ts"],
       "@burger-shop/event-store": ["libs/event-store/src/index.ts"],
       "@burger-shop/helpers": ["libs/helpers/src/index.ts"],
       "@burger-shop/interfaces": ["libs/interfaces/src/index.ts"],

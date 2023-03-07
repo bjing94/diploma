@@ -39,8 +39,8 @@ export default class ProductRepository implements ProductAbstractRepository {
     return this.model.findByIdAndUpdate(id, product).exec();
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.model.findByIdAndDelete(id).exec();
+  public async deactivate(id: string): Promise<void> {
+    await this.model.findByIdAndUpdate(id, { active: false }).exec();
   }
 
   public async getNextId() {

@@ -13,6 +13,6 @@ export default abstract class ProductAbstractRepository {
     id: string,
     product: ProductUpdateDto
   ): Promise<ProductDocument>;
-  public abstract delete(id: string): Promise<void>;
+  public abstract deactivate(id: string): Promise<void>;
   public abstract getNextId(): Promise<number>;
 }

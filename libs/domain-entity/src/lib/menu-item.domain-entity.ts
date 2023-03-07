@@ -1,18 +1,13 @@
-import { ProductDomainEntity } from './product.domain-entity';
+import { ProductDomainEntity } from '@burger-shop/domain-entity';
 
 export default class MenuItemDomainEntity {
   private _id: number;
-  private _product: ProductDomainEntity;
+  private _productId: string;
   private _available: boolean;
   private _price: number;
 
-  constructor(
-    product: ProductDomainEntity,
-    available: boolean,
-    price: number,
-    id: number
-  ) {
-    this.product = product;
+  constructor(product: string, available: boolean, price: number, id: number) {
+    this.productId = product;
     this.available = available;
     this.price = price;
     this.id = id;
@@ -24,11 +19,11 @@ export default class MenuItemDomainEntity {
   public set id(value: number) {
     this._id = value;
   }
-  public get product(): ProductDomainEntity {
-    return this._product;
+  public get productId(): string {
+    return this._productId;
   }
-  public set product(value: ProductDomainEntity) {
-    this._product = value;
+  public set productId(value: string) {
+    this._productId = value;
   }
   public get available(): boolean {
     return this._available;

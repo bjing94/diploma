@@ -1,0 +1,1 @@
+export const SNAPSHOT_PER_EVENTS_NUMBER = 5;

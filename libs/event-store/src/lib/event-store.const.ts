@@ -5,3 +5,5 @@ export enum ResourceNames {
   ORDER = 'order',
   PAYMENT = 'payment',
 }
+
+export const SNAPSHOT_FREQUENCY = 5;

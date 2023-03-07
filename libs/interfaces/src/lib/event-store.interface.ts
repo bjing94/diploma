@@ -1,5 +1,5 @@
 export interface ISaveEvent {
-  id: string;
+  objectId: string;
   payload: string;
   name: string;
 }
