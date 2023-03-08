@@ -1,6 +1,4 @@
-import { ProductDomainEntity } from '@burger-shop/domain-entity';
-
-export default class MenuItemDomainEntity {
+export class MenuItemDomainEntity {
   private _id: number;
   private _productId: string;
   private _available: boolean;

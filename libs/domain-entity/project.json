@@ -4,16 +4,6 @@
   "sourceRoot": "libs/domain-entity/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/domain-entity",
-        "main": "libs/domain-entity/src/index.ts",
-        "tsConfig": "libs/domain-entity/tsconfig.lib.json",
-        "assets": ["libs/domain-entity/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

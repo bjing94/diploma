@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
-import MenuItemDomainEntity from './menu-item.domain-entity';
+import { MenuItemDomainEntity } from './menu-item.domain-entity';
 
-export default class MenuDomainEntity {
+export class MenuDomainEntity {
   private _id: string;
 
   private _items: MenuItemDomainEntity[];

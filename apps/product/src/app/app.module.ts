@@ -22,7 +22,6 @@ import {
 } from './infrastructure/database/model/snapshot.model';
 import MenuRepository from './infrastructure/database/repository/menu.repository';
 import ProductRepository from './infrastructure/database/repository/product.repository';
-import SnapshotRepository from './infrastructure/database/repository/snapshot.repository';
 
 @Module({
   imports: [
@@ -57,10 +56,6 @@ import SnapshotRepository from './infrastructure/database/repository/snapshot.re
     {
       provide: 'MenuRepository',
       useClass: MenuRepository,
-    },
-    {
-      provide: 'SnapshotRepository',
-      useClass: SnapshotRepository,
     },
   ],
 })

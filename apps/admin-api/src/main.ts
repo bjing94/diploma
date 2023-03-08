@@ -28,6 +28,9 @@ async function bootstrap() {
   Logger.log(
     `🚀 Admin api is running on: http://localhost:${port}/${globalPrefix}`
   );
+  Logger.log(
+    `🚀 Admin api swagger is running on: http://localhost:${port}/${globalPrefix}/swagger`
+  );
 }
 
 bootstrap();

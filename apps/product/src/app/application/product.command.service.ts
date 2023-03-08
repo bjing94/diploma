@@ -10,13 +10,15 @@ import {
   ProductUpdateRequest,
   ProductUpdateResponse,
 } from '@burger-shop/contracts';
-import { ProductDomainEntity } from '@burger-shop/domain-entity';
+import {
+  MenuDomainEntity,
+  MenuItemDomainEntity,
+  ProductDomainEntity,
+} from '@burger-shop/domain-entity';
 import { EventStoreProductService } from '@burger-shop/event-store';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { ProductDocument } from '@burger-shop/models';
 import { Inject, Injectable } from '@nestjs/common';
-import MenuItemDomainEntity from '../domain/menu-item.domain-entity';
-import MenuDomainEntity from '../domain/menu.domain-entity';
 import MenuAbstractRepository from './repository/menu.abstract-repository';
 import ProductAbstractRepository from './repository/product.abstract-repository';
 
@@ -108,7 +110,7 @@ export default class ProductCommandService {
     const menuItems = items.map((item, idx) => {
       const product = productsMap.get(item.productId);
       return new MenuItemDomainEntity(
-        new ProductDomainEntity(product.name, product.price, product.id),
+        product.id,
         item.available,
         item.price,
         idx
@@ -117,10 +119,11 @@ export default class ProductCommandService {
     const menuDomain = new MenuDomainEntity(menuItems, null, true);
     const payload = {
       menu: {
-        items: menuDomain.items.map((item) => ({
+        items: menuDomain.items.map((item, idx) => ({
           available: item.available,
           price: item.price,
-          product: { _id: item.product.id },
+          productId: item.productId,
+          id: idx,
         })),
         id: menuDomain.id,
         active: menuDomain.active,
@@ -157,9 +160,8 @@ export default class ProductCommandService {
     }
 
     const menuItems = items.map((item, idx) => {
-      const product = productsMap.get(item.productId);
       return new MenuItemDomainEntity(
-        new ProductDomainEntity(product.name, product.price, product.id),
+        item.productId,
         item.available,
         item.price,
         idx
@@ -168,10 +170,11 @@ export default class ProductCommandService {
     const menuDomain = new MenuDomainEntity(menuItems, menu.id, active);
     const payload = {
       menu: {
-        items: menuDomain.items.map((item) => ({
+        items: menuDomain.items.map((item, idx) => ({
           available: item.available,
           price: item.price,
-          product: { _id: item.product.id },
+          productId: item.productId,
+          id: idx,
         })),
         id: menuDomain.id,
         active: menuDomain.active,

@@ -1,6 +1,6 @@
 class MenuItemCreateDto {
   public readonly id: number;
-  public readonly product: { _id?: string };
+  public readonly productId: string;
   public readonly price: number;
   public readonly available: boolean;
 }

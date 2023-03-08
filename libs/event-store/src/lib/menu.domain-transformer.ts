@@ -1,13 +1,13 @@
 import {
-  ProductUpdatedEventPayload,
-  ProductCreatedEventPayload,
-  ProductDeletedEventPayload,
   MenuCreatedEventPayload,
+  MenuUpdatedEventPayload,
 } from '@burger-shop/contracts';
+import {
+  MenuDomainEntity,
+  MenuItemDomainEntity,
+} from '@burger-shop/domain-entity';
 import { ISaveEvent } from '@burger-shop/interfaces';
 import { EventTopics } from '@burger-shop/kafka-module';
-import MenuItemDomainEntity from 'libs/domain-entity/src/lib/menu-item.domain-entity';
-import MenuDomainEntity from 'libs/domain-entity/src/lib/menu.domain-entity';
 
 export default class MenuDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
@@ -20,15 +20,19 @@ export default class MenuDomainTransformer {
 
   private static applyEvent(domain: MenuDomainEntity, event: ISaveEvent) {
     if (event.name === 'snapshot') {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductUpdatedEventPayload;
-      domain.id = product.id;
-      me.name = product.name;
-      domain.price = product.price;
-      domain.active = true;
+      const { menu } = JSON.parse(event.payload) as MenuUpdatedEventPayload;
+      domain.id = menu.id;
+      domain.active = menu.active;
+      domain.items = menu.items.map((item) => {
+        return new MenuItemDomainEntity(
+          item.productId,
+          item.available,
+          item.price,
+          item.id
+        );
+      });
     }
-    if (event.name === EventTopics.productCreated) {
+    if (event.name === EventTopics.menuCreated) {
       const { menu } = JSON.parse(event.payload) as MenuCreatedEventPayload;
       domain.id = menu.id;
       domain.active = menu.active;
@@ -41,32 +45,27 @@ export default class MenuDomainTransformer {
         );
       });
     }
-    if (event.name === EventTopics.productUpdated) {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductUpdatedEventPayload;
-      domain.name = product.name;
-      domain.price = product.price;
-    }
-    if (event.name === EventTopics.productUpdated) {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductUpdatedEventPayload;
-      domain.name = product.name;
-      domain.price = product.price;
-    }
-    if (event.name === EventTopics.productDeleted) {
-      const { id } = JSON.parse(event.payload) as ProductDeletedEventPayload;
-      domain.active = false;
+    if (event.name === EventTopics.menuUpdated) {
+      const { menu } = JSON.parse(event.payload) as MenuUpdatedEventPayload;
+      domain.id = menu.id;
+      domain.active = menu.active;
+      domain.items = menu.items.map((item) => {
+        return new MenuItemDomainEntity(
+          item.productId,
+          item.available,
+          item.price,
+          item.id
+        );
+      });
     }
   }
 
   public static snapshot(domain: MenuDomainEntity): ISaveEvent {
-    const payload: ProductUpdatedEventPayload = {
-      product: {
+    const payload: MenuUpdatedEventPayload = {
+      menu: {
         id: domain.id,
-        name: domain.name,
-        price: domain.price,
+        active: domain.active,
+        items: domain.items,
       },
     };
     return {

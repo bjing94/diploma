@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import ProductAbstractRepository from './repository/product.abstract-repository';
 import {
   MenuCreatedEventPayload,
@@ -16,8 +16,6 @@ import {
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import MenuAbstractRepository from './repository/menu.abstract-repository';
-import { EventStoreProductService } from '@burger-shop/event-store';
-import { ProductDomainEntity } from '@burger-shop/domain-entity';
 
 @Injectable()
 export default class ProductQueryService {
@@ -25,8 +23,7 @@ export default class ProductQueryService {
     @Inject('ProductRepository')
     private readonly productRepository: ProductAbstractRepository,
     @Inject('MenuRepository')
-    private readonly menuRepository: MenuAbstractRepository,
-    private readonly eventStoreProductService: EventStoreProductService
+    private readonly menuRepository: MenuAbstractRepository
   ) {}
 
   public async getById(id: string): Promise<ProductGetByIdQueryResponse> {
@@ -63,6 +60,7 @@ export default class ProductQueryService {
     dto: ProductFindQueryRequest
   ): Promise<ProductFindQueryResponse> {
     const products = await this.productRepository.findMany(dto.take, dto.skip);
+    console.log(products);
     return {
       products,
     };

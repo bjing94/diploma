@@ -24,13 +24,17 @@ export default class MenuRepository implements MenuAbstractRepository {
   }
 
   public async findMany(dto: MenuFindQueryRequest): Promise<MenuDocument[]> {
-    return this._repository.find(dto).exec();
+    return this._repository.find(dto).populate('items.product').exec();
   }
 
   public async create(menu: MenuCreateDto): Promise<MenuDocument> {
-    const { id, ...rest } = menu;
+    const { id, items, ...rest } = menu;
     return this._repository.create({
       _id: new Types.ObjectId(id),
+      items: items.map((item) => {
+        const { productId, ...rest } = item;
+        return { product: { _id: productId }, ...rest };
+      }),
       ...rest,
     });
   }
