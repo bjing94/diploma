@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CONNECTION_NAME, ResourceNames } from './event-store.const';
-import { EventStoreProductService } from './event-store.product.service';
+import { EventStoreProductService } from './product/event-store.product.service';
 import { EventStoreService } from './event-store.service';
 import { EventSchema } from './event.model';
 

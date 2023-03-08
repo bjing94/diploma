@@ -5,18 +5,12 @@ import {
   CONNECTION_NAME,
   ResourceNames,
   SNAPSHOT_FREQUENCY,
-} from './event-store.const';
-import { EventDocument } from './event.model';
-import { ProductDomainEntity } from '@burger-shop/domain-entity';
+} from '../event-store.const';
+import { EventDocument } from '../event.model';
 import { ISaveEvent } from '@burger-shop/interfaces';
-import {
-  ProductUpdatedEventPayload,
-  ProductCreatedEventPayload,
-  ProductDeletedEventPayload,
-} from '@burger-shop/contracts';
-import { EventTopics } from '@burger-shop/kafka-module';
 import ProductDomainTransformer from './product.domain-transformer';
 import { Logger } from '@nestjs/common/services';
+import MenuDomainTransformer from './menu.domain-transformer';
 
 @Injectable()
 export class EventStoreProductService {
@@ -114,9 +108,6 @@ export class EventStoreProductService {
     return this.productSnapshotModel.find(filter);
   }
 
-  // TODO:
-  // Separate snapshots from domain
-  // Check save
   public async makeSnapshotProducts() {
     // Здесь сохраняем снэпшоты
     // В products_snapshot
@@ -181,6 +172,6 @@ export class EventStoreProductService {
     if (snapshot) {
       events.push(snapshot);
     }
-    return ProductDomainTransformer.hydrate(events);
+    return MenuDomainTransformer.hydrate(events);
   }
 }

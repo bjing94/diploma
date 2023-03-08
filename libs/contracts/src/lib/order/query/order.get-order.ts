@@ -36,8 +36,5 @@ export class OrderGetQueryResponse {
   // paymentInfo: PaymentInfoResponse;
 
   // @ApiProperty()
-  // deliveryInfo: DeliveryInfoResponse;
-
-  // @ApiProperty()
   // createdAt: Date;
 }
