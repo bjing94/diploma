@@ -1,4 +1,4 @@
-export default class OrderItemDomainEntity {
+export class OrderItemDomainEntity {
   private _id: number;
   private _quantity: number;
   private _product: { name: string; price: number; id: string };

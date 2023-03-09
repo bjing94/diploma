@@ -1,6 +1,6 @@
 export enum CommandTopics {
   orderCreate = 'order.create.command',
-  orderComplete = 'order.complete.command',
+  orderUpdate = 'order.update.command',
   paymentCreate = 'payment.create.command',
   paymentFulfill = 'payment.fulfill.command',
   orderPay = 'order.pay.command',
@@ -23,9 +23,8 @@ export enum QueryTopics {
 }
 
 export enum EventTopics {
-  orderCompleted = 'order.updated.event',
   orderCreated = 'order.created.event',
-  orderPayed = 'order.payed.event',
+  orderUpdated = 'order.updated.event',
   productCreated = 'product.created.event',
   productUpdated = 'product.updated.event',
   productDeleted = 'product.deleted.event',

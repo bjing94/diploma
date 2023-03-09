@@ -3,6 +3,7 @@ import {
   OrderCreateCommandResponse,
   OrderGetQueryRequest,
   OrderGetQueryResponse,
+  OrderUpdateCommandRequest,
 } from '@burger-shop/contracts';
 import {
   CommandTopics,
@@ -36,19 +37,12 @@ export default class OrderService {
     return result;
   }
 
-  public async pay(id: string) {
-    return this.kafkaProducerService.sendOrderPay({ orderId: id });
-  }
+  public async update(dto: OrderUpdateCommandRequest) {
+    const result = await this.kafkaProducerService.sendOrderUpdate(dto);
 
-  public async complete(id: string) {
-    try {
-      const result = await this.kafkaProducerService.sendOrderComplete({
-        orderId: id,
-      });
-      console.log(result);
-      return result;
-    } catch (e) {
-      console.log(e);
+    if (!result) {
+      throw new BadRequestException('Order not updated!');
     }
+    return result;
   }
 }

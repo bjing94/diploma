@@ -11,17 +11,14 @@ import {
   MenuUpdateCommandRequest,
   MenuUpdateCommandResponse,
   MenuUpdatedEventPayload,
-  OrderCompleteCommandRequest,
-  OrderCompleteCommandResponse,
-  OrderCompletedEventPayload,
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
   OrderCreatedEventPayload,
   OrderGetQueryRequest,
   OrderGetQueryResponse,
-  OrderPayCommandRequest,
-  OrderPayCommandResponse,
-  OrderPayedEventPayload,
+  OrderUpdateCommandRequest,
+  OrderUpdateCommandResponse,
+  OrderUpdatedEventPayload,
   PaymentCreateCommandRequest,
   PaymentCreateCommandResponse,
   PaymentCreatedEventPayload,
@@ -223,21 +220,11 @@ export class KafkaProducerService {
     );
   }
 
-  // Order service
-  public async sendOrderComplete(
-    payload: OrderCompleteCommandRequest
-  ): Promise<OrderCompleteCommandResponse> {
-    return this.send<OrderCompleteCommandResponse, OrderCompleteCommandRequest>(
-      CommandTopics.orderComplete,
-      payload
-    );
-  }
-
-  public async sendOrderPay(
-    payload: OrderPayCommandRequest
-  ): Promise<OrderPayCommandResponse> {
-    return this.send<OrderPayCommandResponse, OrderPayCommandRequest>(
-      CommandTopics.orderPay,
+  public async sendOrderUpdate(
+    payload: OrderUpdateCommandRequest
+  ): Promise<OrderUpdateCommandResponse> {
+    return this.send<OrderUpdateCommandResponse, OrderUpdateCommandRequest>(
+      CommandTopics.orderUpdate,
       payload
     );
   }
@@ -260,18 +247,11 @@ export class KafkaProducerService {
     );
   }
 
-  public async emitOrderPayed(payload: OrderPayedEventPayload): Promise<void> {
-    await this.emit<void, OrderPayedEventPayload>(
-      EventTopics.orderPayed,
-      payload
-    );
-  }
-
-  public async emitOrderCompleted(
-    payload: OrderCompletedEventPayload
+  public async emitOrderUpdated(
+    payload: OrderUpdatedEventPayload
   ): Promise<void> {
-    await this.emit<void, OrderCompletedEventPayload>(
-      EventTopics.orderCompleted,
+    await this.emit<void, OrderUpdatedEventPayload>(
+      EventTopics.orderUpdated,
       payload
     );
   }

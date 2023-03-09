@@ -3,10 +3,10 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import OrderCommandService from './order.command.service';
 import LoggerInterceptor from './interceptors/logger.interceptor';
 import {
-  OrderCompleteCommandRequest,
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
-  OrderPayCommandRequest,
+  OrderUpdateCommandRequest,
+  OrderUpdateCommandResponse,
 } from '@burger-shop/contracts';
 import { CommandTopics } from '@burger-shop/kafka-module';
 
@@ -22,13 +22,10 @@ export default class OrderCommandController {
     return this.service.createOrder(dto);
   }
 
-  @MessagePattern(CommandTopics.orderPay)
-  pay(@Payload() dto: OrderPayCommandRequest): Promise<any> {
-    return this.service.payOrder(dto.orderId);
-  }
-
-  @MessagePattern(CommandTopics.orderComplete)
-  complete(@Payload() dto: OrderCompleteCommandRequest): Promise<any> {
-    return this.service.completeOrder(dto.orderId);
+  @MessagePattern(CommandTopics.orderUpdate)
+  updated(
+    @Payload() dto: OrderUpdateCommandRequest
+  ): Promise<OrderUpdateCommandResponse> {
+    return this.service.updateOrder(dto);
   }
 }

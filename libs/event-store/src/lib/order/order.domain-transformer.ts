@@ -5,10 +5,10 @@ import {
 import {
   MenuDomainEntity,
   MenuItemDomainEntity,
+  OrderDomainEntity,
 } from '@burger-shop/domain-entity';
 import { ISaveEvent } from '@burger-shop/interfaces';
 import { EventTopics } from '@burger-shop/kafka-module';
-import OrderDomainEntity from 'libs/domain-entity/src/lib/order.domain-entity';
 
 export default class OrderDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {

@@ -4,6 +4,7 @@ import { CONNECTION_NAME, ResourceNames } from './event-store.const';
 import { EventStoreProductService } from './product/event-store.product.service';
 import { EventStoreService } from './event-store.service';
 import { EventSchema } from './event.model';
+import { EventStoreOrderService } from './order/event-store.order.service';
 
 @Module({})
 export class EventStoreModule {
@@ -72,6 +73,32 @@ export class EventStoreModule {
       ],
       providers: [EventStoreProductService],
       exports: [EventStoreProductService],
+    };
+  }
+
+  public static registerForOrder(connectionStr: string): DynamicModule {
+    return {
+      module: EventStoreModule,
+      imports: [
+        MongooseModule.forRoot(connectionStr, {
+          connectionName: CONNECTION_NAME,
+        }),
+        MongooseModule.forFeature(
+          [
+            {
+              name: ResourceNames.ORDER,
+              schema: EventSchema,
+            },
+            {
+              name: ResourceNames.ORDER + '_snapshot',
+              schema: EventSchema,
+            },
+          ],
+          CONNECTION_NAME
+        ),
+      ],
+      providers: [EventStoreOrderService],
+      exports: [EventStoreOrderService],
     };
   }
 }

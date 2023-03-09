@@ -1,8 +1,8 @@
 import { OrderStatus } from '@burger-shop/interfaces';
 import { generateObjectId } from '@burger-shop/helpers';
-import OrderItemDomainEntity from './order-item.domain-entity';
+import { OrderItemDomainEntity } from './order-item.domain-entity';
 
-export default class OrderDomainEntity {
+export class OrderDomainEntity {
   private _id: string;
 
   private _status: OrderStatus = OrderStatus.CREATED;

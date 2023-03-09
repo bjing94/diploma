@@ -1,17 +1,16 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 
 import OrderService from './order.service';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
 import {
-  OrderCompleteCommandRequest,
-  OrderCompleteCommandResponse,
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
   OrderGetQueryRequest,
   OrderGetQueryResponse,
-  OrderPayCommandRequest,
-  OrderPayCommandResponse,
+  OrderUpdateCommandRequest,
+  OrderUpdateCommandResponse,
 } from '@burger-shop/contracts';
+import { OrderUpdateHttpRequest } from './dto/order.update.request';
 
 @ApiTags('Order')
 @Controller('order')
@@ -38,17 +37,12 @@ export default class OrderController {
     return this.orderService.get(id);
   }
 
-  @ApiResponse({ type: OrderPayCommandRequest })
-  @Post(':id/pay')
-  async pay(@Param('id') id: string): Promise<OrderPayCommandResponse> {
-    return this.orderService.pay(id);
-  }
-
-  @ApiResponse({ type: OrderCompleteCommandRequest })
-  @Post(':id/complete')
-  async complete(
-    @Param('id') id: string
-  ): Promise<OrderCompleteCommandResponse> {
-    return this.orderService.complete(id);
+  @ApiResponse({ type: OrderUpdateCommandResponse })
+  @Put(':id')
+  async pay(
+    @Param('id') id: string,
+    @Body() dto: OrderUpdateHttpRequest
+  ): Promise<OrderUpdateCommandResponse> {
+    return this.orderService.update({ id, ...dto });
   }
 }

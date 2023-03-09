@@ -2,15 +2,16 @@ import { ISaveEvent } from '@burger-shop/interfaces';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ResourceNames } from '../event-store.const';
+import { CONNECTION_NAME, ResourceNames } from '../event-store.const';
 import { EventDocument } from '../event.model';
+import OrderDomainTransformer from './order.domain-transformer';
 
 @Injectable()
-export default class OrderEventService {
+export class EventStoreOrderService {
   constructor(
-    @InjectModel(ResourceNames.ORDER)
+    @InjectModel(ResourceNames.ORDER, CONNECTION_NAME)
     private readonly orderEventDocument: Model<EventDocument>,
-    @InjectModel(ResourceNames.ORDER + '_snapshot')
+    @InjectModel(ResourceNames.ORDER + '_snapshot', CONNECTION_NAME)
     private readonly orderSnasphotEventDocument: Model<EventDocument>
   ) {}
 
@@ -66,6 +67,6 @@ export default class OrderEventService {
     if (snapshot) {
       events.push(snapshot);
     }
-    return ProductDomainTransformer.hydrate(events);
+    return OrderDomainTransformer.hydrate(events);
   }
 }

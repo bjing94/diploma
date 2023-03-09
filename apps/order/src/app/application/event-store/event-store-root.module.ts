@@ -3,7 +3,9 @@ import { Module } from '@nestjs/common';
 import { getMongoConnectionStringEventStore } from '../../config/mongoose.config';
 
 @Module({
-  imports: [EventStoreModule.register(getMongoConnectionStringEventStore())],
+  imports: [
+    EventStoreModule.registerForOrder(getMongoConnectionStringEventStore()),
+  ],
   exports: [EventStoreModule],
 })
 export default class EventStoreRootModule {}
