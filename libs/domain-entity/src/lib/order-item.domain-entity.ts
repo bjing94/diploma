@@ -1,20 +1,23 @@
 export class OrderItemDomainEntity {
   private _id: number;
   private _quantity: number;
-  private _product: { name: string; price: number; id: string };
+  private _product: { id: string };
+  private _price: number;
 
   constructor(data: {
     quantity: number;
-    product: { name: string; price: number; id: string };
+    product: { id: string };
+    price: number;
     id?: number;
   }) {
     this.quantity = data.quantity;
     this.product = data.product;
     this.id = data.id;
+    this.price = data.price;
   }
 
   get totalPrice(): number {
-    return this.product.price * this.quantity;
+    return this.price * this.quantity;
   }
 
   public get quantity(): number {
@@ -32,10 +35,17 @@ export class OrderItemDomainEntity {
     this._id = value;
   }
 
-  public get product(): { name: string; price: number; id: string } {
+  public get product(): { id: string } {
     return this._product;
   }
-  public set product(value: { name: string; price: number; id: string }) {
+  public set product(value: { id: string }) {
     this._product = value;
+  }
+
+  public get price(): number {
+    return this._price;
+  }
+  public set price(value: number) {
+    this._price = value;
   }
 }

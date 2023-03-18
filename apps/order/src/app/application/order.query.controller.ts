@@ -1,6 +1,7 @@
 import {
   OrderCreatedEventPayload,
   OrderGetQueryRequest,
+  OrderUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { EventTopics, QueryTopics } from '@burger-shop/kafka-module';
 import { Controller, UseInterceptors } from '@nestjs/common';
@@ -23,13 +24,8 @@ export default class OrderQueryController {
     return this.orderQueryService.getOrder(data);
   }
 
-  // @MessagePattern(EventTopics.orderPayed)
-  // async onPayed(@Payload() data: OrderPayedEventPayload) {
-  //   await this.orderQueryService.onPayed(data);
-  // }
-
-  // @MessagePattern(EventTopics.orderCompleted)
-  // async onCompleted(@Payload() data: OrderCompletedEventPayload) {
-  //   await this.orderQueryService.onCompleted(data);
-  // }
+  @MessagePattern(EventTopics.orderUpdated)
+  async onUpdated(@Payload() data: OrderUpdatedEventPayload) {
+    await this.orderQueryService.onUpdated(data);
+  }
 }

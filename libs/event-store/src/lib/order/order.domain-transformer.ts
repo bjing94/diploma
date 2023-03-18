@@ -1,18 +1,17 @@
 import {
-  MenuCreatedEventPayload,
-  MenuUpdatedEventPayload,
+  OrderCreatedEventPayload,
+  OrderUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import {
-  MenuDomainEntity,
-  MenuItemDomainEntity,
   OrderDomainEntity,
+  OrderItemDomainEntity,
 } from '@burger-shop/domain-entity';
 import { ISaveEvent } from '@burger-shop/interfaces';
 import { EventTopics } from '@burger-shop/kafka-module';
 
 export default class OrderDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
-    const domain = new OrderDomainEntity({
+    const domain = new PaymentDomainEntity({
       items: [],
       paymentId: '',
     });
@@ -24,52 +23,51 @@ export default class OrderDomainTransformer {
 
   private static applyEvent(domain: OrderDomainEntity, event: ISaveEvent) {
     if (event.name === 'snapshot') {
-      const { menu } = JSON.parse(event.payload) as OrderUpd;
-      domain.id = menu.id;
-      domain.active = menu.active;
-      domain.items = menu.items.map((item) => {
-        return new MenuItemDomainEntity(
-          item.productId,
-          item.available,
-          item.price,
-          item.id
-        );
+      const { order } = JSON.parse(event.payload) as OrderCreatedEventPayload;
+      domain.id = order.id;
+      domain.orderItems = order.orderItems.map((item) => {
+        return new OrderItemDomainEntity({
+          quantity: item.quantity,
+          product: { id: item.productId },
+          price: item.price,
+        });
       });
+      domain.paymentId = order.paymentId;
+      domain.status = order.status;
     }
-    if (event.name === EventTopics.menuCreated) {
-      const { menu } = JSON.parse(event.payload) as MenuCreatedEventPayload;
-      domain.id = menu.id;
-      domain.active = menu.active;
-      domain.items = menu.items.map((item) => {
-        return new MenuItemDomainEntity(
-          item.productId,
-          item.available,
-          item.price,
-          item.id
-        );
+    if (event.name === EventTopics.orderCreated) {
+      const { order } = JSON.parse(event.payload) as OrderCreatedEventPayload;
+      domain.id = order.id;
+      domain.orderItems = order.orderItems.map((item) => {
+        return new OrderItemDomainEntity({
+          quantity: item.quantity,
+          product: { id: item.productId },
+          price: item.price,
+        });
       });
+      domain.paymentId = order.paymentId;
+      domain.status = order.status;
     }
-    if (event.name === EventTopics.menuUpdated) {
-      const { menu } = JSON.parse(event.payload) as MenuUpdatedEventPayload;
-      domain.id = menu.id;
-      domain.active = menu.active;
-      domain.items = menu.items.map((item) => {
-        return new MenuItemDomainEntity(
-          item.productId,
-          item.available,
-          item.price,
-          item.id
-        );
-      });
+    if (event.name === EventTopics.orderUpdated) {
+      const { order } = JSON.parse(event.payload) as OrderUpdatedEventPayload;
+      domain.status = order.status;
     }
   }
 
-  public static snapshot(domain: MenuDomainEntity): ISaveEvent {
-    const payload: MenuUpdatedEventPayload = {
-      menu: {
+  public static snapshot(domain: OrderDomainEntity): ISaveEvent {
+    const payload: OrderCreatedEventPayload = {
+      order: {
         id: domain.id,
-        active: domain.active,
-        items: domain.items,
+        orderItems: domain.orderItems.map((item) => {
+          return {
+            id: item.id,
+            price: item.price,
+            productId: item.product.id,
+            quantity: item.quantity,
+          };
+        }),
+        paymentId: domain.paymentId,
+        status: domain.status,
       },
     };
     return {

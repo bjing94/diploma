@@ -2,6 +2,7 @@ import {
   OrderCreatedEventPayload,
   OrderGetQueryRequest,
   OrderGetQueryResponse,
+  OrderUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { OrderStatus } from '@burger-shop/interfaces';
 import { Inject, Injectable } from '@nestjs/common';
@@ -26,17 +27,10 @@ export default class OrderQueryService {
     await this.repository.create(data.order);
   }
 
-  // async onPayed(data: OrderPayedEventPayload) {
-  //   const result = await this.repository.update(data.orderId, {
-  //     status: OrderStatus.PAYED,
-  //   });
-  //   console.log('Updated order', result);
-  // }
-
-  // async onCompleted(data: OrderCompletedEventPayload) {
-  //   const result = await this.repository.update(data.orderId, {
-  //     status: OrderStatus.COMPLETED,
-  //   });
-  //   console.log('Updated order', result);
-  // }
+  async onUpdated(data: OrderUpdatedEventPayload) {
+    const result = await this.repository.update(data.order.id, {
+      status: data.order.status,
+    });
+    console.log('Updated order', result);
+  }
 }

@@ -10,5 +10,5 @@ export class ProductGetMenuItemQueryRequest {
 
 export class ProductGetMenuItemQueryResponse {
   @ApiProperty()
-  public product: MenuItemResponseDto;
+  public item: MenuItemResponseDto;
 }

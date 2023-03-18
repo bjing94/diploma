@@ -5,10 +5,6 @@ export class PaymentFulfillCommandRequest {
   @ApiProperty()
   @IsString()
   public readonly id: string;
-
-  @ApiProperty()
-  @IsString()
-  public readonly hash: string;
 }
 
 export class PaymentFulfillCommandResponse {

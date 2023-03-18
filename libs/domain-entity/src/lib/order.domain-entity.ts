@@ -33,6 +33,10 @@ export class OrderDomainEntity {
     return this._orderItems;
   }
 
+  public set orderItems(items: OrderItemDomainEntity[]) {
+    this._orderItems = items;
+  }
+
   public set status(newStatus: OrderStatus) {
     this._status = newStatus;
   }

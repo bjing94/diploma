@@ -43,7 +43,7 @@ export default class ProductQueryService {
     if (!item) return null;
     const { product, ...rest } = item;
     return {
-      product: {
+      item: {
         id: item.id,
         available: item.available,
         price: item.price,

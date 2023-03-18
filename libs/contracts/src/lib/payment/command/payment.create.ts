@@ -14,8 +14,5 @@ export class PaymentCreateCommandRequest {
 
 export class PaymentCreateCommandResponse {
   @ApiProperty()
-  public readonly success: boolean;
-
-  @ApiProperty()
   public readonly id: string;
 }

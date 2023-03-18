@@ -8,6 +8,8 @@ export class OrderCreatedItemDto {
   productId: string;
   @ApiProperty()
   quantity: number;
+  @ApiProperty()
+  price: number;
 }
 
 export class OrderCreatedDto {

@@ -28,24 +28,23 @@ export default class OrderCommandService {
     const { orderItems, paymentInfo } = dto;
     const orderDomainItems: OrderItemDomainEntity[] = [];
     let idx = 0;
-    let sum = 0;
     for (const item of orderItems) {
       const response = await this.kafkaProducerService.sendMenuItemGet({
         id: item.productId,
       });
-      Logger.verbose(`Response ${response}`);
-      if (!response || !response.product) return null;
-      const { price, id } = response.product;
-      const { name } = response.product.product;
+      Logger.verbose(`Response ${JSON.stringify(response)}`);
+      if (!response || !response.item) return null;
+      const { price, id } = response.item;
+      const { name } = response.item.product;
       orderDomainItems.push(
         new OrderItemDomainEntity({
-          product: { name, price, id },
+          price,
+          product: { id },
           quantity: item.count,
           id: idx,
         })
       );
       idx++;
-      sum += item.count * price;
     }
     // Payment service
     // const response = await this.kafkaProducerService.sendPaymentCreate({
@@ -67,6 +66,7 @@ export default class OrderCommandService {
             id: item.id,
             productId: item.product.id,
             quantity: item.quantity,
+            price: item.price,
           };
         }),
         paymentId: order.paymentId,
@@ -93,14 +93,6 @@ export default class OrderCommandService {
       order: {
         id: order.id,
         status: order.status,
-        orderItems: order.orderItems.map((item) => {
-          return {
-            id: item.id,
-            productId: item.product.id,
-            quantity: item.quantity,
-          };
-        }),
-        paymentId: order.paymentId,
       },
     };
 
@@ -108,6 +100,13 @@ export default class OrderCommandService {
       objectId: id,
       payload: JSON.stringify(payload),
       name: EventTopics.orderUpdated,
+    });
+
+    await this.kafkaProducerService.emitOrderUpdated({
+      order: {
+        id,
+        status: order.status,
+      },
     });
 
     return {

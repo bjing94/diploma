@@ -1,7 +1,7 @@
+import { OrderStatus } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
-import { OrderCreatedDto } from './order.created';
 
 export class OrderUpdatedEventPayload {
   @ApiProperty()
-  public readonly order: OrderCreatedDto;
+  public readonly order: { id: string; status: OrderStatus };
 }
