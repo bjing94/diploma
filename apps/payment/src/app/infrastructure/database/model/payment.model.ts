@@ -16,6 +16,9 @@ export default class PaymentModel {
   @Prop({ type: String })
   public type: PaymentType;
 
+  @Prop()
+  public orderId: string;
+
   @Prop({ required: false })
   public link?: string;
 }

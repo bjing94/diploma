@@ -11,7 +11,7 @@ import { EventTopics } from '@burger-shop/kafka-module';
 
 export default class OrderDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
-    const domain = new PaymentDomainEntity({
+    const domain = new OrderDomainEntity({
       items: [],
       paymentId: '',
     });

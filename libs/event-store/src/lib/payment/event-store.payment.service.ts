@@ -9,9 +9,10 @@ import {
 import { EventDocument } from '../event.model';
 import { ISaveEvent } from '@burger-shop/interfaces';
 import { Logger } from '@nestjs/common/services';
+import PaymentDomainTransformer from './payment.domain-transformer';
 
 @Injectable()
-export class EventStoreProductService {
+export class EventStorePaymentService {
   constructor(
     @InjectModel(ResourceNames.PAYMENT, CONNECTION_NAME)
     private readonly paymentModel: Model<EventDocument>,
@@ -101,9 +102,9 @@ export class EventStoreProductService {
     });
 
     for (const [productId, data] of eventStreamMap.entries()) {
-      const product = ProductDomainTransformer.hydrate(data);
-      const event = ProductDomainTransformer.snapshot(product);
-      await this.productSnapshotModel.findOneAndUpdate(
+      const product = PaymentDomainTransformer.hydrate(data);
+      const event = PaymentDomainTransformer.snapshot(product);
+      await this.paymentSnapshotModel.findOneAndUpdate(
         { objectId: event.objectId },
         event,
         {
@@ -111,16 +112,16 @@ export class EventStoreProductService {
         }
       );
     }
-    Logger.log('Snapshotted products');
+    Logger.log('Snapshotted payments');
   }
 
   public async getProduct(id: string) {
-    const snapshot = await this.productSnapshotModel.findOne({ objectId: id });
+    const snapshot = await this.paymentSnapshotModel.findOne({ objectId: id });
     const date = snapshot?.createdAt ?? new Date(Date.parse('2023-02-24'));
-    const events = await this.getProductEvents({ from: date, id });
+    const events = await this.getPaymentEvents({ from: date, id });
     if (snapshot) {
       events.push(snapshot);
     }
-    return ProductDomainTransformer.hydrate(events);
+    return PaymentDomainTransformer.hydrate(events);
   }
 }

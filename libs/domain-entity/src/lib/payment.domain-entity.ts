@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 
 export class PaymentDomainEntity {
   private _id: string;
+  private _orderId: string;
   private _link?: string;
   private _status: PaymentStatus;
   private _sum: number;
@@ -11,6 +12,7 @@ export class PaymentDomainEntity {
   constructor(data: {
     sum: number;
     type: PaymentType;
+    orderId: string;
     status?: PaymentStatus;
     id?: string;
     link?: string;
@@ -61,5 +63,12 @@ export class PaymentDomainEntity {
   }
   public set sum(value: number) {
     this._sum = value;
+  }
+
+  public get orderId(): string {
+    return this._orderId;
+  }
+  public set orderId(value: string) {
+    this._orderId = value;
   }
 }

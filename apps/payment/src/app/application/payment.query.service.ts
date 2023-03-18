@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import PaymentMapper from './mapper/payment.mapper';
 import {
   PaymentCreatedEventPayload,
   PaymentGetQueryRequest,
@@ -19,13 +18,12 @@ export default class PaymentQueryService {
     data: PaymentGetQueryRequest
   ): Promise<PaymentGetQueryResponse> {
     const payment = await this.paymentRepository.find(data.id);
-    const domain = PaymentMapper.toDomain(payment);
-    return { payment: domain };
+    return { payment: payment as any };
   }
 
   public async onPaymentCreated(data: PaymentCreatedEventPayload) {
     const { payment } = data;
-    await this.paymentRepository.create(payment);
+    await this.paymentRepository.create({ ...payment, _id: payment.id });
   }
 
   public async onPaymentStatusUpdated(data: PaymentStatusUpdatedEventPayload) {

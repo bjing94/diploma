@@ -5,6 +5,7 @@ import { EventStoreProductService } from './product/event-store.product.service'
 import { EventStoreService } from './event-store.service';
 import { EventSchema } from './event.model';
 import { EventStoreOrderService } from './order/event-store.order.service';
+import { EventStorePaymentService } from './payment/event-store.payment.service';
 
 @Module({})
 export class EventStoreModule {
@@ -99,6 +100,32 @@ export class EventStoreModule {
       ],
       providers: [EventStoreOrderService],
       exports: [EventStoreOrderService],
+    };
+  }
+
+  public static registerForPayment(connectionStr: string): DynamicModule {
+    return {
+      module: EventStoreModule,
+      imports: [
+        MongooseModule.forRoot(connectionStr, {
+          connectionName: CONNECTION_NAME,
+        }),
+        MongooseModule.forFeature(
+          [
+            {
+              name: ResourceNames.PAYMENT,
+              schema: EventSchema,
+            },
+            {
+              name: ResourceNames.PAYMENT + '_snapshot',
+              schema: EventSchema,
+            },
+          ],
+          CONNECTION_NAME
+        ),
+      ],
+      providers: [EventStorePaymentService],
+      exports: [EventStorePaymentService],
     };
   }
 }

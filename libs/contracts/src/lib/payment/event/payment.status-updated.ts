@@ -7,4 +7,7 @@ export class PaymentStatusUpdatedEventPayload {
 
   @ApiProperty()
   public readonly status: PaymentStatus;
+
+  @ApiProperty()
+  public readonly orderId: string;
 }

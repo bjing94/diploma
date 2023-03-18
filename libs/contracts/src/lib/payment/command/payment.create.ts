@@ -10,6 +10,10 @@ export class PaymentCreateCommandRequest {
   @ApiProperty({ enum: PaymentType })
   @IsString()
   public readonly type: PaymentType;
+
+  @ApiProperty()
+  @IsString()
+  public readonly orderId: string;
 }
 
 export class PaymentCreateCommandResponse {

@@ -11,6 +11,7 @@ export default class PaymentDomainTransformer {
     const domain = new PaymentDomainEntity({
       sum: 0,
       type: PaymentType.CARD,
+      orderId: '',
     });
     events.forEach((event) => {
       this.applyEvent(domain, event);
@@ -55,6 +56,7 @@ export default class PaymentDomainTransformer {
         status: domain.status,
         sum: domain.sum,
         type: domain.type,
+        orderId: domain.orderId,
       },
     };
     return {

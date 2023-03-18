@@ -13,7 +13,7 @@ import { Module } from '@nestjs/common';
       [
         QueryTopics.menuItemGet,
         CommandTopics.paymentCreate,
-        CommandTopics.paymentFulfill,
+        CommandTopics.paymentUpdate,
       ]
     ),
   ],

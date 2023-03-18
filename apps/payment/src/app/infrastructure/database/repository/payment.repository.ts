@@ -19,7 +19,7 @@ export default class PaymentRepository implements PaymentAbstractRepository {
     const { _id, ...rest } = payment;
     return this.model.create({
       ...rest,
-      _id: _id,
+      _id: new Types.ObjectId(_id),
     });
   }
 

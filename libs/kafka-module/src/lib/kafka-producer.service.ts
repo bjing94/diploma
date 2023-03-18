@@ -22,8 +22,8 @@ import {
   PaymentCreateCommandRequest,
   PaymentCreateCommandResponse,
   PaymentCreatedEventPayload,
-  PaymentFulfillCommandRequest,
-  PaymentFulfillCommandResponse,
+  PaymentUpdateCommandRequest,
+  PaymentUpdateCommandResponse,
   PaymentStatusUpdatedEventPayload,
   ProductCreatedEventPayload,
   ProductCreateRequest,
@@ -40,6 +40,8 @@ import {
   ProductUpdatedEventPayload,
   ProductUpdateRequest,
   ProductUpdateResponse,
+  PaymentGetQueryRequest,
+  PaymentGetQueryResponse,
 } from '@burger-shop/contracts';
 import { Inject, Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common/decorators';
@@ -312,12 +314,21 @@ export class KafkaProducerService {
     );
   }
 
-  public async sendPaymentFulfill(
-    payload: PaymentFulfillCommandRequest
-  ): Promise<PaymentFulfillCommandResponse> {
-    return this.send<
-      PaymentFulfillCommandResponse,
-      PaymentFulfillCommandRequest
-    >(CommandTopics.paymentFulfill, payload);
+  public async sendPaymentUpdate(
+    payload: PaymentUpdateCommandRequest
+  ): Promise<PaymentUpdateCommandResponse> {
+    return this.send<PaymentUpdateCommandResponse, PaymentUpdateCommandRequest>(
+      CommandTopics.paymentUpdate,
+      payload
+    );
+  }
+
+  public async sendPaymentGet(
+    payload: PaymentGetQueryRequest
+  ): Promise<PaymentGetQueryResponse> {
+    return this.send<PaymentGetQueryResponse, PaymentGetQueryRequest>(
+      QueryTopics.paymentGet,
+      payload
+    );
   }
 }

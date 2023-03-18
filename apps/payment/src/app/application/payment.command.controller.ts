@@ -4,7 +4,7 @@ import PaymentCommandService from './payment.command.service';
 import { CommandTopics } from '@burger-shop/kafka-module';
 import {
   PaymentCreateCommandRequest,
-  PaymentFulfillCommandRequest,
+  PaymentUpdateCommandRequest,
 } from '@burger-shop/contracts';
 import LoggerInterceptor from './interceptors/logger.interceptor';
 
@@ -18,11 +18,9 @@ export default class PaymentCommandController {
     return this.commandService.createPayment(payload);
   }
 
-  @MessagePattern(CommandTopics.paymentFulfill)
-  public async fulfillPayment(
-    @Payload() payload: PaymentFulfillCommandRequest
-  ) {
+  @MessagePattern(CommandTopics.paymentUpdate)
+  public async updatePayment(@Payload() payload: PaymentUpdateCommandRequest) {
     console.log(payload);
-    return this.commandService.fulfillPayment(payload);
+    return this.commandService.updatePayment(payload);
   }
 }

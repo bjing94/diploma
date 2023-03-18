@@ -2,7 +2,7 @@ export enum CommandTopics {
   orderCreate = 'order.create.command',
   orderUpdate = 'order.update.command',
   paymentCreate = 'payment.create.command',
-  paymentFulfill = 'payment.fulfill.command',
+  paymentUpdate = 'payment.update.command',
   orderPay = 'order.pay.command',
   productCreate = 'product.create.command',
   productDelete = 'product.delete.command',

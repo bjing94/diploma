@@ -3,8 +3,9 @@ import {
   OrderGetQueryRequest,
   OrderGetQueryResponse,
   OrderUpdatedEventPayload,
+  PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
-import { OrderStatus } from '@burger-shop/interfaces';
+import { OrderStatus, PaymentStatus } from '@burger-shop/interfaces';
 import { Inject, Injectable } from '@nestjs/common';
 import OrderAbstractRepository from './repository/order.abstract-repository';
 
@@ -16,7 +17,7 @@ export default class OrderQueryService {
   ) {}
 
   async getOrder(data: OrderGetQueryRequest): Promise<OrderGetQueryResponse> {
-    const result = await this.repository.find(data.id);
+    const result = await this.repository.find({ _id: data.id });
     return {
       id: result.id,
       status: result.status,

@@ -7,8 +7,10 @@ import {
   OrderCreateCommandResponse,
   OrderUpdateCommandRequest,
   OrderUpdateCommandResponse,
+  OrderUpdatedEventPayload,
+  PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
-import { CommandTopics } from '@burger-shop/kafka-module';
+import { CommandTopics, EventTopics } from '@burger-shop/kafka-module';
 
 @UseInterceptors(LoggerInterceptor)
 @Controller()
@@ -27,5 +29,10 @@ export default class OrderCommandController {
     @Payload() dto: OrderUpdateCommandRequest
   ): Promise<OrderUpdateCommandResponse> {
     return this.service.updateOrder(dto);
+  }
+
+  @MessagePattern(EventTopics.paymentStatusUpdated)
+  async onPaymentUpdated(@Payload() data: PaymentStatusUpdatedEventPayload) {
+    await this.service.onPaymentStatusUpdated(data);
   }
 }

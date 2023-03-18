@@ -4,7 +4,9 @@ import { getMongoEventStoreConnectionStringEventStore } from '../../config/mongo
 
 @Module({
   imports: [
-    EventStoreModule.register(getMongoEventStoreConnectionStringEventStore()),
+    EventStoreModule.registerForPayment(
+      getMongoEventStoreConnectionStringEventStore()
+    ),
   ],
   exports: [EventStoreModule],
 })

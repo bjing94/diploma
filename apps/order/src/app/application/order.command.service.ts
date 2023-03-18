@@ -7,6 +7,7 @@ import {
   OrderUpdateCommandRequest,
   OrderUpdateCommandResponse,
   OrderUpdatedEventPayload,
+  PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { EventStoreOrderService } from '@burger-shop/event-store';
@@ -14,6 +15,7 @@ import {
   OrderItemDomainEntity,
   OrderDomainEntity,
 } from '@burger-shop/domain-entity';
+import { OrderStatus, PaymentStatus } from '@burger-shop/interfaces';
 
 @Injectable()
 export default class OrderCommandService {
@@ -28,12 +30,16 @@ export default class OrderCommandService {
     const { orderItems, paymentInfo } = dto;
     const orderDomainItems: OrderItemDomainEntity[] = [];
     let idx = 0;
+    let sum = 0;
     for (const item of orderItems) {
       const response = await this.kafkaProducerService.sendMenuItemGet({
         id: item.productId,
       });
       Logger.verbose(`Response ${JSON.stringify(response)}`);
-      if (!response || !response.item) return null;
+      if (!response || !response.item) {
+        Logger.error(`Menu item doesn't exist!`);
+        return null;
+      }
       const { price, id } = response.item;
       const { name } = response.item.product;
       orderDomainItems.push(
@@ -44,19 +50,27 @@ export default class OrderCommandService {
           id: idx,
         })
       );
+      sum += price * item.count;
       idx++;
     }
-    // Payment service
-    // const response = await this.kafkaProducerService.sendPaymentCreate({
-    //   sum,
-    //   type: paymentInfo.type,
-    // });
-    // if (!response) return null;
 
     const order = new OrderDomainEntity({
-      paymentId: 'response.id',
+      paymentId: '',
       items: orderDomainItems,
     });
+
+    // Payment service
+    const response = await this.kafkaProducerService.sendPaymentCreate({
+      sum,
+      type: paymentInfo.type,
+      orderId: order.id,
+    });
+    if (!response) {
+      Logger.error(`Payment not created!`);
+      return null;
+    }
+    order.paymentId = response.id;
+
     const payload: OrderCreatedEventPayload = {
       order: {
         id: order.id,
@@ -113,5 +127,20 @@ export default class OrderCommandService {
       id: id,
       status: order.status,
     };
+  }
+
+  public async onPaymentStatusUpdated(data: PaymentStatusUpdatedEventPayload) {
+    const order = await this.eventStoreService.getOrder(data.orderId);
+    if (!order) return;
+
+    if (data.status === PaymentStatus.FULFILLED) {
+      console.log('order payed');
+      await this.kafkaProducerService.emitOrderUpdated({
+        order: {
+          id: data.orderId,
+          status: OrderStatus.PAYED,
+        },
+      });
+    }
   }
 }
