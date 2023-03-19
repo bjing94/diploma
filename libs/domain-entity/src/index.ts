@@ -4,3 +4,4 @@ export * from './lib/menu.domain-entity';
 export * from './lib/order.domain-entity';
 export * from './lib/order-item.domain-entity';
 export * from './lib/payment.domain-entity';
+export * from './lib/cooking-request.domain-entity';

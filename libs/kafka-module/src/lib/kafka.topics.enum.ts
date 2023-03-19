@@ -10,6 +10,8 @@ export enum CommandTopics {
   menuCreate = 'menu.create.command',
   menuDelete = 'menu.delete.command',
   menuUpdate = 'menu.update.command',
+  cookingRequestCreate = 'cooking-request.created.command',
+  cookingRequestUpdate = 'cooking-request.update.command',
 }
 
 export enum QueryTopics {
@@ -20,6 +22,7 @@ export enum QueryTopics {
   productFind = 'product.find.query',
   menuItemGet = 'menu-item.get.query',
   menuFind = 'menu.find.query',
+  cookingRequestGet = 'cooking-request.get.query',
 }
 
 export enum EventTopics {
@@ -32,4 +35,6 @@ export enum EventTopics {
   menuUpdated = 'menu.updated.event',
   paymentCreated = 'payment.created.event',
   paymentStatusUpdated = 'payment.status-updated.event',
+  cookingRequestCreated = 'cooking-request.created.event',
+  cookingRequestUpdated = 'cooking-request.updated.event',
 }

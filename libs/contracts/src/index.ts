@@ -26,3 +26,5 @@ export * from './lib/payment/event/payment.status-updated';
 export * from './lib/payment/command/payment.create';
 export * from './lib/payment/command/payment.update';
 export * from './lib/payment/query/payment.get';
+
+export * from './lib/kitchen';
