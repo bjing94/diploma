@@ -12,8 +12,7 @@
         "compiler": "tsc",
         "outputPath": "dist/apps/kitchen",
         "main": "apps/kitchen/src/main.ts",
-        "tsConfig": "apps/kitchen/tsconfig.app.json",
-        "assets": ["apps/kitchen/src/assets"]
+        "tsConfig": "apps/kitchen/tsconfig.app.json"
       },
       "configurations": {
         "production": {

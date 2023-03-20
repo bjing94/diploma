@@ -5,12 +5,16 @@ import {
 import { CookingRequestDomainEntity } from '@burger-shop/domain-entity';
 import { EventStoreKitchenService } from '@burger-shop/event-store';
 import { CookingRequestStatus } from '@burger-shop/interfaces';
-import { EventTopics } from '@burger-shop/kafka-module';
+import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export default class KitchenCommandService {
-  constructor(private readonly eventStore: EventStoreKitchenService) {}
+  constructor(
+    private readonly eventStore: EventStoreKitchenService,
+    private readonly kafkaService: KafkaProducerService
+  ) {}
+
   public async handleOrderCreated(data: OrderCreatedEventPayload) {
     const cookingRequests: CookingRequestDomainEntity[] = [];
     data.order.orderItems.forEach((item) => {
@@ -32,6 +36,7 @@ export default class KitchenCommandService {
         payload: JSON.stringify(payload),
         name: EventTopics.cookingRequestCreated,
       });
+      await this.kafkaService.emitCookingRequestCreated(payload);
     }
   }
 }

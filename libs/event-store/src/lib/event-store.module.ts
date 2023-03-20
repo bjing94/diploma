@@ -6,6 +6,7 @@ import { EventStoreService } from './event-store.service';
 import { EventSchema } from './event.model';
 import { EventStoreOrderService } from './order/event-store.order.service';
 import { EventStorePaymentService } from './payment/event-store.payment.service';
+import { EventStoreKitchenService } from './kitchen/event-store.kitchen.service';
 
 @Module({})
 export class EventStoreModule {
@@ -126,6 +127,32 @@ export class EventStoreModule {
       ],
       providers: [EventStorePaymentService],
       exports: [EventStorePaymentService],
+    };
+  }
+
+  public static registerForKitchen(connectionStr: string): DynamicModule {
+    return {
+      module: EventStoreModule,
+      imports: [
+        MongooseModule.forRoot(connectionStr, {
+          connectionName: CONNECTION_NAME,
+        }),
+        MongooseModule.forFeature(
+          [
+            {
+              name: ResourceNames.COOKING_REQUEST,
+              schema: EventSchema,
+            },
+            {
+              name: ResourceNames.COOKING_REQUEST + '_snapshot',
+              schema: EventSchema,
+            },
+          ],
+          CONNECTION_NAME
+        ),
+      ],
+      providers: [EventStoreKitchenService],
+      exports: [EventStoreKitchenService],
     };
   }
 }

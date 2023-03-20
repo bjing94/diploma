@@ -4,7 +4,7 @@ export type CookingStockDocument = CookingStockModel & Document;
 
 @Schema()
 export class CookingStockModel {
-  @Prop()
+  @Prop({ unique: true })
   public readonly productId: string;
   @Prop()
   public readonly quantity: number;

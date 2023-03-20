@@ -7,7 +7,7 @@ export type CookingRequestDocument = CookingRequestModel & Document;
 export class CookingRequestModel {
   @Prop()
   public readonly productId: string;
-  @Prop()
+  @Prop({ type: String })
   public readonly status: CookingRequestStatus;
 }
 

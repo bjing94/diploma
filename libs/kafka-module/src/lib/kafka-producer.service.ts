@@ -42,6 +42,12 @@ import {
   ProductUpdateResponse,
   PaymentGetQueryRequest,
   PaymentGetQueryResponse,
+  CookingRequestCreatedEventPayload,
+  CookingRequestUpdatedEventPayload,
+  CookingRequestUpdateCommandRequest,
+  CookingRequestUpdateCommandResponse,
+  CookingRequestCreateCommandRequest,
+  CookingRequestCreateCommandResponse,
 } from '@burger-shop/contracts';
 import { Inject, Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common/decorators';
@@ -330,5 +336,42 @@ export class KafkaProducerService {
       QueryTopics.paymentGet,
       payload
     );
+  }
+
+  // Kitchen
+  public async emitCookingRequestCreated(
+    payload: CookingRequestCreatedEventPayload
+  ) {
+    return this.emit<void, CookingRequestCreatedEventPayload>(
+      EventTopics.cookingRequestCreated,
+      payload
+    );
+  }
+
+  public async emitCookingRequestUpdated(
+    payload: CookingRequestUpdatedEventPayload
+  ) {
+    return this.emit<void, CookingRequestUpdatedEventPayload>(
+      EventTopics.cookingRequestUpdated,
+      payload
+    );
+  }
+
+  public async sendCookingRequestUpdate(
+    payload: CookingRequestUpdateCommandRequest
+  ) {
+    return this.send<
+      CookingRequestUpdateCommandResponse,
+      CookingRequestUpdateCommandRequest
+    >(CommandTopics.cookingRequestUpdate, payload);
+  }
+
+  public async sendCookingRequestCreate(
+    payload: CookingRequestCreateCommandRequest
+  ) {
+    return this.send<
+      CookingRequestCreateCommandResponse,
+      CookingRequestCreateCommandRequest
+    >(CommandTopics.cookingRequestCreate, payload);
   }
 }

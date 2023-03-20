@@ -18,6 +18,7 @@ export default class OrderQueryService {
 
   async getOrder(data: OrderGetQueryRequest): Promise<OrderGetQueryResponse> {
     const result = await this.repository.find({ _id: data.id });
+    if (!result) return null;
     return {
       id: result.id,
       status: result.status,
