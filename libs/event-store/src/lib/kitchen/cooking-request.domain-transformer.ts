@@ -31,7 +31,7 @@ export default class CookingRequestDomainTransformer {
       domain.productId = productId;
       domain.status = status;
     }
-    if (event.name === EventTopics.orderCreated) {
+    if (event.name === EventTopics.cookingRequestCreated) {
       const { id, status, productId } = JSON.parse(
         event.payload
       ) as CookingRequestCreatedEventPayload;
@@ -39,7 +39,7 @@ export default class CookingRequestDomainTransformer {
       domain.productId = productId;
       domain.status = status;
     }
-    if (event.name === EventTopics.orderUpdated) {
+    if (event.name === EventTopics.cookingRequestUpdated) {
       const { status, productId } = JSON.parse(
         event.payload
       ) as CookingRequestUpdatedEventPayload;

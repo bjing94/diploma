@@ -8,7 +8,12 @@ import {
   CookingRequestModel,
   CookingRequestSchema,
 } from '../infrastructure/model/cooking-request.model';
+import {
+  CookingStockModel,
+  CookingStockSchema,
+} from '../infrastructure/model/cooking-stock.model';
 import CookingRequestRepository from '../infrastructure/repository/cooking-request.repository';
+import CookingStockRepository from '../infrastructure/repository/cooking-stock.repository';
 import EventStoreRootModule from './event-store/event-store-root.module';
 import KafkaModule from './kafka/kafka.module';
 import KitchenCommandController from './kitchen.command.controller';
@@ -25,7 +30,10 @@ import KitchenQueryService from './kitchen.query.service';
       connectionName: READ_CONNECTION_NAME,
     }),
     MongooseModule.forFeature(
-      [{ name: CookingRequestModel.name, schema: CookingRequestSchema }],
+      [
+        { name: CookingRequestModel.name, schema: CookingRequestSchema },
+        { name: CookingStockModel.name, schema: CookingStockSchema },
+      ],
       READ_CONNECTION_NAME
     ),
   ],
@@ -33,10 +41,13 @@ import KitchenQueryService from './kitchen.query.service';
   providers: [
     KitchenCommandService,
     KitchenQueryService,
-
     {
       provide: 'CookingRequestRepository',
       useClass: CookingRequestRepository,
+    },
+    {
+      provide: 'CookingStockRepository',
+      useClass: CookingStockRepository,
     },
   ],
 })

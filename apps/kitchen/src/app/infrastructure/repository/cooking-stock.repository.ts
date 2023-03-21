@@ -1,6 +1,6 @@
 import {
-  CookingRequestCreatedEventPayload,
-  CookingRequestUpdatedEventPayload,
+  CookingStockCreatedEventPayload,
+  CookingStockUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, FilterQuery, Types } from 'mongoose';
@@ -24,18 +24,17 @@ export default class CookingStockRepository {
     return this.model.find(filter);
   }
 
-  public async create(data: CookingRequestCreatedEventPayload) {
+  public async create(data: CookingStockCreatedEventPayload) {
     return this.model.create({
       _id: new Types.ObjectId(data.id),
       productId: data.productId,
-      status: data.status,
+      quantity: data.quantity,
     });
   }
 
-  public async update(data: CookingRequestUpdatedEventPayload) {
+  public async update(data: CookingStockUpdatedEventPayload) {
     return this.model.findByIdAndUpdate(data.id, {
-      productId: data.productId,
-      status: data.status,
+      quantity: data.quantity,
     });
   }
 }

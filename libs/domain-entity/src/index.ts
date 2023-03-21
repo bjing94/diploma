@@ -5,3 +5,4 @@ export * from './lib/order.domain-entity';
 export * from './lib/order-item.domain-entity';
 export * from './lib/payment.domain-entity';
 export * from './lib/cooking-request.domain-entity';
+export * from './lib/cooking-stock.domain-entity';

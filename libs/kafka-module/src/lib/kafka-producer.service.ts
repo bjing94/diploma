@@ -48,6 +48,14 @@ import {
   CookingRequestUpdateCommandResponse,
   CookingRequestCreateCommandRequest,
   CookingRequestCreateCommandResponse,
+  CookingStockAddCommandRequest,
+  CookingStockAddCommandResponse,
+  CookingStockCreatedEventPayload,
+  CookingStockUpdatedEventPayload,
+  CookingStockGetQueryRequest,
+  CookingStockGetQueryResponse,
+  CookingRequestGetQueryRequest,
+  CookingRequestGetQueryResponse,
 } from '@burger-shop/contracts';
 import { Inject, Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common/decorators';
@@ -373,5 +381,44 @@ export class KafkaProducerService {
       CookingRequestCreateCommandResponse,
       CookingRequestCreateCommandRequest
     >(CommandTopics.cookingRequestCreate, payload);
+  }
+
+  public async sendCookingRequestGet(payload: CookingRequestGetQueryRequest) {
+    return this.send<
+      CookingRequestGetQueryResponse,
+      CookingRequestGetQueryRequest
+    >(QueryTopics.cookingRequestGet, payload);
+  }
+
+  public async sendCookingStockAdd(payload: CookingStockAddCommandRequest) {
+    return this.send<
+      CookingStockAddCommandResponse,
+      CookingStockAddCommandRequest
+    >(CommandTopics.cookingStockAdd, payload);
+  }
+
+  public async sendCookingStockGet(payload: CookingStockGetQueryRequest) {
+    return this.send<CookingStockGetQueryResponse, CookingStockGetQueryRequest>(
+      QueryTopics.cookingStockGet,
+      payload
+    );
+  }
+
+  public async emitCookingStockCreated(
+    payload: CookingStockCreatedEventPayload
+  ) {
+    return this.emit<void, CookingStockCreatedEventPayload>(
+      EventTopics.cookingStockCreated,
+      payload
+    );
+  }
+
+  public async emitCookingStockUpdated(
+    payload: CookingStockUpdatedEventPayload
+  ) {
+    return this.emit<void, CookingStockUpdatedEventPayload>(
+      EventTopics.cookingStockUpdated,
+      payload
+    );
   }
 }

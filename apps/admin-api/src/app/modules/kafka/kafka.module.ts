@@ -20,6 +20,9 @@ import { Module } from '@nestjs/common';
         CommandTopics.orderCreate,
         CommandTopics.paymentCreate,
         CommandTopics.paymentUpdate,
+        CommandTopics.cookingRequestCreate,
+        CommandTopics.cookingRequestUpdate,
+        CommandTopics.cookingStockAdd,
         QueryTopics.menuGet,
         QueryTopics.productGet,
         QueryTopics.productFind,
@@ -27,6 +30,8 @@ import { Module } from '@nestjs/common';
         QueryTopics.menuItemGet,
         QueryTopics.menuFind,
         QueryTopics.paymentGet,
+        QueryTopics.cookingRequestGet,
+        QueryTopics.cookingStockGet,
       ]
     ),
   ],

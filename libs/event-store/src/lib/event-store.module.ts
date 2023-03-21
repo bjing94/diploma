@@ -147,6 +147,14 @@ export class EventStoreModule {
               name: ResourceNames.COOKING_REQUEST + '_snapshot',
               schema: EventSchema,
             },
+            {
+              name: ResourceNames.COOKING_STOCK,
+              schema: EventSchema,
+            },
+            {
+              name: ResourceNames.COOKING_STOCK + '_snapshot',
+              schema: EventSchema,
+            },
           ],
           CONNECTION_NAME
         ),
