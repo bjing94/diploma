@@ -56,6 +56,8 @@ import {
   CookingStockGetQueryResponse,
   CookingRequestGetQueryRequest,
   CookingRequestGetQueryResponse,
+  OrderFindQueryRequest,
+  OrderFindQueryResponse,
 } from '@burger-shop/contracts';
 import { Inject, Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common/decorators';
@@ -250,6 +252,15 @@ export class KafkaProducerService {
   ): Promise<OrderCreateCommandResponse> {
     return this.send<OrderCreateCommandResponse, OrderCreateCommandRequest>(
       CommandTopics.orderCreate,
+      payload
+    );
+  }
+
+  public async sendOrderFind(
+    payload: OrderFindQueryRequest
+  ): Promise<OrderFindQueryResponse> {
+    return this.send<OrderFindQueryResponse, OrderFindQueryRequest>(
+      QueryTopics.orderFind,
       payload
     );
   }

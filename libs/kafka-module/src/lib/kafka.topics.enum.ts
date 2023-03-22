@@ -17,6 +17,7 @@ export enum CommandTopics {
 
 export enum QueryTopics {
   orderGet = 'order.get.query',
+  orderFind = 'order.find.query',
   paymentGet = 'payment.get.query',
   menuGet = 'menu.get.query',
   productGet = 'product.get.query',

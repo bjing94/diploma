@@ -1,5 +1,7 @@
 import {
   OrderCreatedEventPayload,
+  OrderFindQueryRequest,
+  OrderFindQueryResponse,
   OrderGetQueryRequest,
   OrderGetQueryResponse,
   OrderUpdatedEventPayload,
@@ -7,13 +9,15 @@ import {
 } from '@burger-shop/contracts';
 import { OrderStatus, PaymentStatus } from '@burger-shop/interfaces';
 import { Inject, Injectable } from '@nestjs/common';
+import { In } from 'typeorm';
+import OrderRepository from '../infrastructure/database/mongo/repository/order.repository';
 import OrderAbstractRepository from './repository/order.abstract-repository';
 
 @Injectable()
 export default class OrderQueryService {
   constructor(
     @Inject('OrderRepository')
-    private readonly repository: OrderAbstractRepository
+    private readonly repository: OrderRepository
   ) {}
 
   async getOrder(data: OrderGetQueryRequest): Promise<OrderGetQueryResponse> {
@@ -22,6 +26,20 @@ export default class OrderQueryService {
     return {
       id: result.id,
       status: result.status,
+    };
+  }
+
+  async findOrders(
+    data: OrderFindQueryRequest
+  ): Promise<OrderFindQueryResponse> {
+    const result = await this.repository.findMany({
+      status: data.status,
+    });
+    if (!result.length) return null;
+    return {
+      orders: result.map((res) => {
+        return { id: res.id, status: res.status };
+      }),
     };
   }
 

@@ -10,9 +10,17 @@ export default class OrderRepository implements OrderAbstractRepository {
     @InjectModel(OrderModel.name, READ_CONNECTION_NAME)
     private readonly model: Model<OrderDocument>
   ) {}
+
   public async find(model: FilterQuery<OrderDocument>): Promise<OrderDocument> {
     return this.model.findOne(model);
   }
+
+  public async findMany(
+    model: FilterQuery<OrderDocument>
+  ): Promise<OrderDocument[]> {
+    return this.model.find(model);
+  }
+
   public async create(order: OrderCreatedDto): Promise<OrderDocument> {
     const { id, status, ...rest } = order;
     return this.model.create({

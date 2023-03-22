@@ -27,6 +27,7 @@ import { Module } from '@nestjs/common';
         QueryTopics.productGet,
         QueryTopics.productFind,
         QueryTopics.orderGet,
+        QueryTopics.orderFind,
         QueryTopics.menuItemGet,
         QueryTopics.menuFind,
         QueryTopics.paymentGet,

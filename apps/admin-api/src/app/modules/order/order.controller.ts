@@ -1,25 +1,30 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 
 import OrderService from './order.service';
-import { ApiBody, ApiResponse, ApiTags, OmitType } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
+  OrderFindQueryRequest,
+  OrderFindQueryResponse,
   OrderGetQueryRequest,
   OrderGetQueryResponse,
-  OrderUpdateCommandRequest,
   OrderUpdateCommandResponse,
 } from '@burger-shop/contracts';
 import { OrderUpdateHttpRequest } from './dto/order.update.request';
+import { OrderStatus } from '@burger-shop/interfaces';
 
 @ApiTags('Order')
 @Controller('order')
 export default class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Get('health')
-  async healthcheck() {
-    return { data: 'OK' };
+  @ApiResponse({ type: OrderFindQueryResponse })
+  @Get()
+  async find(
+    @Query('filter') filter: OrderFindQueryRequest
+  ): Promise<OrderFindQueryResponse> {
+    return this.orderService.find(filter);
   }
 
   @ApiResponse({ type: OrderCreateCommandResponse })

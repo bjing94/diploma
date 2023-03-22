@@ -5,6 +5,7 @@ export enum OrderStatus {
   PAYED = 'payed',
   WAITING_FOR_PAYMENT = 'waiting_for_payment',
   COMPLETED = 'completed',
+  WAITING_FOR_PICKUP = 'waiting_for_pickup',
 }
 
 export class OrderItemResponse {

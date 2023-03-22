@@ -26,7 +26,7 @@ export default class KitchenCommandService {
   public async updateCookingRequest(data: CookingRequestUpdateCommandRequest) {
     const cookingRequest = await this.eventStore.getCookingRequest(data.id);
     if (!cookingRequest) return null;
-    console.log(cookingRequest);
+
     cookingRequest.status = data.status;
 
     const payload: CookingRequestUpdatedEventPayload = {
@@ -42,10 +42,12 @@ export default class KitchenCommandService {
     });
     await this.kafkaService.emitCookingRequestUpdated(payload);
 
-    await this.handleAddStock({
-      productId: cookingRequest.productId,
-      value: 1,
-    });
+    if (cookingRequest.status === CookingRequestStatus.READY) {
+      await this.handleAddStock({
+        productId: cookingRequest.productId,
+        value: 1,
+      });
+    }
   }
 
   // public async handleCookingRequestUpdated(

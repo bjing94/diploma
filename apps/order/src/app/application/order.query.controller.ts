@@ -1,5 +1,6 @@
 import {
   OrderCreatedEventPayload,
+  OrderFindQueryRequest,
   OrderGetQueryRequest,
   OrderUpdatedEventPayload,
 } from '@burger-shop/contracts';
@@ -22,6 +23,11 @@ export default class OrderQueryController {
   @MessagePattern(QueryTopics.orderGet)
   async getOrder(@Payload() data: OrderGetQueryRequest) {
     return this.orderQueryService.getOrder(data);
+  }
+
+  @MessagePattern(QueryTopics.orderFind)
+  async findOrders(@Payload() data: OrderFindQueryRequest) {
+    return this.orderQueryService.findOrders(data);
   }
 
   @MessagePattern(EventTopics.orderUpdated)

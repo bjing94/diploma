@@ -1,6 +1,7 @@
 import {
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
+  OrderFindQueryRequest,
   OrderGetQueryRequest,
   OrderGetQueryResponse,
   OrderUpdateCommandRequest,
@@ -42,6 +43,15 @@ export default class OrderService {
 
     if (!result) {
       throw new BadRequestException('Order not updated!');
+    }
+    return result;
+  }
+
+  public async find(data: OrderFindQueryRequest) {
+    const result = await this.kafkaProducerService.sendOrderFind(data);
+
+    if (!result) {
+      throw new BadRequestException('Order not found!');
     }
     return result;
   }
