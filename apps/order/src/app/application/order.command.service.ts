@@ -33,19 +33,19 @@ export default class OrderCommandService {
     let sum = 0;
     for (const item of orderItems) {
       const response = await this.kafkaProducerService.sendMenuItemGet({
-        id: item.productId,
+        id: item.menuItemId,
       });
       Logger.verbose(`Response ${JSON.stringify(response)}`);
       if (!response || !response.item) {
         Logger.error(`Menu item doesn't exist!`);
         return null;
       }
-      const { price, id } = response.item;
-      const { name } = response.item.product;
+      const { price } = response.item;
+      const { product } = response.item;
       orderDomainItems.push(
         new OrderItemDomainEntity({
           price,
-          product: { id },
+          product: { id: product.id },
           quantity: item.count,
           id: idx,
         })

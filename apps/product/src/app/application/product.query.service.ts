@@ -16,6 +16,10 @@ import {
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import MenuAbstractRepository from './repository/menu.abstract-repository';
+import { MenuItemResponseDto, MenuResponseDto } from '@burger-shop/interfaces';
+import { FilterQuery, isValidObjectId } from 'mongoose';
+import { ProductDocument } from '@burger-shop/models';
+import { In, ObjectID } from 'typeorm';
 
 @Injectable()
 export default class ProductQueryService {
@@ -30,7 +34,11 @@ export default class ProductQueryService {
     const product = await this.productRepository.find(id);
 
     return {
-      product,
+      product: {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+      },
     };
   }
 
@@ -59,10 +67,27 @@ export default class ProductQueryService {
   public async find(
     dto: ProductFindQueryRequest
   ): Promise<ProductFindQueryResponse> {
-    const products = await this.productRepository.findMany(dto.take, dto.skip);
-    console.log(products);
+    const filter: FilterQuery<ProductDocument> = {};
+    if (dto.ids) {
+      console.log(dto.ids);
+
+      // filter.id = In(dto.ids);
+      filter._id = { $in: dto.ids };
+    }
+    const products = await this.productRepository.findMany(
+      filter,
+      dto.take,
+      dto.skip
+    );
+    // console.log(products);
     return {
-      products,
+      products: products.map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          price: item.price,
+        };
+      }),
     };
   }
 
@@ -70,8 +95,27 @@ export default class ProductQueryService {
     dto: MenuFindQueryRequest
   ): Promise<MenuFindQueryResponse> {
     const menus = await this.menuRepository.findMany(dto);
+    const menusResponse: MenuResponseDto[] = menus.map((item) => {
+      return {
+        id: item.id,
+        items: item.items.map((menuItem): MenuItemResponseDto => {
+          const { id, available, price, product } = menuItem;
+          return {
+            id: id,
+            available: available,
+            price: price,
+            product: {
+              id: product.id,
+              price: product.price,
+              name: product.name,
+            },
+          };
+        }),
+        active: item.active,
+      };
+    });
     return {
-      menus,
+      menus: menusResponse,
     };
   }
 

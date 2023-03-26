@@ -1,5 +1,8 @@
-import { CookingRequestUpdateCommandRequest } from '@burger-shop/contracts';
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import {
+  CookingRequestFindQueryRequest,
+  CookingRequestUpdateCommandRequest,
+} from '@burger-shop/contracts';
+import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import KitchenService from './kitchen.service';
 
@@ -7,6 +10,13 @@ import KitchenService from './kitchen.service';
 @Controller('kitchen')
 export default class KitchenController {
   constructor(private readonly service: KitchenService) {}
+
+  @Get('request')
+  public async findRequests(
+    @Query('filter') filter: CookingRequestFindQueryRequest
+  ) {
+    return this.service.findRequest(filter);
+  }
 
   @Get('request/:id')
   public async getRequest(@Param('id') id: string) {

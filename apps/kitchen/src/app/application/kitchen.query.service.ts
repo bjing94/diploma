@@ -1,12 +1,17 @@
 import {
   CookingRequestCreatedEventPayload,
+  CookingRequestFindQueryRequest,
+  CookingRequestFindQueryResponse,
   CookingRequestGetQueryRequest,
+  CookingRequestGetQueryResponse,
   CookingRequestUpdatedEventPayload,
   CookingStockCreatedEventPayload,
   CookingStockGetQueryRequest,
   CookingStockUpdatedEventPayload,
 } from '@burger-shop/contracts';
+import { KafkaProducerService } from '@burger-shop/kafka-module';
 import { Inject, Injectable } from '@nestjs/common';
+import { Logger } from '@nestjs/common/services';
 import CookingRequestRepository from '../infrastructure/repository/cooking-request.repository';
 import CookingStockRepository from '../infrastructure/repository/cooking-stock.repository';
 
@@ -16,7 +21,8 @@ export default class KitchenQueryService {
     @Inject('CookingRequestRepository')
     private readonly requestRepository: CookingRequestRepository,
     @Inject('CookingStockRepository')
-    private readonly stockRepository: CookingStockRepository
+    private readonly stockRepository: CookingStockRepository,
+    private readonly kafkaService: KafkaProducerService
   ) {}
 
   public async onCookingRequestCreated(
@@ -31,11 +37,19 @@ export default class KitchenQueryService {
     return this.requestRepository.update(data);
   }
 
-  public async getCookingRequest(data: CookingRequestGetQueryRequest) {
+  public async getCookingRequest(
+    data: CookingRequestGetQueryRequest
+  ): Promise<CookingRequestGetQueryResponse> {
     try {
       const res = await this.requestRepository.findOne({ _id: data.id });
-      console.log(res);
-      return res;
+      const response = await this.kafkaService.sendProductGet({
+        id: res.productId,
+      });
+      return {
+        id: res.id,
+        product: response.product,
+        status: res.status,
+      };
     } catch (e) {
       console.log(e);
       return null;
@@ -56,6 +70,37 @@ export default class KitchenQueryService {
       return res;
     } catch (e) {
       return null;
+    }
+  }
+
+  public async findCookingRequest(
+    data: CookingRequestFindQueryRequest
+  ): Promise<CookingRequestFindQueryResponse> {
+    try {
+      const res = await this.requestRepository.findMany({
+        status: data.status,
+      });
+      const response = await this.kafkaService.sendProductFind({
+        ids: res.map((item) => item.productId),
+        take: res.length,
+        skip: 0,
+      });
+      const productsMap = new Map();
+      response.products.forEach((element) => {
+        productsMap.set(element.id, element);
+      });
+      return {
+        requests: res.map((item) => {
+          return {
+            id: item.id,
+            status: item.status,
+            product: productsMap.get(item.productId) ?? null,
+          };
+        }),
+      };
+    } catch (e) {
+      Logger.error(e);
+      return { requests: [] };
     }
   }
 }

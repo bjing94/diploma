@@ -16,10 +16,10 @@ class PaymentInfo {
   public readonly type: PaymentType;
 }
 
-class OrderItem {
+export class OrderItem {
   @IsString()
   @ApiProperty()
-  public readonly productId: string;
+  public readonly menuItemId: string;
 
   @IsNumber()
   @ApiProperty()

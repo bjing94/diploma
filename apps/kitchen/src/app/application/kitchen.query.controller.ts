@@ -1,5 +1,6 @@
 import {
   CookingRequestCreatedEventPayload,
+  CookingRequestFindQueryRequest,
   CookingRequestGetQueryRequest,
   CookingRequestUpdatedEventPayload,
   CookingStockCreatedEventPayload,
@@ -47,5 +48,10 @@ export default class KitchenQueryController {
   @MessagePattern(QueryTopics.cookingStockGet)
   public async stockGet(@Payload() data: CookingStockGetQueryRequest) {
     return this.service.getCookingStock(data);
+  }
+
+  @MessagePattern(QueryTopics.cookingRequestFind)
+  public async requestFind(@Payload() data: CookingRequestFindQueryRequest) {
+    return this.service.findCookingRequest(data);
   }
 }

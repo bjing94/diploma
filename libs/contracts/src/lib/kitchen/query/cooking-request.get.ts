@@ -1,4 +1,7 @@
-import { CookingRequestStatus } from '@burger-shop/interfaces';
+import {
+  CookingRequestStatus,
+  ProductResponseDto,
+} from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
@@ -13,9 +16,9 @@ export class CookingRequestGetQueryResponse {
   @IsString()
   public readonly id: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: ProductResponseDto })
   @IsString()
-  public readonly productId: string;
+  public readonly product: ProductResponseDto;
 
   @ApiProperty()
   @IsString()

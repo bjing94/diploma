@@ -1,4 +1,5 @@
 import {
+  CookingRequestFindQueryRequest,
   CookingRequestGetQueryRequest,
   CookingRequestUpdateCommandRequest,
   CookingStockGetQueryRequest,
@@ -20,5 +21,9 @@ export default class KitchenService {
 
   public async getStock(dto: CookingStockGetQueryRequest) {
     return this.kafka.sendCookingStockGet(dto);
+  }
+
+  public async findRequest(dto: CookingRequestFindQueryRequest) {
+    return this.kafka.sendCookingRequestFind(dto);
   }
 }

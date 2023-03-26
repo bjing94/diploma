@@ -36,8 +36,9 @@ export default class MenuController {
 
   @ApiOperation({ description: 'Get active menu' })
   @Get('active')
-  public async getActive(): Promise<MenuFindQueryResponse> {
-    return this.menuService.findMenu({ active: true });
+  public async getActive(): Promise<MenuGetQueryResponse> {
+    const menus = await this.menuService.findMenu({ active: true });
+    return { menu: menus.menus[0] };
   }
 
   @ApiOperation({ description: 'Get item from menu' })

@@ -10,3 +10,4 @@ export * from './event/cooking-stock.updated';
 
 export * from './query/cooking-request.get';
 export * from './query/cooking-stock.get';
+export * from './query/cooking-request.find';

@@ -58,6 +58,8 @@ import {
   CookingRequestGetQueryResponse,
   OrderFindQueryRequest,
   OrderFindQueryResponse,
+  CookingRequestFindQueryRequest,
+  CookingRequestFindQueryResponse,
 } from '@burger-shop/contracts';
 import { Inject, Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common/decorators';
@@ -413,6 +415,13 @@ export class KafkaProducerService {
       QueryTopics.cookingStockGet,
       payload
     );
+  }
+
+  public async sendCookingRequestFind(payload: CookingRequestFindQueryRequest) {
+    return this.send<
+      CookingRequestFindQueryResponse,
+      CookingRequestFindQueryRequest
+    >(QueryTopics.cookingRequestFind, payload);
   }
 
   public async emitCookingStockCreated(

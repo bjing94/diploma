@@ -3,11 +3,12 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
+import { ExceptionFilter, Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { KafkaOptions, Transport } from '@nestjs/microservices';
 
 import { AppModule } from './app/application/app.module';
+import { MyExceptionFilter } from './app/application/exception.filter';
 import { KafkaExceptionFilter } from './app/application/filters/kafka.exception.filter';
 
 async function bootstrap() {
@@ -23,7 +24,7 @@ async function bootstrap() {
       },
     },
   });
-  // app.useGlobalFilters(new KafkaExceptionFilter());
+  app.useGlobalFilters(new MyExceptionFilter());
   await app.listen();
   Logger.log(`Orders microservice started.`);
 }

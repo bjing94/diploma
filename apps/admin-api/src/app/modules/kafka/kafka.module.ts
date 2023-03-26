@@ -33,6 +33,7 @@ import { Module } from '@nestjs/common';
         QueryTopics.paymentGet,
         QueryTopics.cookingRequestGet,
         QueryTopics.cookingStockGet,
+        QueryTopics.cookingRequestFind,
       ]
     ),
   ],

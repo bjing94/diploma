@@ -7,7 +7,11 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
-    KafkaProducerModule.register('kitchen-client', ['localhost:29092'], []),
+    KafkaProducerModule.register(
+      'kitchen-client',
+      ['localhost:29092'],
+      [QueryTopics.productFind, QueryTopics.productGet]
+    ),
   ],
   exports: [KafkaProducerModule],
 })

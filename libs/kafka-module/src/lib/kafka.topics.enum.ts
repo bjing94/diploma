@@ -25,6 +25,7 @@ export enum QueryTopics {
   menuItemGet = 'menu-item.get.query',
   menuFind = 'menu.find.query',
   cookingRequestGet = 'cooking-request.get.query',
+  cookingRequestFind = 'cooking-request.find.query',
   cookingStockGet = 'cooking-stock.get.query',
 }
 

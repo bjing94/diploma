@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import ProductAbstractRepository from '../../../application/repository/product.abstract-repository';
 import { Product, ProductDocument } from '@burger-shop/models';
 import { InjectModel } from '@nestjs/mongoose';
@@ -18,10 +18,12 @@ export default class ProductRepository implements ProductAbstractRepository {
   }
 
   public async findMany(
+    filter: FilterQuery<ProductDocument>,
     take: number,
     skip: number
   ): Promise<ProductDocument[]> {
-    return this.model.find().limit(take).skip(skip).exec();
+    console.log(filter);
+    return this.model.find(filter).limit(take).skip(skip).exec();
   }
 
   public async create(product: ProductCreateDto): Promise<ProductDocument> {

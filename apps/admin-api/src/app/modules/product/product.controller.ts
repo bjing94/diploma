@@ -9,6 +9,7 @@ import {
   ProductUpdateResponse,
 } from '@burger-shop/contracts';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -37,8 +38,9 @@ export default class ProductController {
   @ApiOperation({ description: 'Find products' })
   @Get()
   public async find(
-    @Query('pagination') dto: ProductFindQueryRequest
+    @Query('filter') dto: ProductFindQueryRequest
   ): Promise<ProductFindQueryResponse> {
+    console.log(dto);
     return this.productService.find(dto);
   }
 

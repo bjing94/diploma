@@ -33,6 +33,7 @@ export default class OrderController {
   async create(
     @Body() dto: OrderCreateCommandRequest
   ): Promise<OrderCreateCommandResponse> {
+    console.log(dto);
     return this.orderService.create(dto);
   }
 

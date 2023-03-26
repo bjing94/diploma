@@ -1,13 +1,18 @@
 import { ProductResponseDto } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
 export class ProductFindQueryRequest {
-  @ApiProperty({ name: 'pagination[take]', example: 5 })
+  @ApiProperty({ name: 'filter[ids]' })
+  @IsString({ each: true })
+  @IsArray()
+  public readonly ids?: string[];
+
+  @ApiProperty({ name: 'filter[take]', example: 5 })
   @IsString()
   public readonly take: number;
 
-  @ApiProperty({ name: 'pagination[skip]', example: 0 })
+  @ApiProperty({ name: 'filter[skip]', example: 0 })
   @IsString()
   public readonly skip: number;
 }

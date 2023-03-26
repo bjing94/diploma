@@ -1,10 +1,12 @@
 import { Product, ProductDocument } from '@burger-shop/models';
+import { FilterQuery } from 'mongoose';
 import ProductCreateDto from '../../interfaces/product.create.dto';
 import ProductUpdateDto from '../../interfaces/product.update.dto';
 
 export default abstract class ProductAbstractRepository {
   public abstract find(id: string): Promise<ProductDocument>;
   public abstract findMany(
+    product: FilterQuery<ProductDocument>,
     take: number,
     skip: number
   ): Promise<ProductDocument[]>;
