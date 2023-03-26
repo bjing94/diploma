@@ -35,7 +35,7 @@ export default class OrderQueryService {
     const result = await this.repository.findMany({
       status: data.status,
     });
-    if (!result.length) return null;
+    if (!result.length) return { orders: [] };
     return {
       orders: result.map((res) => {
         return { id: res.id, status: res.status };

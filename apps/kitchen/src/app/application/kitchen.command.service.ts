@@ -50,16 +50,6 @@ export default class KitchenCommandService {
     }
   }
 
-  // public async handleCookingRequestUpdated(
-  //   data: CookingRequestUpdatedEventPayload
-  // ) {
-  //   Logger.log('Updating stock');
-  //   await this.handleAddStock({
-  //     productId: data.productId,
-  //     value: 1,
-  //   });
-  // }
-
   public async handleOrderCreated(data: OrderCreatedEventPayload) {
     const cookingRequests: CookingRequestDomainEntity[] = [];
 
@@ -78,6 +68,13 @@ export default class KitchenCommandService {
             status: CookingRequestStatus.PENDING,
           })
         );
+      }
+
+      if (missing > 0 && stockData?.quantity > 0) {
+        await this.handleAddStock({
+          productId: item.productId,
+          value: -1 * stockData.quantity,
+        });
       }
     }
 

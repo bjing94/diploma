@@ -50,9 +50,6 @@ export default class OrderService {
   public async find(data: OrderFindQueryRequest) {
     const result = await this.kafkaProducerService.sendOrderFind(data);
 
-    if (!result) {
-      throw new BadRequestException('Order not found!');
-    }
-    return result;
+    return { orders: result.orders ?? [] };
   }
 }

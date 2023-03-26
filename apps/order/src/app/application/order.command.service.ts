@@ -103,6 +103,8 @@ export default class OrderCommandService {
     const order = await this.eventStoreService.getOrder(id);
     if (!order) return null;
 
+    order.status = dto.status;
+
     const payload: OrderUpdatedEventPayload = {
       order: {
         id: order.id,
