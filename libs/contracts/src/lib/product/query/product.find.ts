@@ -1,11 +1,12 @@
 import { ProductResponseDto } from '@burger-shop/interfaces';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ProductFindQueryRequest {
   @ApiProperty({ name: 'filter[ids]' })
   @IsString({ each: true })
   @IsArray()
+  @IsOptional()
   public readonly ids?: string[];
 
   @ApiProperty({ name: 'filter[take]', example: 5 })

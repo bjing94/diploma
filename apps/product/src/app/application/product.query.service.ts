@@ -16,10 +16,16 @@ import {
   ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import MenuAbstractRepository from './repository/menu.abstract-repository';
-import { MenuItemResponseDto, MenuResponseDto } from '@burger-shop/interfaces';
+import {
+  MenuItemResponseDto,
+  MenuResponseDto,
+  ProductResponseDto,
+} from '@burger-shop/interfaces';
 import { FilterQuery, isValidObjectId } from 'mongoose';
-import { ProductDocument } from '@burger-shop/models';
+import { Product, ProductDocument } from '@burger-shop/models';
 import { In, ObjectID } from 'typeorm';
+import { MenuItemModel } from '../infrastructure/database/model/menu-item.model';
+import { MenuModel } from '../infrastructure/database/model/menu.model';
 
 @Injectable()
 export default class ProductQueryService {
@@ -51,16 +57,7 @@ export default class ProductQueryService {
     if (!item) return null;
     const { product, ...rest } = item;
     return {
-      item: {
-        id: item.id,
-        available: item.available,
-        price: item.price,
-        product: {
-          id: product.id,
-          price: product.price,
-          name: product.name,
-        },
-      },
+      item: ProductQueryService.mapMenuItem(item),
     };
   }
 
@@ -95,25 +92,10 @@ export default class ProductQueryService {
     dto: MenuFindQueryRequest
   ): Promise<MenuFindQueryResponse> {
     const menus = await this.menuRepository.findMany(dto);
-    const menusResponse: MenuResponseDto[] = menus.map((item) => {
-      return {
-        id: item.id,
-        items: item.items.map((menuItem): MenuItemResponseDto => {
-          const { id, available, price, product } = menuItem;
-          return {
-            id: id,
-            available: available,
-            price: price,
-            product: {
-              id: product.id,
-              price: product.price,
-              name: product.name,
-            },
-          };
-        }),
-        active: item.active,
-      };
-    });
+    console.log(menus);
+    const menusResponse: MenuResponseDto[] = menus.map(
+      ProductQueryService.mapMenu
+    );
     return {
       menus: menusResponse,
     };
@@ -148,7 +130,8 @@ export default class ProductQueryService {
     const { menu } = dto;
     await this.menuRepository.update(menu.id, {
       items: menu.items.map((item, idx) => {
-        return { ...item, id: idx };
+        const { productId } = item;
+        return { ...item, id: idx, product: productId };
       }),
       active: menu.active,
     });
@@ -158,7 +141,27 @@ export default class ProductQueryService {
     dto: MenuGetQueryRequest
   ): Promise<MenuGetQueryResponse> {
     const result = await this.menuRepository.get(dto.id);
-
     return { menu: result };
+  }
+
+  private static mapMenu(menu: MenuModel): MenuResponseDto {
+    return {
+      id: menu.id,
+      items: menu.items.map(ProductQueryService.mapMenuItem),
+      active: menu.active,
+    };
+  }
+
+  private static mapMenuItem(item: MenuItemModel): MenuItemResponseDto {
+    return {
+      id: item.id,
+      available: item.available,
+      price: item.price,
+      product: ProductQueryService.mapProduct(item.product),
+    };
+  }
+
+  private static mapProduct(product: Product): ProductResponseDto {
+    return { id: product.id, price: product.price, name: product.name };
   }
 }
