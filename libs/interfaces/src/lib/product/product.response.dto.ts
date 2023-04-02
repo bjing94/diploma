@@ -6,7 +6,4 @@ export class ProductResponseDto {
 
   @ApiProperty()
   public readonly name: string;
-
-  @ApiProperty()
-  public readonly price: number;
 }

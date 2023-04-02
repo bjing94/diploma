@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsDateString } from 'class-validator';
+import { IsDate, IsDateString, IsOptional, IsString } from 'class-validator';
 
 export default class FindEventsFilterDto {
   @ApiProperty({
@@ -13,4 +13,11 @@ export default class FindEventsFilterDto {
   })
   @IsDateString()
   public readonly to: Date;
+
+  @ApiProperty({
+    name: 'filter[id]',
+  })
+  @IsString()
+  @IsOptional()
+  public readonly id?: string;
 }
