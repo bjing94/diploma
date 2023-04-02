@@ -7,6 +7,7 @@ import MenuModule from './modules/menu/menu.module';
 import OrderModule from './modules/order/order.module';
 import PaymentModule from './modules/payment/payment.module';
 import { ProductModule } from './modules/product/product.module';
+import EventModule from './modules/events/event.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ProductModule } from './modules/product/product.module';
     ProductModule,
     PaymentModule,
     KitchenModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],

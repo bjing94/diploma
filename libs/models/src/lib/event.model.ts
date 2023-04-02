@@ -1,15 +1,27 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Model, SchemaTypes } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
-export type EventDocument = Event & Document;
+export type EventDocument = EventModel & Document;
 
-@Schema()
-export class Event {
+@Schema({ timestamps: true })
+export class EventModel {
+  constructor(part?: Partial<EventModel>) {
+    Object.assign(this, part);
+  }
+
+  public id: string;
+
   @Prop()
-  type: string;
+  public objectId: string; // object identifier for convenience
 
-  @Prop({ type: SchemaTypes.Mixed })
-  data: any;
+  @Prop()
+  public name: string;
+
+  @Prop()
+  public payload: string;
+
+  public createdAt: Date;
+  public updatedAt: Date;
 }
 
-export const EventSchema = SchemaFactory.createForClass(Event);
+export const EventSchema = SchemaFactory.createForClass(EventModel);
