@@ -36,11 +36,10 @@ export default class ProductCommandService {
   public async create(
     dto: ProductCreateRequest
   ): Promise<ProductCreateResponse> {
-    const domain = new ProductDomainEntity(dto.name, dto.price);
+    const domain = new ProductDomainEntity(dto.name);
     const payload = {
       product: {
         name: domain.name,
-        price: domain.price,
         id: domain.id,
       },
     };

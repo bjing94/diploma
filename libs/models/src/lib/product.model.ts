@@ -12,9 +12,6 @@ export class Product {
   id: string;
 
   @Prop()
-  price: number;
-
-  @Prop()
   name: string;
 
   @Prop()

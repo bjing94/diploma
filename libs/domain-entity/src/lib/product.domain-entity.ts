@@ -12,14 +12,11 @@ export class ProductDomainEntity {
 
   private _name: string;
 
-  private _price: number;
-
   private _active: boolean;
 
-  constructor(name: string, price: number, id?: string) {
+  constructor(name: string, id?: string) {
     this.id = id ?? new Types.ObjectId(id).toString();
     this.name = name;
-    this.price = price;
   }
 
   public get id(): string {
@@ -27,13 +24,6 @@ export class ProductDomainEntity {
   }
   public set id(value: string) {
     this._id = value;
-  }
-
-  public get price(): number {
-    return this._price;
-  }
-  public set price(value: number) {
-    this._price = value;
   }
 
   public get name(): string {
@@ -51,7 +41,7 @@ export class ProductDomainEntity {
   }
 
   public static hydrate(events: ISaveEvent[]) {
-    const product = new ProductDomainEntity('', 0, '');
+    const product = new ProductDomainEntity('', '');
     events.forEach((event) => {
       product.applyEvent(event);
     });
@@ -71,7 +61,6 @@ export class ProductDomainEntity {
       ) as ProductUpdatedEventPayload;
       this.id = product.id;
       this.name = product.name;
-      this.price = product.price;
       this.active = true;
     }
     if (event.name === EventTopics.productCreated) {
@@ -80,7 +69,6 @@ export class ProductDomainEntity {
       ) as ProductCreatedEventPayload;
       this.id = product.id;
       this.name = product.name;
-      this.price = product.price;
       this.active = true;
     }
     if (event.name === EventTopics.productUpdated) {
@@ -88,14 +76,12 @@ export class ProductDomainEntity {
         event.payload
       ) as ProductUpdatedEventPayload;
       this.name = product.name;
-      this.price = product.price;
     }
     if (event.name === EventTopics.productUpdated) {
       const { product } = JSON.parse(
         event.payload
       ) as ProductUpdatedEventPayload;
       this.name = product.name;
-      this.price = product.price;
     }
     if (event.name === EventTopics.productDeleted) {
       const { id } = JSON.parse(event.payload) as ProductDeletedEventPayload;

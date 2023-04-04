@@ -6,7 +6,4 @@ export default class ProductUpdatedDto {
 
   @ApiProperty()
   public readonly name: string;
-
-  @ApiProperty()
-  public readonly price: number;
 }

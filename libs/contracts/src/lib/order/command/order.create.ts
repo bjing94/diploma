@@ -42,4 +42,6 @@ export class OrderCreateCommandRequest {
 export class OrderCreateCommandResponse {
   @ApiProperty()
   public readonly orderId: string;
+  @ApiProperty()
+  public readonly paymentId: string;
 }

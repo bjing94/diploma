@@ -9,7 +9,7 @@ import { EventTopics } from '@burger-shop/kafka-module';
 
 export default class ProductDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
-    const product = new ProductDomainEntity('', 0, '');
+    const product = new ProductDomainEntity('', '');
     events.forEach((event) => {
       this.applyEvent(product, event);
     });
@@ -23,7 +23,6 @@ export default class ProductDomainTransformer {
       ) as ProductUpdatedEventPayload;
       domain.id = product.id;
       domain.name = product.name;
-      domain.price = product.price;
       domain.active = true;
     }
     if (event.name === EventTopics.productCreated) {
@@ -32,7 +31,6 @@ export default class ProductDomainTransformer {
       ) as ProductCreatedEventPayload;
       domain.id = product.id;
       domain.name = product.name;
-      domain.price = product.price;
       domain.active = true;
     }
     if (event.name === EventTopics.productUpdated) {
@@ -40,14 +38,12 @@ export default class ProductDomainTransformer {
         event.payload
       ) as ProductUpdatedEventPayload;
       domain.name = product.name;
-      domain.price = product.price;
     }
     if (event.name === EventTopics.productUpdated) {
       const { product } = JSON.parse(
         event.payload
       ) as ProductUpdatedEventPayload;
       domain.name = product.name;
-      domain.price = product.price;
     }
     if (event.name === EventTopics.productDeleted) {
       const { id } = JSON.parse(event.payload) as ProductDeletedEventPayload;
@@ -60,7 +56,6 @@ export default class ProductDomainTransformer {
       product: {
         id: domain.id,
         name: domain.name,
-        price: domain.price,
       },
     };
     return {

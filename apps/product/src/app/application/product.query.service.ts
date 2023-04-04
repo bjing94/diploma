@@ -43,7 +43,6 @@ export default class ProductQueryService {
       product: {
         id: product.id,
         name: product.name,
-        price: product.price,
       },
     };
   }
@@ -82,7 +81,6 @@ export default class ProductQueryService {
         return {
           id: item.id,
           name: item.name,
-          price: item.price,
         };
       }),
     };
@@ -102,8 +100,8 @@ export default class ProductQueryService {
   }
 
   public async onCreated(dto: ProductCreatedEventPayload): Promise<void> {
-    const { price, name, id } = dto.product;
-    await this.productRepository.create({ id, price, name });
+    const { name, id } = dto.product;
+    await this.productRepository.create({ id, name });
   }
 
   public async onDeleted(dto: ProductDeletedEventPayload): Promise<void> {
@@ -162,6 +160,6 @@ export default class ProductQueryService {
   }
 
   private static mapProduct(product: Product): ProductResponseDto {
-    return { id: product.id, price: product.price, name: product.name };
+    return { id: product.id, name: product.name };
   }
 }

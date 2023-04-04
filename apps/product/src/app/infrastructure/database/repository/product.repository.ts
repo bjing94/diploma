@@ -30,7 +30,6 @@ export default class ProductRepository implements ProductAbstractRepository {
     return this.model.create({
       _id: new Types.ObjectId(product.id),
       name: product.name,
-      price: product.price,
     });
   }
 
