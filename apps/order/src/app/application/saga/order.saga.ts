@@ -3,6 +3,7 @@ import CreateOrderSagaState from './order.state';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
 import { EventStoreOrderService } from '@burger-shop/event-store';
 import {
+  CreateOrderCanceledStep,
   CreateOrderMarkCompleteStep,
   CreateOrderMarkReadyStep,
   CreateOrderNewStep,
@@ -33,6 +34,9 @@ export default class CreateOrderSaga {
     }
     if (status === OrderStatus.WAITING_FOR_PICKUP) {
       this.state = new CreateOrderMarkCompleteStep();
+    }
+    if (status === OrderStatus.CANCELED) {
+      this.state = new CreateOrderCanceledStep();
     }
 
     this.state.setContext(this);

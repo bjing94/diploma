@@ -44,46 +44,35 @@ export default class OrderCommandService {
     const order = await this.eventStoreService.getOrder(id);
     if (!order) return null;
 
-    order.status = dto.status;
+    const saga = new CreateOrderSaga(
+      this.kafkaProducerService,
+      this.eventStoreService
+    );
+    saga.setState(order.status);
+    if (dto.status === OrderStatus.WAITING_FOR_PICKUP) {
+      return saga.getState().ready(dto);
+    }
+    if (dto.status === OrderStatus.COMPLETED) {
+      return saga.getState().complete(dto);
+    }
 
-    const payload: OrderUpdatedEventPayload = {
-      order: {
-        id: order.id,
-        status: order.status,
-      },
-    };
-
-    await this.eventStoreService.saveEvent({
-      objectId: id,
-      payload: JSON.stringify(payload),
-      name: EventTopics.orderUpdated,
-    });
-
-    await this.kafkaProducerService.emitOrderUpdated({
-      order: {
-        id,
-        status: order.status,
-      },
-    });
-
-    return {
-      id: id,
-      status: order.status,
-    };
+    return null;
   }
 
   public async onPaymentStatusUpdated(data: PaymentStatusUpdatedEventPayload) {
     const order = await this.eventStoreService.getOrder(data.orderId);
     if (!order) return;
+    const saga = new CreateOrderSaga(
+      this.kafkaProducerService,
+      this.eventStoreService
+    );
+    saga.setState(order.status);
 
     if (data.status === PaymentStatus.FULFILLED) {
-      console.log('order payed');
-      await this.kafkaProducerService.emitOrderUpdated({
-        order: {
-          id: data.orderId,
-          status: OrderStatus.PAYED,
-        },
-      });
+      return saga.getState().pay(data);
+    }
+    if (data.status === PaymentStatus.REJECTED) {
+      return saga.getState().cancel(data.orderId);
     }
   }
 }

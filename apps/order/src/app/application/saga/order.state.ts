@@ -14,7 +14,7 @@ export default abstract class CreateOrderSagaState {
 
   public abstract create(dto: OrderCreateCommandRequest); // Занимаем инвентарь
   public abstract pay(data: PaymentStatusUpdatedEventPayload);
-  public abstract cancel(); // Возвращаем инветарь
+  public abstract cancel(orderId: string); // Возвращаем инветарь
   public abstract ready(dto: OrderUpdateCommandRequest);
   public abstract complete(dto: OrderUpdateCommandRequest);
 }

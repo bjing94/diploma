@@ -56,6 +56,7 @@ export default class PaymentCommandService {
     const { id } = data;
     const payment = await this.paymentRepository.find(id);
     if (!payment) return { success: false };
+    if (payment.status !== PaymentStatus.PENDING) return { success: false };
 
     const payload: PaymentStatusUpdatedEventPayload = {
       id,

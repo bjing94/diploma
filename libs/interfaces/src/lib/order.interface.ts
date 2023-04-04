@@ -6,6 +6,7 @@ export enum OrderStatus {
   PAYED = 'payed',
   COMPLETED = 'completed',
   WAITING_FOR_PICKUP = 'waiting_for_pickup',
+  CANCELED = 'canceled',
 }
 
 export class OrderItemResponse {

@@ -91,16 +91,16 @@ export class CreateOrderNewStep extends CreateOrderSagaState {
   }
 
   public pay() {
-    throw new Error('Заказ не создан');
+    Logger.error('Заказ не создан');
   }
   public cancel() {
-    throw new Error('Заказ не создан');
+    Logger.error('Заказ не создан');
   }
   public ready() {
-    throw new Error('Заказ не создан');
+    Logger.error('Заказ не создан');
   }
   public complete() {
-    throw new Error('Заказ не создан');
+    Logger.error('Заказ не создан');
   }
 }
 
@@ -109,7 +109,7 @@ export class CreateOrderPayStep extends CreateOrderSagaState {
   public saga: CreateOrderSaga;
 
   public async create(dto: OrderCreateCommandRequest) {
-    throw new Error('Заказ уже создан');
+    Logger.error('Заказ уже создан');
   }
 
   public async pay(data: PaymentStatusUpdatedEventPayload): Promise<void> {
@@ -141,14 +141,37 @@ export class CreateOrderPayStep extends CreateOrderSagaState {
     }
   }
 
-  public cancel() {
-    throw new Error('Заказ не оплачен');
+  public async cancel(orderId: string) {
+    const order = await this.saga.eventStoreService.getOrder(orderId);
+    if (!order) return;
+
+    order.status = OrderStatus.CANCELED;
+
+    const payload: OrderUpdatedEventPayload = {
+      order: {
+        id: order.id,
+        status: order.status,
+      },
+    };
+
+    await this.saga.eventStoreService.saveEvent({
+      objectId: order.id,
+      payload: JSON.stringify(payload),
+      name: EventTopics.orderUpdated,
+    });
+
+    await this.saga.kafkaProducerService.emitOrderUpdated({
+      order: {
+        id: order.id,
+        status: order.status,
+      },
+    });
   }
   public ready() {
-    throw new Error('Заказ не оплачен');
+    Logger.error('Заказ не оплачен');
   }
   public complete() {
-    throw new Error('Заказ не оплачен');
+    Logger.error('Заказ не оплачен');
   }
 }
 
@@ -157,15 +180,15 @@ export class CreateOrderMarkReadyStep extends CreateOrderSagaState {
   public saga: CreateOrderSaga;
 
   public async create(dto: OrderCreateCommandRequest) {
-    throw new Error('Заказ уже создан');
+    Logger.error('Заказ уже создан');
   }
 
   public async pay(data: PaymentStatusUpdatedEventPayload) {
-    throw new Error('Заказ уже оплачен');
+    Logger.error('Заказ уже оплачен');
   }
 
   public cancel() {
-    throw new Error('Заказ не оплачен');
+    Logger.error('Заказ не оплачен');
   }
 
   public async ready(dto: OrderUpdateCommandRequest) {
@@ -196,7 +219,7 @@ export class CreateOrderMarkReadyStep extends CreateOrderSagaState {
   }
 
   public complete() {
-    throw new Error('Заказ не оплачен');
+    Logger.error('Заказ не оплачен');
   }
 }
 
@@ -205,19 +228,19 @@ export class CreateOrderMarkCompleteStep extends CreateOrderSagaState {
   public saga: CreateOrderSaga;
 
   public async create(dto: OrderCreateCommandRequest) {
-    throw new Error('Заказ уже создан');
+    Logger.error('Заказ уже создан');
   }
 
   public async pay(data: PaymentStatusUpdatedEventPayload) {
-    throw new Error('Заказ уже оплачен');
+    Logger.error('Заказ уже оплачен');
   }
 
   public cancel() {
-    throw new Error('Заказ не оплачен');
+    Logger.error('Заказ не оплачен');
   }
 
   public async ready(dto: OrderUpdateCommandRequest) {
-    throw new Error('Заказ не оплачен');
+    Logger.error('Заказ не оплачен');
   }
 
   public async complete(dto: OrderUpdateCommandRequest) {
@@ -245,5 +268,28 @@ export class CreateOrderMarkCompleteStep extends CreateOrderSagaState {
         status: order.status,
       },
     });
+  }
+}
+
+// Заказ не оплачен
+export class CreateOrderCanceledStep extends CreateOrderSagaState {
+  public saga: CreateOrderSaga;
+
+  public async create(dto: OrderCreateCommandRequest) {
+    Logger.error('Заказ уже создан');
+  }
+
+  public async pay(data: PaymentStatusUpdatedEventPayload): Promise<void> {
+    Logger.error('Заказ уже создан');
+  }
+
+  public async cancel(orderId: string) {
+    Logger.error('Заказ уже создан');
+  }
+  public ready() {
+    Logger.error('Заказ не оплачен');
+  }
+  public complete() {
+    Logger.error('Заказ не оплачен');
   }
 }
