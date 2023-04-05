@@ -12,12 +12,12 @@ import KitchenCommandService from './kitchen.command.service';
 export default class KitchenCommandController {
   constructor(private readonly service: KitchenCommandService) {}
 
-  @MessagePattern(EventTopics.orderCreated)
-  async onOrderCreated(
-    @Payload() dto: OrderCreatedEventPayload
-  ): Promise<void> {
-    await this.service.handleOrderCreated(dto);
-  }
+  // @MessagePattern(EventTopics.orderCreated)
+  // async onOrderCreated(
+  //   @Payload() dto: OrderCreatedEventPayload
+  // ): Promise<void> {
+  //   await this.service.handleOrderCreated(dto);
+  // }
 
   @MessagePattern(CommandTopics.cookingRequestUpdate)
   async updateCookingRequest(

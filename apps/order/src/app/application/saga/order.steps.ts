@@ -87,6 +87,7 @@ export class CreateOrderNewStep extends CreateOrderSagaState {
       payload: JSON.stringify(payload),
       objectId: order.id,
     });
+
     return { orderId: order.id, paymentId: order.paymentId };
   }
 
