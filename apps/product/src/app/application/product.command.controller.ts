@@ -58,4 +58,14 @@ export default class ProductCommandController {
   ): Promise<MenuUpdateCommandResponse> {
     return this.productCommandService.updateMenu(payload);
   }
+
+  @MessagePattern(CommandTopics.productRunEvents)
+  public async runProductEvents(): Promise<void> {
+    return this.productCommandService.runProductEvents();
+  }
+
+  @MessagePattern(CommandTopics.menuRunEvents)
+  public async runMenuEvents(): Promise<void> {
+    return this.productCommandService.runMenuEvents();
+  }
 }

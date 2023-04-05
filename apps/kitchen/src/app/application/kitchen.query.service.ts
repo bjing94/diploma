@@ -14,6 +14,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Logger } from '@nestjs/common/services';
 import CookingRequestRepository from '../infrastructure/repository/cooking-request.repository';
 import CookingStockRepository from '../infrastructure/repository/cooking-stock.repository';
+import { isObjectIdOrHexString } from 'mongoose';
 
 @Injectable()
 export default class KitchenQueryService {
@@ -28,18 +29,21 @@ export default class KitchenQueryService {
   public async onCookingRequestCreated(
     data: CookingRequestCreatedEventPayload
   ) {
+    if (!isObjectIdOrHexString(data.id)) return null;
     return this.requestRepository.create(data);
   }
 
   public async onCookingRequestUpdated(
     data: CookingRequestUpdatedEventPayload
   ) {
+    if (!isObjectIdOrHexString(data.id)) return null;
     return this.requestRepository.update(data);
   }
 
   public async getCookingRequest(
     data: CookingRequestGetQueryRequest
   ): Promise<CookingRequestGetQueryResponse> {
+    if (!isObjectIdOrHexString(data.id)) return null;
     try {
       const res = await this.requestRepository.findOne({ _id: data.id });
       const response = await this.kafkaService.sendProductGet({
@@ -57,14 +61,17 @@ export default class KitchenQueryService {
   }
 
   public async onCookingStockCreated(data: CookingStockCreatedEventPayload) {
+    if (!isObjectIdOrHexString(data.id)) return null;
     return this.stockRepository.create(data);
   }
 
   public async onCookingStockUpdated(data: CookingStockUpdatedEventPayload) {
+    if (!isObjectIdOrHexString(data.id)) return null;
     return this.stockRepository.update(data);
   }
 
   public async getCookingStock(data: CookingStockGetQueryRequest) {
+    if (!isObjectIdOrHexString(data.id)) return null;
     try {
       const res = await this.stockRepository.findOne({ _id: data.id });
       return res;

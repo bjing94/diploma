@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import ProductAdapterService from './adapter/product.service';
 import {
   OrderCreateCommandRequest,
@@ -17,10 +17,13 @@ import {
 } from '@burger-shop/domain-entity';
 import { OrderStatus, PaymentStatus } from '@burger-shop/interfaces';
 import CreateOrderSaga from './saga/order.saga';
+import OrderAbstractRepository from './repository/order.abstract-repository';
 
 @Injectable()
 export default class OrderCommandService {
   constructor(
+    @Inject('OrderRepository')
+    private readonly orderRepository: OrderAbstractRepository,
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly eventStoreService: EventStoreOrderService
   ) {}
@@ -61,7 +64,7 @@ export default class OrderCommandService {
 
   public async onPaymentStatusUpdated(data: PaymentStatusUpdatedEventPayload) {
     const order = await this.eventStoreService.getOrder(data.orderId);
-    if (!order) return;
+    if (!order || order.status !== OrderStatus.CREATED) return;
     const saga = new CreateOrderSaga(
       this.kafkaProducerService,
       this.eventStoreService
@@ -73,6 +76,25 @@ export default class OrderCommandService {
     }
     if (data.status === PaymentStatus.REJECTED) {
       return saga.getState().cancel(data.orderId);
+    }
+  }
+
+  async runOrderEvents() {
+    try {
+      await this.orderRepository.clearAll();
+      const events = await this.eventStoreService.getEvents({});
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
     }
   }
 }

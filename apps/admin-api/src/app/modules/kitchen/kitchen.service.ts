@@ -26,4 +26,8 @@ export default class KitchenService {
   public async findRequest(dto: CookingRequestFindQueryRequest) {
     return this.kafka.sendCookingRequestFind(dto);
   }
+
+  public async runEvents() {
+    return this.kafka.sendKitchenRunEvents();
+  }
 }

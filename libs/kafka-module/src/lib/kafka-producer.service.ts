@@ -186,6 +186,10 @@ export class KafkaProducerService {
     );
   }
 
+  public async sendProductRunEvents(): Promise<void> {
+    return this.send<void, any>(CommandTopics.productRunEvents, {});
+  }
+
   public async sendMenuCreate(
     payload: MenuCreateCommandRequest
   ): Promise<MenuCreateCommandResponse> {
@@ -220,6 +224,10 @@ export class KafkaProducerService {
       QueryTopics.menuGet,
       payload
     );
+  }
+
+  public async sendMenuRunEvents(): Promise<void> {
+    return this.send<void, any>(CommandTopics.menuRunEvents, {});
   }
 
   public async sendProductFind(
@@ -265,6 +273,10 @@ export class KafkaProducerService {
       QueryTopics.orderFind,
       payload
     );
+  }
+
+  public async sendOrderRunEvents(): Promise<void> {
+    return this.send<void, any>(CommandTopics.orderRunEvents, {});
   }
 
   public async emitOrderCreated(
@@ -359,6 +371,10 @@ export class KafkaProducerService {
     );
   }
 
+  public async sendPaymentRunEvents(): Promise<void> {
+    return this.send<void, any>(CommandTopics.paymentRunEvents, {});
+  }
+
   // Kitchen
   public async emitCookingRequestCreated(
     payload: CookingRequestCreatedEventPayload
@@ -422,6 +438,10 @@ export class KafkaProducerService {
       CookingRequestFindQueryResponse,
       CookingRequestFindQueryRequest
     >(QueryTopics.cookingRequestFind, payload);
+  }
+
+  public async sendKitchenRunEvents(): Promise<void> {
+    return this.send<void, any>(CommandTopics.kitchenRunEvents, {});
   }
 
   public async emitCookingStockCreated(

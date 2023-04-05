@@ -39,4 +39,8 @@ export default class CookingRequestRepository {
       status: data.status,
     });
   }
+
+  public async clearAll(): Promise<void> {
+    await this.model.deleteMany({}).exec();
+  }
 }

@@ -20,7 +20,11 @@ export default class PaymentCommandController {
 
   @MessagePattern(CommandTopics.paymentUpdate)
   public async updatePayment(@Payload() payload: PaymentUpdateCommandRequest) {
-    console.log(payload);
     return this.commandService.updatePayment(payload);
+  }
+
+  @MessagePattern(CommandTopics.paymentRunEvents)
+  public async runPaymentEvents() {
+    return this.commandService.runPaymentEvents();
   }
 }

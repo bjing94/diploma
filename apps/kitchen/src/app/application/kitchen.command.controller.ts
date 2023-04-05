@@ -26,11 +26,8 @@ export default class KitchenCommandController {
     await this.service.updateCookingRequest(dto);
   }
 
-  // @MessagePattern(EventTopics.cookingRequestUpdated)
-  // async onCookingRequestUpdated(
-  //   @Payload() dto: CookingRequestUpdatedEventPayload
-  // ): Promise<void> {
-  //   Logger.log('Updating stock');
-  //   await this.service.handleCookingRequestUpdated(dto);
-  // }
+  @MessagePattern(CommandTopics.kitchenRunEvents)
+  async runKitchenEvents() {
+    await this.service.runKitchenEvents();
+  }
 }

@@ -6,6 +6,7 @@ import {
   PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import PaymentAbstractRepository from './repository/payment.abstract-repository';
+import { isObjectIdOrHexString } from 'mongoose';
 
 @Injectable()
 export default class PaymentQueryService {
@@ -17,6 +18,7 @@ export default class PaymentQueryService {
   public async getPayment(
     data: PaymentGetQueryRequest
   ): Promise<PaymentGetQueryResponse> {
+    if (isObjectIdOrHexString(data.id) === false) return null;
     const payment = await this.paymentRepository.find(data.id);
     return { payment: payment as any };
   }

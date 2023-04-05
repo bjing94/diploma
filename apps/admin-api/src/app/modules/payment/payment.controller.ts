@@ -8,6 +8,12 @@ import PaymentService from './payment.service';
 export default class PaymentController {
   constructor(private readonly service: PaymentService) {}
 
+  @ApiOperation({ description: 'Run payment events' })
+  @Get('run-events')
+  public async runProductEvents(): Promise<void> {
+    return this.service.runEvents();
+  }
+
   @Get(':id')
   public async getPayment(@Param('id') id: string) {
     return this.service.getPayment(id);

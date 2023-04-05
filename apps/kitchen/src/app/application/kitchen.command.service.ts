@@ -14,13 +14,19 @@ import {
 import { EventStoreKitchenService } from '@burger-shop/event-store';
 import { CookingRequestStatus } from '@burger-shop/interfaces';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import CookingRequestRepository from '../infrastructure/repository/cooking-request.repository';
+import CookingStockRepository from '../infrastructure/repository/cooking-stock.repository';
 
 @Injectable()
 export default class KitchenCommandService {
   constructor(
     private readonly eventStore: EventStoreKitchenService,
-    private readonly kafkaService: KafkaProducerService
+    private readonly kafkaService: KafkaProducerService,
+    @Inject('CookingRequestRepository')
+    private readonly requestRepository: CookingRequestRepository,
+    @Inject('CookingStockRepository')
+    private readonly stockRepository: CookingStockRepository
   ) {}
 
   public async updateCookingRequest(data: CookingRequestUpdateCommandRequest) {
@@ -135,5 +141,27 @@ export default class KitchenCommandService {
     });
 
     await this.kafkaService.emitCookingStockCreated(payload);
+  }
+
+  public async runKitchenEvents() {
+    try {
+      await this.requestRepository.clearAll();
+      await this.stockRepository.clearAll();
+      const stockEvents = await this.eventStore.getCookingStockEvents({});
+      const cookingEvents = await this.eventStore.getCookingRequestEvents({});
+      const events = [...stockEvents, ...cookingEvents];
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

@@ -37,4 +37,8 @@ export default class CookingStockRepository {
       quantity: data.quantity,
     });
   }
+
+  public async clearAll(): Promise<void> {
+    await this.model.deleteMany({}).exec();
+  }
 }

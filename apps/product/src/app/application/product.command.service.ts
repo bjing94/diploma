@@ -189,4 +189,42 @@ export default class ProductCommandService {
       success: true,
     };
   }
+
+  async runProductEvents() {
+    try {
+      await this.productRepository.clearAll();
+      const events = await this.eventStoreService.getProductEvents({});
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async runMenuEvents() {
+    try {
+      await this.menuRepository.clearAll();
+      const events = await this.eventStoreService.getMenuEvents({});
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }

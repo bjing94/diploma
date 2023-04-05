@@ -35,4 +35,9 @@ export default class OrderCommandController {
   async onPaymentUpdated(@Payload() data: PaymentStatusUpdatedEventPayload) {
     await this.service.onPaymentStatusUpdated(data);
   }
+
+  @MessagePattern(CommandTopics.orderRunEvents)
+  async runOrderEvents() {
+    await this.service.runOrderEvents();
+  }
 }

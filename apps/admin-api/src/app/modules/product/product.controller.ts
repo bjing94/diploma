@@ -44,6 +44,12 @@ export default class ProductController {
     return this.productService.find(dto);
   }
 
+  @ApiOperation({ description: 'Run product events' })
+  @Get('run-events')
+  public async runProductEvents(): Promise<void> {
+    return this.productService.runProductEvents();
+  }
+
   @ApiOperation({ description: 'Get product' })
   @Get(':id')
   public async get(

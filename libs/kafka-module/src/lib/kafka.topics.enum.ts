@@ -13,6 +13,11 @@ export enum CommandTopics {
   cookingRequestCreate = 'cooking-request.created.command',
   cookingRequestUpdate = 'cooking-request.update.command',
   cookingStockAdd = 'cooking-stock.add.command',
+  productRunEvents = 'product.run-events.command',
+  menuRunEvents = 'menu.run-events.command',
+  orderRunEvents = 'order.run-events.command',
+  paymentRunEvents = 'product.run-events.command',
+  kitchenRunEvents = 'kitchen.run-events.command',
 }
 
 export enum QueryTopics {

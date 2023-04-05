@@ -13,4 +13,8 @@ export default class PaymentService {
   public async updatePayment(id: string, status: PaymentStatus) {
     return this.kafkaManager.sendPaymentUpdate({ id, status });
   }
+
+  public async runEvents() {
+    return this.kafkaManager.sendPaymentRunEvents();
+  }
 }

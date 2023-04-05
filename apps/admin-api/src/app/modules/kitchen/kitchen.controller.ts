@@ -3,7 +3,7 @@ import {
   CookingRequestUpdateCommandRequest,
 } from '@burger-shop/contracts';
 import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import KitchenService from './kitchen.service';
 
 @ApiTags('Kitchen')
@@ -34,5 +34,11 @@ export default class KitchenController {
   @Get('stock/:id')
   public async getStock(@Param('id') id: string) {
     return this.service.getStock({ id });
+  }
+
+  @ApiOperation({ description: 'Run kitchen events' })
+  @Get('run-events')
+  public async runKitchenEvents(): Promise<void> {
+    return this.service.runEvents();
   }
 }

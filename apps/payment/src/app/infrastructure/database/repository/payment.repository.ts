@@ -10,6 +10,10 @@ export default class PaymentRepository implements PaymentAbstractRepository {
     private readonly model: Model<PaymentDocument>
   ) {}
 
+  public async clearAll(): Promise<void> {
+    await this.model.deleteMany({}).exec();
+  }
+
   public async find(id: string): Promise<PaymentDocument> {
     const payment = await this.model.findById(id).exec();
     return payment;

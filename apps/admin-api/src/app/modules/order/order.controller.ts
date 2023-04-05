@@ -1,7 +1,13 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 
 import OrderService from './order.service';
-import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+  ApiOperation,
+} from '@nestjs/swagger';
 import {
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
@@ -35,6 +41,12 @@ export default class OrderController {
   ): Promise<OrderCreateCommandResponse> {
     console.log(dto);
     return this.orderService.create(dto);
+  }
+
+  @ApiOperation({ description: 'Run order events' })
+  @Get('run-events')
+  public async runOrderEvents(): Promise<void> {
+    return this.orderService.runOrderEvents();
   }
 
   @ApiResponse({ type: OrderGetQueryRequest })

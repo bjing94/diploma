@@ -15,4 +15,5 @@ export default abstract class OrderAbstractRepository {
     order: Partial<OrderModel>
   ): Promise<OrderDocument>;
   public abstract delete(id: string): Promise<void>;
+  public abstract clearAll(): Promise<void>;
 }

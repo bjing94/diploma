@@ -21,7 +21,7 @@ import {
   MenuResponseDto,
   ProductResponseDto,
 } from '@burger-shop/interfaces';
-import { FilterQuery, isValidObjectId } from 'mongoose';
+import { FilterQuery, isObjectIdOrHexString, isValidObjectId } from 'mongoose';
 import { Product, ProductDocument } from '@burger-shop/models';
 import { In, ObjectID } from 'typeorm';
 import { MenuItemModel } from '../infrastructure/database/model/menu-item.model';
@@ -37,6 +37,7 @@ export default class ProductQueryService {
   ) {}
 
   public async getById(id: string): Promise<ProductGetByIdQueryResponse> {
+    if (isObjectIdOrHexString(id) === false) return null;
     const product = await this.productRepository.find(id);
 
     return {

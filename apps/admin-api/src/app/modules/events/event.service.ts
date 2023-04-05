@@ -1,3 +1,4 @@
+import { KafkaProducerService } from '@burger-shop/kafka-module';
 import { EventDocument } from '@burger-shop/models';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -11,19 +12,19 @@ import { Model } from 'mongoose';
 export default class EventService {
   constructor(
     @InjectModel(ResourceNames.MENU, CONNECTION_NAME)
-    private readonly menuModel: Model<EventDocument>,
+    private readonly menuEventModel: Model<EventDocument>,
     @InjectModel(ResourceNames.PRODUCT, CONNECTION_NAME)
-    private readonly productModel: Model<EventDocument>,
+    private readonly productEventModel: Model<EventDocument>,
     @InjectModel(ResourceNames.PRODUCT + '_snapshot', CONNECTION_NAME)
     private readonly productSnapshotModel: Model<EventDocument>,
     @InjectModel(ResourceNames.MENU + '_snapshot', CONNECTION_NAME)
     private readonly menuSnapshotModel: Model<EventDocument>,
     @InjectModel(ResourceNames.PAYMENT, CONNECTION_NAME)
-    private readonly paymentModel: Model<EventDocument>,
+    private readonly paymentEventModel: Model<EventDocument>,
     @InjectModel(ResourceNames.PAYMENT + '_snapshot', CONNECTION_NAME)
-    private readonly paymentSnapshotModel: Model<EventDocument>,
+    private readonly paymentSnapshotEventModel: Model<EventDocument>,
     @InjectModel(ResourceNames.ORDER, CONNECTION_NAME)
-    private readonly orderEventDocument: Model<EventDocument>,
+    private readonly orderEventModel: Model<EventDocument>,
     @InjectModel(ResourceNames.ORDER + '_snapshot', CONNECTION_NAME)
     private readonly orderSnasphotEventDocument: Model<EventDocument>,
     @InjectModel(ResourceNames.COOKING_REQUEST, CONNECTION_NAME)
@@ -50,7 +51,7 @@ export default class EventService {
     if (id) {
       mongoFilter['objectId'] = id;
     }
-    return this.menuModel.find(mongoFilter).sort({ createdAt: 'asc' });
+    return this.menuEventModel.find(mongoFilter).sort({ createdAt: 'asc' });
   }
 
   public async getProductEvents(filter: {
@@ -71,7 +72,7 @@ export default class EventService {
     if (id) {
       mongoFilter['objectId'] = id;
     }
-    return this.productModel.find(mongoFilter).sort({ createdAt: 'asc' });
+    return this.productEventModel.find(mongoFilter).sort({ createdAt: 'asc' });
   }
 
   public async getProductEventStream(id: string, from?: Date, to?: Date) {
@@ -84,7 +85,7 @@ export default class EventService {
       filter['updatedAt'] = filter['updatedAt'] ?? {};
       filter['updatedAt']['$lt'] = to;
     }
-    return this.productModel.find(filter).sort({ createdAt: 'asc' });
+    return this.productEventModel.find(filter).sort({ createdAt: 'asc' });
   }
 
   public async getPaymentEvents(filter: {
@@ -105,11 +106,13 @@ export default class EventService {
     if (id) {
       mongoFilter['objectId'] = id;
     }
-    return this.paymentModel.find(mongoFilter).sort({ createdAt: 'asc' });
+    return this.paymentEventModel.find(mongoFilter).sort({ createdAt: 'asc' });
   }
 
   public async getPaymentEventStream(id: string) {
-    return this.paymentModel.find({ objectId: id }).sort({ createdAt: 'asc' });
+    return this.paymentEventModel
+      .find({ objectId: id })
+      .sort({ createdAt: 'asc' });
   }
 
   public async getPaymentSnapshots(from?: Date, to?: Date) {
@@ -122,7 +125,7 @@ export default class EventService {
       filter['updatedAt'] = filter['updatedAt'] ?? {};
       filter['updatedAt']['$lt'] = to;
     }
-    return this.paymentSnapshotModel.find(filter);
+    return this.paymentSnapshotEventModel.find(filter);
   }
 
   public async getOrderEvents(filter: { from?: Date; to?: Date; id?: string }) {
@@ -139,7 +142,7 @@ export default class EventService {
     if (id) {
       mongoFilter['objectId'] = id;
     }
-    return this.orderEventDocument.find(mongoFilter).sort({ createdAt: 'asc' });
+    return this.orderEventModel.find(mongoFilter).sort({ createdAt: 'asc' });
   }
 
   public async getOrderEventStream(filter: {
@@ -157,7 +160,7 @@ export default class EventService {
       mongoFilter['updatedAt'] = mongoFilter['updatedAt'] ?? {};
       mongoFilter['updatedAt']['$lt'] = to;
     }
-    return this.orderEventDocument.find(mongoFilter).sort({ createdAt: 'asc' });
+    return this.orderEventModel.find(mongoFilter).sort({ createdAt: 'asc' });
   }
 
   public async getCookingRequestEvents(filter: {

@@ -16,5 +16,5 @@ export default abstract class ProductAbstractRepository {
     product: ProductUpdateDto
   ): Promise<ProductDocument>;
   public abstract deactivate(id: string): Promise<void>;
-  public abstract getNextId(): Promise<number>;
+  public abstract clearAll(): Promise<void>;
 }

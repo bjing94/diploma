@@ -15,6 +15,6 @@ export default abstract class MenuAbstractRepository {
     menu: Omit<MenuCreatedDto, 'id'>
   ): Promise<MenuDocument>;
   public abstract delete(id: string): Promise<void>;
-  public abstract getNextId(): Promise<number>;
   public abstract getActiveMenu(): Promise<MenuDocument>;
+  public abstract clearAll(): Promise<void>;
 }

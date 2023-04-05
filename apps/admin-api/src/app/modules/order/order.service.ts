@@ -52,4 +52,8 @@ export default class OrderService {
 
     return { orders: result.orders ?? [] };
   }
+
+  public async runOrderEvents() {
+    return this.kafkaProducerService.sendOrderRunEvents();
+  }
 }

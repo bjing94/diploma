@@ -10,4 +10,5 @@ export default abstract class PaymentAbstractRepository {
     payment: PaymentModel
   ): Promise<PaymentDocument>;
   public abstract delete(id: string): Promise<void>;
+  public abstract clearAll(): Promise<void>;
 }

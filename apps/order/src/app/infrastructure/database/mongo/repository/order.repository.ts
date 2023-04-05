@@ -30,13 +30,19 @@ export default class OrderRepository implements OrderAbstractRepository {
       paymentId: order.paymentId,
     });
   }
+
   public async update(
     id: string,
     order: Partial<OrderModel>
   ): Promise<OrderDocument> {
     return this.model.findByIdAndUpdate(id, order).exec();
   }
+
   public async delete(id: string): Promise<void> {
     await this.model.findByIdAndDelete(id).exec();
+  }
+
+  public async clearAll(): Promise<void> {
+    await this.model.deleteMany({}).exec();
   }
 }

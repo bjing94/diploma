@@ -14,6 +14,11 @@ import { Module } from '@nestjs/common';
         CommandTopics.productCreate,
         CommandTopics.productDelete,
         CommandTopics.productUpdate,
+        // run events
+        CommandTopics.productRunEvents,
+        CommandTopics.orderRunEvents,
+        CommandTopics.kitchenRunEvents,
+        CommandTopics.paymentRunEvents,
         CommandTopics.menuCreate,
         CommandTopics.menuUpdate,
         CommandTopics.orderUpdate,

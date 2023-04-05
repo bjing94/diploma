@@ -71,4 +71,23 @@ export default class PaymentCommandService {
     });
     return { success: true };
   }
+
+  async runPaymentEvents() {
+    try {
+      await this.paymentRepository.clearAll();
+      const events = await this.eventStoreService.getPaymentEvents({});
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaManagerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }

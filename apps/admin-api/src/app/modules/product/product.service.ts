@@ -33,4 +33,8 @@ export default class ProductService {
   public async update(dto: ProductUpdateRequest) {
     return this.kafkaProducerService.sendProductUpdate(dto);
   }
+
+  public async runProductEvents() {
+    return this.kafkaProducerService.sendProductRunEvents();
+  }
 }

@@ -12,6 +12,10 @@ export default class MenuRepository implements MenuAbstractRepository {
     private readonly _repository: Model<MenuDocument>
   ) {}
 
+  public async clearAll(): Promise<void> {
+    await this._repository.deleteMany().exec();
+  }
+
   public async get(id: string): Promise<MenuDocument> {
     return this._repository.findById(id).populate('items.product').exec();
   }

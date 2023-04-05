@@ -13,6 +13,10 @@ export default class ProductRepository implements ProductAbstractRepository {
     private readonly model: Model<ProductDocument>
   ) {}
 
+  public async clearAll(): Promise<void> {
+    await this.model.deleteMany().exec();
+  }
+
   public async find(id: string) {
     return this.model.findById(id).exec();
   }
@@ -42,11 +46,5 @@ export default class ProductRepository implements ProductAbstractRepository {
 
   public async deactivate(id: string): Promise<void> {
     await this.model.findByIdAndUpdate(id, { active: false }).exec();
-  }
-
-  public async getNextId() {
-    const maxIdProduct = await this.model.findOne().sort({ id: 'desc' });
-    const maxId = maxIdProduct ? maxIdProduct.id + 1 : 1;
-    return maxId;
   }
 }
