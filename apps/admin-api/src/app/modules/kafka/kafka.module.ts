@@ -19,6 +19,7 @@ import { Module } from '@nestjs/common';
         CommandTopics.orderRunEvents,
         CommandTopics.kitchenRunEvents,
         CommandTopics.paymentRunEvents,
+        CommandTopics.menuRunEvents,
         CommandTopics.menuCreate,
         CommandTopics.menuUpdate,
         CommandTopics.orderUpdate,
@@ -28,6 +29,13 @@ import { Module } from '@nestjs/common';
         CommandTopics.cookingRequestCreate,
         CommandTopics.cookingRequestUpdate,
         CommandTopics.cookingStockAdd,
+        //
+        CommandTopics.menuClearRead,
+        CommandTopics.orderClearRead,
+        CommandTopics.kitchenClearRead,
+        CommandTopics.paymentClearRead,
+        CommandTopics.productClearRead,
+        //
         QueryTopics.menuGet,
         QueryTopics.productGet,
         QueryTopics.productFind,

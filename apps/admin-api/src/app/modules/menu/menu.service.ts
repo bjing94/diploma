@@ -46,8 +46,4 @@ export default class MenuService {
   ): Promise<MenuUpdateCommandResponse> {
     return this.kafkaProducerService.sendMenuUpdate(dto);
   }
-
-  public async runMenuEvents() {
-    return this.kafkaProducerService.sendMenuRunEvents();
-  }
 }

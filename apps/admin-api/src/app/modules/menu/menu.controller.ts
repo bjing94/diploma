@@ -41,12 +41,6 @@ export default class MenuController {
     return { menu: menus.menus[0] };
   }
 
-  @ApiOperation({ description: 'Run menu events' })
-  @Get('run-events')
-  public async runMenuEvents(): Promise<void> {
-    return this.menuService.runMenuEvents();
-  }
-
   @ApiOperation({ description: 'Get item from menu' })
   @Get('item/:id')
   public async getItem(

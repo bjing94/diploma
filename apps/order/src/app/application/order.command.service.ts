@@ -79,22 +79,7 @@ export default class OrderCommandService {
     }
   }
 
-  async runOrderEvents() {
-    try {
-      await this.orderRepository.clearAll();
-      const events = await this.eventStoreService.getEvents({});
-      console.log(`Events:`, events.length);
-      for (const event of events) {
-        await new Promise((res, rej) => {
-          setTimeout(() => {
-            res(true);
-          }, 200);
-        });
-        await this.kafkaProducerService.emit(event.name, event.payload);
-      }
-      return;
-    } catch (e) {
-      console.log(e);
-    }
+  public async orderClearRead() {
+    await this.orderRepository.clearAll();
   }
 }

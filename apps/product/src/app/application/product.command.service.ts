@@ -98,6 +98,8 @@ export default class ProductCommandService {
   ): Promise<MenuCreateCommandResponse> {
     const { items } = dto;
     const productsMap = new Map<string, ProductDocument>();
+    const menu = await this.menuRepository.findOne({ active: true });
+    if (menu) return null;
     for (const item of items) {
       const product = await this.productRepository.find(item.productId);
       if (!product) {
@@ -190,41 +192,11 @@ export default class ProductCommandService {
     };
   }
 
-  async runProductEvents() {
-    try {
-      await this.productRepository.clearAll();
-      const events = await this.eventStoreService.getProductEvents({});
-      console.log(`Events:`, events.length);
-      for (const event of events) {
-        await new Promise((res, rej) => {
-          setTimeout(() => {
-            res(true);
-          }, 200);
-        });
-        await this.kafkaProducerService.emit(event.name, event.payload);
-      }
-      return;
-    } catch (e) {
-      console.log(e);
-    }
+  async productClearRead() {
+    await this.productRepository.clearAll();
   }
 
-  async runMenuEvents() {
-    try {
-      await this.menuRepository.clearAll();
-      const events = await this.eventStoreService.getMenuEvents({});
-      console.log(`Events:`, events.length);
-      for (const event of events) {
-        await new Promise((res, rej) => {
-          setTimeout(() => {
-            res(true);
-          }, 200);
-        });
-        await this.kafkaProducerService.emit(event.name, event.payload);
-      }
-      return;
-    } catch (e) {
-      console.log(e);
-    }
+  async menuClearRead() {
+    await this.menuRepository.clearAll();
   }
 }

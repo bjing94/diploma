@@ -1,4 +1,5 @@
 import {
+  CookingRequestCreateCommandRequest,
   CookingRequestCreatedEventPayload,
   CookingRequestUpdateCommandRequest,
   CookingRequestUpdatedEventPayload,
@@ -29,6 +30,25 @@ export default class KitchenCommandService {
     private readonly stockRepository: CookingStockRepository
   ) {}
 
+  public async createCookingRequest(data: CookingRequestCreateCommandRequest) {
+    const entity = new CookingRequestDomainEntity({
+      productId: data.productId,
+      status: CookingRequestStatus.PENDING,
+    });
+
+    const payload: CookingRequestCreatedEventPayload = {
+      id: entity.id,
+      productId: entity.productId,
+      status: entity.status,
+    };
+    await this.eventStore.saveCookingRequestEvent({
+      objectId: entity.id,
+      payload: JSON.stringify(payload),
+      name: EventTopics.cookingRequestCreated,
+    });
+    await this.kafkaService.emitCookingRequestCreated(payload);
+  }
+
   public async updateCookingRequest(data: CookingRequestUpdateCommandRequest) {
     const cookingRequest = await this.eventStore.getCookingRequest(data.id);
     if (!cookingRequest) return null;
@@ -56,6 +76,7 @@ export default class KitchenCommandService {
     }
   }
 
+  // Deprecated
   public async handleOrderCreated(data: OrderCreatedEventPayload) {
     const cookingRequests: CookingRequestDomainEntity[] = [];
 
@@ -143,25 +164,8 @@ export default class KitchenCommandService {
     await this.kafkaService.emitCookingStockCreated(payload);
   }
 
-  public async runKitchenEvents() {
-    try {
-      await this.requestRepository.clearAll();
-      await this.stockRepository.clearAll();
-      const stockEvents = await this.eventStore.getCookingStockEvents({});
-      const cookingEvents = await this.eventStore.getCookingRequestEvents({});
-      const events = [...stockEvents, ...cookingEvents];
-      console.log(`Events:`, events.length);
-      for (const event of events) {
-        await new Promise((res, rej) => {
-          setTimeout(() => {
-            res(true);
-          }, 200);
-        });
-        await this.kafkaService.emit(event.name, event.payload);
-      }
-      return;
-    } catch (e) {
-      console.log(e);
-    }
+  async kitchenClearRead() {
+    await this.requestRepository.clearAll();
+    await this.stockRepository.clearAll();
   }
 }

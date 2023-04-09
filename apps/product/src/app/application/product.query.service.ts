@@ -26,6 +26,7 @@ import { Product, ProductDocument } from '@burger-shop/models';
 import { In, ObjectID } from 'typeorm';
 import { MenuItemModel } from '../infrastructure/database/model/menu-item.model';
 import { MenuModel } from '../infrastructure/database/model/menu.model';
+import { KafkaProducerService } from '@burger-shop/kafka-module';
 
 @Injectable()
 export default class ProductQueryService {
@@ -33,7 +34,8 @@ export default class ProductQueryService {
     @Inject('ProductRepository')
     private readonly productRepository: ProductAbstractRepository,
     @Inject('MenuRepository')
-    private readonly menuRepository: MenuAbstractRepository
+    private readonly menuRepository: MenuAbstractRepository,
+    private readonly kafakProducerService: KafkaProducerService
   ) {}
 
   public async getById(id: string): Promise<ProductGetByIdQueryResponse> {
@@ -76,7 +78,7 @@ export default class ProductQueryService {
       dto.take,
       dto.skip
     );
-    // console.log(products);
+    console.log(products);
     return {
       products: products.map((item) => {
         return {
@@ -91,7 +93,6 @@ export default class ProductQueryService {
     dto: MenuFindQueryRequest
   ): Promise<MenuFindQueryResponse> {
     const menus = await this.menuRepository.findMany(dto);
-    console.log(menus);
     const menusResponse: MenuResponseDto[] = menus.map(
       ProductQueryService.mapMenu
     );

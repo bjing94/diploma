@@ -81,6 +81,31 @@ export class CreateOrderNewStep extends CreateOrderSagaState {
       },
     };
 
+    for (const item of payload.order.orderItems) {
+      const stockData =
+        await this.saga.kafkaProducerService.sendCookingStockGet({
+          id: item.productId,
+        });
+      const missing = stockData?.quantity
+        ? item.quantity - stockData.quantity
+        : item.quantity;
+      Logger.log(
+        `Stock ${item.productId} ${stockData?.quantity}, missing ${missing}`
+      );
+      for (let i = 0; i < missing; i++) {
+        await this.saga.kafkaProducerService.sendCookingRequestCreate({
+          productId: item.productId,
+        });
+      }
+
+      if (missing > 0 && stockData?.quantity > 0) {
+        await this.saga.kafkaProducerService.sendCookingStockAdd({
+          productId: item.productId,
+          value: -1 * stockData.quantity,
+        });
+      }
+    }
+
     await this.saga.kafkaProducerService.emitOrderCreated(payload);
     await this.saga.eventStoreService.saveEvent({
       name: EventTopics.orderCreated,

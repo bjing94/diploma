@@ -1,5 +1,5 @@
 import { EventStoreModule } from '@burger-shop/event-store';
-import { KafkaProducerModule } from '@burger-shop/kafka-module';
+import { CommandTopics, KafkaProducerModule } from '@burger-shop/kafka-module';
 import { Product, ProductSchema } from '@burger-shop/models';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -42,7 +42,11 @@ import ProductRepository from './infrastructure/database/repository/product.repo
       ],
       READ_CONNECTION_NAME
     ),
-    KafkaProducerModule.register('product-consumer', ['localhost:29092'], []),
+    KafkaProducerModule.register(
+      'product-consumer',
+      ['localhost:29092'],
+      [CommandTopics.menuCreate]
+    ),
     EventStoreModule.registerForProduct(getMongoConnectionStringEventStore()),
   ],
   controllers: [ProductQueryController, ProductCommandController],

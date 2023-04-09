@@ -23,8 +23,8 @@ export default class PaymentCommandController {
     return this.commandService.updatePayment(payload);
   }
 
-  @MessagePattern(CommandTopics.paymentRunEvents)
-  public async runPaymentEvents() {
-    return this.commandService.runPaymentEvents();
+  @MessagePattern(CommandTopics.paymentClearRead)
+  public async paymentClearRead() {
+    return this.commandService.paymentClearRead();
   }
 }

@@ -1,6 +1,8 @@
 import {
+  CookingRequestCreateCommandRequest,
   CookingRequestUpdateCommandRequest,
   CookingRequestUpdatedEventPayload,
+  CookingStockAddCommandRequest,
   OrderCreatedEventPayload,
 } from '@burger-shop/contracts';
 import { CommandTopics, EventTopics } from '@burger-shop/kafka-module';
@@ -12,12 +14,19 @@ import KitchenCommandService from './kitchen.command.service';
 export default class KitchenCommandController {
   constructor(private readonly service: KitchenCommandService) {}
 
-  // @MessagePattern(EventTopics.orderCreated)
-  // async onOrderCreated(
-  //   @Payload() dto: OrderCreatedEventPayload
-  // ): Promise<void> {
-  //   await this.service.handleOrderCreated(dto);
-  // }
+  @MessagePattern(CommandTopics.cookingStockAdd)
+  async addCookingStock(
+    @Payload() dto: CookingStockAddCommandRequest
+  ): Promise<void> {
+    await this.service.handleAddStock(dto);
+  }
+
+  @MessagePattern(CommandTopics.cookingRequestCreate)
+  async createCookingRequest(
+    @Payload() dto: CookingRequestCreateCommandRequest
+  ): Promise<void> {
+    await this.service.createCookingRequest(dto);
+  }
 
   @MessagePattern(CommandTopics.cookingRequestUpdate)
   async updateCookingRequest(
@@ -26,8 +35,8 @@ export default class KitchenCommandController {
     await this.service.updateCookingRequest(dto);
   }
 
-  @MessagePattern(CommandTopics.kitchenRunEvents)
-  async runKitchenEvents() {
-    await this.service.runKitchenEvents();
+  @MessagePattern(CommandTopics.kitchenClearRead)
+  async kitchenClearRead() {
+    await this.service.kitchenClearRead();
   }
 }

@@ -46,4 +46,29 @@ export default class EventController {
     const events = await this.eventService.getMenuEvents(filter);
     return EventMapper.toResponseMany(events);
   }
+
+  @Get('menu/run-events')
+  public async runMenuEvents() {
+    await this.eventService.runMenuEvents();
+  }
+
+  @Get('order/run-events')
+  public async runOrderEvents() {
+    await this.eventService.runOrderEvents();
+  }
+
+  @Get('product/run-events')
+  public async runProductEvents() {
+    await this.eventService.runProductEvents();
+  }
+
+  @Get('kitchen/run-events')
+  public async runKitchenEvents() {
+    await this.eventService.runKitchenEvents();
+  }
+
+  @Get('payment/run-events')
+  public async runPaymentEvents() {
+    await this.eventService.runPaymentEvents();
+  }
 }

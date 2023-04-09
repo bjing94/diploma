@@ -16,8 +16,13 @@ export enum CommandTopics {
   productRunEvents = 'product.run-events.command',
   menuRunEvents = 'menu.run-events.command',
   orderRunEvents = 'order.run-events.command',
-  paymentRunEvents = 'product.run-events.command',
+  paymentRunEvents = 'payment.run-events.command',
   kitchenRunEvents = 'kitchen.run-events.command',
+  productClearRead = 'product.clear-read.command',
+  orderClearRead = 'order.clear-read.command',
+  paymentClearRead = 'payment.clear-read.command',
+  kitchenClearRead = 'kitchen.clear-read.command',
+  menuClearRead = 'menu.clear-read.command',
 }
 
 export enum QueryTopics {

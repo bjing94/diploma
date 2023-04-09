@@ -8,9 +8,11 @@ import {
 } from './event.const';
 import EventController from './event.controller';
 import EventService from './event.service';
+import KafkaModule from '../kafka/kafka.module';
 
 @Module({
   imports: [
+    KafkaModule,
     MongooseModule.forRoot(getMongoConnectionStringEventStore(), {
       connectionName: CONNECTION_NAME,
     }),

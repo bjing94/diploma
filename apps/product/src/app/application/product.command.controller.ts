@@ -59,13 +59,13 @@ export default class ProductCommandController {
     return this.productCommandService.updateMenu(payload);
   }
 
-  @MessagePattern(CommandTopics.productRunEvents)
-  public async runProductEvents(): Promise<void> {
-    return this.productCommandService.runProductEvents();
+  @MessagePattern(CommandTopics.menuClearRead)
+  public async menuClearRead(): Promise<void> {
+    return this.productCommandService.menuClearRead();
   }
 
-  @MessagePattern(CommandTopics.menuRunEvents)
-  public async runMenuEvents(): Promise<void> {
-    return this.productCommandService.runMenuEvents();
+  @MessagePattern(CommandTopics.productClearRead)
+  public async productClearRead(): Promise<void> {
+    return this.productCommandService.productClearRead();
   }
 }

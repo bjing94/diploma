@@ -461,4 +461,24 @@ export class KafkaProducerService {
       payload
     );
   }
+
+  public async sendProductClearRead() {
+    return this.send(CommandTopics.productClearRead, {});
+  }
+
+  public async sendOrderClearRead() {
+    return this.send(CommandTopics.orderClearRead, {});
+  }
+
+  public async sendPaymentClearRead() {
+    return this.send(CommandTopics.paymentClearRead, {});
+  }
+
+  public async sendMenuClearRead() {
+    return this.send(CommandTopics.menuClearRead, {});
+  }
+
+  public async sendKitchenClearRead() {
+    return this.send(CommandTopics.kitchenClearRead, {});
+  }
 }

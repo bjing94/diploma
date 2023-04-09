@@ -34,7 +34,8 @@ export default class EventService {
     @InjectModel(ResourceNames.COOKING_STOCK, CONNECTION_NAME)
     private readonly cookingStockEventDocument: Model<EventDocument>,
     @InjectModel(ResourceNames.COOKING_STOCK + '_snapshot', CONNECTION_NAME)
-    private readonly cookingStockSnasphotEventDocument: Model<EventDocument>
+    private readonly cookingStockSnasphotEventDocument: Model<EventDocument>,
+    private readonly kafkaProducerService: KafkaProducerService
   ) {}
 
   public async getMenuEvents(filter: { from?: Date; to?: Date; id?: string }) {
@@ -227,5 +228,102 @@ export default class EventService {
     return this.cookingRequestEventDocument
       .find(mongoFilter)
       .sort({ createdAt: 'asc' });
+  }
+
+  public async runMenuEvents() {
+    try {
+      await this.kafkaProducerService.sendMenuClearRead();
+      const events = await this.getMenuEvents({});
+      console.log(`Events:`, events.length, events);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async runProductEvents() {
+    try {
+      await this.kafkaProducerService.sendProductClearRead();
+      const events = await this.getProductEvents({});
+      console.log(`Events:`, events.length, events);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async runPaymentEvents() {
+    try {
+      await this.kafkaProducerService.sendPaymentClearRead();
+      const events = await this.getPaymentEvents({});
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async runOrderEvents() {
+    try {
+      await this.kafkaProducerService.sendOrderClearRead();
+      const events = await this.getOrderEvents({});
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  public async runKitchenEvents() {
+    try {
+      await this.kafkaProducerService.sendKitchenClearRead();
+      const stockEvents = await this.getCookingStockEvents({});
+      const cookingEvents = await this.getCookingRequestEvents({});
+      const events = [...stockEvents, ...cookingEvents];
+      console.log(`Events:`, events.length);
+      for (const event of events) {
+        await new Promise((res, rej) => {
+          setTimeout(() => {
+            res(true);
+          }, 200);
+        });
+        await this.kafkaProducerService.emit(event.name, event.payload);
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

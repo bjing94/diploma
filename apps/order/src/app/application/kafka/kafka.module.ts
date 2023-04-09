@@ -12,8 +12,12 @@ import { Module } from '@nestjs/common';
       ['localhost:29092'],
       [
         QueryTopics.menuItemGet,
+        QueryTopics.cookingStockGet,
+        QueryTopics.cookingRequestGet,
         CommandTopics.paymentCreate,
         CommandTopics.paymentUpdate,
+        CommandTopics.cookingStockAdd,
+        CommandTopics.cookingRequestCreate,
       ]
     ),
   ],
