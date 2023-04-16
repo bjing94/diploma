@@ -12,7 +12,11 @@ import {
   CookingRequestDomainEntity,
   CookingStockDomainEntity,
 } from '@burger-shop/domain-entity';
-import { EventStoreKitchenService } from '@burger-shop/event-store';
+import {
+  CookingRequestEventNames,
+  CookingStockEventNames,
+  EventStoreKitchenService,
+} from '@burger-shop/event-store';
 import { CookingRequestStatus } from '@burger-shop/interfaces';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { Inject, Injectable, Logger } from '@nestjs/common';
@@ -50,6 +54,19 @@ export default class KitchenCommandService {
   }
 
   public async updateCookingRequest(data: CookingRequestUpdateCommandRequest) {
+    console.log(data);
+    const cookingRequest = await this.eventStore.getCookingRequest(data.id);
+    if (!cookingRequest) return null;
+
+    if (data.status === CookingRequestStatus.READY) {
+      await this.readyCookingRequest(data);
+    }
+    if (data.status === CookingRequestStatus.REJECTED) {
+      await this.rejectCookingRequest(data);
+    }
+  }
+
+  private async readyCookingRequest(data: CookingRequestUpdateCommandRequest) {
     const cookingRequest = await this.eventStore.getCookingRequest(data.id);
     if (!cookingRequest) return null;
 
@@ -59,21 +76,41 @@ export default class KitchenCommandService {
       id: cookingRequest.id,
       productId: cookingRequest.productId,
       status: cookingRequest.status,
+      eventName: CookingRequestEventNames.requestReady,
     };
-
+    console.log('ready request', payload);
     await this.eventStore.saveCookingRequestEvent({
-      name: EventTopics.cookingRequestUpdated,
+      name: CookingRequestEventNames.requestReady,
       payload: JSON.stringify(payload),
       objectId: cookingRequest.id,
     });
     await this.kafkaService.emitCookingRequestUpdated(payload);
 
-    if (cookingRequest.status === CookingRequestStatus.READY) {
-      await this.handleAddStock({
-        productId: cookingRequest.productId,
-        value: 1,
-      });
-    }
+    await this.handleAddStock({
+      productId: cookingRequest.productId,
+      value: 1,
+    });
+  }
+
+  private async rejectCookingRequest(data: CookingRequestUpdateCommandRequest) {
+    const cookingRequest = await this.eventStore.getCookingRequest(data.id);
+    if (!cookingRequest) return null;
+
+    cookingRequest.status = data.status;
+
+    const payload: CookingRequestUpdatedEventPayload = {
+      id: cookingRequest.id,
+      productId: cookingRequest.productId,
+      status: cookingRequest.status,
+      eventName: CookingRequestEventNames.requestRejected,
+    };
+
+    await this.eventStore.saveCookingRequestEvent({
+      name: CookingRequestEventNames.requestRejected,
+      payload: JSON.stringify(payload),
+      objectId: cookingRequest.id,
+    });
+    await this.kafkaService.emitCookingRequestUpdated(payload);
   }
 
   // Deprecated
@@ -114,7 +151,7 @@ export default class KitchenCommandService {
       await this.eventStore.saveCookingRequestEvent({
         objectId: req.id,
         payload: JSON.stringify(payload),
-        name: EventTopics.cookingRequestCreated,
+        name: CookingRequestEventNames.requestCreated,
       });
       await this.kafkaService.emitCookingRequestCreated(payload);
     }
@@ -132,10 +169,11 @@ export default class KitchenCommandService {
     const payload: CookingStockUpdatedEventPayload = {
       id: stock.id,
       quantity: stock.quantity,
+      eventName: CookingStockEventNames.stockQuantityChanged,
     };
     // Привязка по id товара
     await this.eventStore.saveCookingStockEvent({
-      name: EventTopics.cookingStockUpdated,
+      name: CookingStockEventNames.stockQuantityChanged,
       payload: JSON.stringify(payload),
       objectId: stock.id,
     });
@@ -156,7 +194,7 @@ export default class KitchenCommandService {
     };
     // Привязка по id товара
     await this.eventStore.saveCookingStockEvent({
-      name: EventTopics.cookingStockCreated,
+      name: CookingStockEventNames.stockCreated,
       payload: JSON.stringify(payload),
       objectId: domainStock.id,
     });

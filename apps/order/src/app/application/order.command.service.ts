@@ -10,7 +10,10 @@ import {
   PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
-import { EventStoreOrderService } from '@burger-shop/event-store';
+import {
+  EventStoreOrderService,
+  PaymentEventNames,
+} from '@burger-shop/event-store';
 import {
   OrderItemDomainEntity,
   OrderDomainEntity,
@@ -71,10 +74,10 @@ export default class OrderCommandService {
     );
     saga.setState(order.status);
 
-    if (data.status === PaymentStatus.FULFILLED) {
+    if (data.eventName === PaymentEventNames.paymentFulfilled) {
       return saga.getState().pay(data);
     }
-    if (data.status === PaymentStatus.REJECTED) {
+    if (data.eventName === PaymentEventNames.paymentRejected) {
       return saga.getState().cancel(data.orderId);
     }
   }

@@ -7,3 +7,4 @@ export * from './lib/product';
 export * from './lib/product/menu-item.create.request.dto';
 export * from './lib/event-store.interface';
 export * from './lib/kitchen.interface';
+export * from './lib/product/menu.updated.dto';

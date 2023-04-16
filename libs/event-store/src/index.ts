@@ -5,3 +5,4 @@ export * from './lib/order/event-store.order.service';
 export * from './lib/payment/event-store.payment.service';
 
 export * from './lib/kitchen/event-store.kitchen.service';
+export * from './lib/event-store.const';

@@ -27,6 +27,7 @@ import { In, ObjectID } from 'typeorm';
 import { MenuItemModel } from '../infrastructure/database/model/menu-item.model';
 import { MenuModel } from '../infrastructure/database/model/menu.model';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
+import { MenuEventNames } from '@burger-shop/event-store';
 
 @Injectable()
 export default class ProductQueryService {
@@ -128,13 +129,24 @@ export default class ProductQueryService {
 
   public async onMenuUpdated(dto: MenuUpdatedEventPayload): Promise<void> {
     const { menu } = dto;
-    await this.menuRepository.update(menu.id, {
-      items: menu.items.map((item, idx) => {
-        const { productId } = item;
-        return { ...item, id: idx, product: productId };
-      }),
-      active: menu.active,
-    });
+    if (dto.eventName === MenuEventNames.menuActivated) {
+      await this.menuRepository.update(menu.id, {
+        active: true,
+      });
+    }
+    if (dto.eventName === MenuEventNames.menuDeactivated) {
+      await this.menuRepository.update(menu.id, {
+        active: false,
+      });
+    }
+    if (dto.eventName === MenuEventNames.menuItemsUpdated) {
+      await this.menuRepository.update(menu.id, {
+        items: menu.items.map((item, idx) => {
+          const { productId } = item;
+          return { ...item, id: idx, product: productId };
+        }),
+      });
+    }
   }
 
   public async getMenu(

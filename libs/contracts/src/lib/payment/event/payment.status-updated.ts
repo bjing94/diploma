@@ -10,4 +10,7 @@ export class PaymentStatusUpdatedEventPayload {
 
   @ApiProperty()
   public readonly orderId: string;
+
+  @ApiProperty()
+  public readonly eventName: string;
 }

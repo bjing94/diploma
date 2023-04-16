@@ -1,5 +1,9 @@
 import { MenuFindQueryRequest } from '@burger-shop/contracts';
-import { MenuCreatedDto, MenuCreateDto } from '@burger-shop/interfaces';
+import {
+  MenuCreatedDto,
+  MenuCreateDto,
+  MenuUpdatedDto,
+} from '@burger-shop/interfaces';
 import { MenuDocument } from '../../infrastructure/database/model/menu.model';
 
 export default abstract class MenuAbstractRepository {
@@ -12,7 +16,7 @@ export default abstract class MenuAbstractRepository {
   public abstract create(menu: MenuCreateDto): Promise<MenuDocument>;
   public abstract update(
     id: string,
-    menu: Omit<MenuCreatedDto, 'id'>
+    menu: Omit<MenuUpdatedDto, 'id'>
   ): Promise<MenuDocument>;
   public abstract delete(id: string): Promise<void>;
   public abstract getActiveMenu(): Promise<MenuDocument>;

@@ -5,6 +5,7 @@ import {
 import { CookingStockDomainEntity } from '@burger-shop/domain-entity';
 import { ISaveEvent } from '@burger-shop/interfaces';
 import { EventTopics } from '@burger-shop/kafka-module';
+import { CookingStockEventNames } from '../event-store.const';
 
 export default class CookingStockDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
@@ -23,7 +24,7 @@ export default class CookingStockDomainTransformer {
     domain: CookingStockDomainEntity,
     event: ISaveEvent
   ) {
-    if (event.name === 'snapshot') {
+    if (event.name === CookingStockEventNames.stockSnapshot) {
       const { id, quantity, productId } = JSON.parse(
         event.payload
       ) as CookingStockCreatedEventPayload;
@@ -31,7 +32,7 @@ export default class CookingStockDomainTransformer {
       domain.productId = productId;
       domain.quantity = quantity;
     }
-    if (event.name === EventTopics.cookingStockCreated) {
+    if (event.name === CookingStockEventNames.stockCreated) {
       const { id, quantity, productId } = JSON.parse(
         event.payload
       ) as CookingStockCreatedEventPayload;
@@ -39,7 +40,7 @@ export default class CookingStockDomainTransformer {
       domain.productId = productId;
       domain.quantity = quantity;
     }
-    if (event.name === EventTopics.cookingStockUpdated) {
+    if (event.name === CookingStockEventNames.stockQuantityChanged) {
       const { quantity } = JSON.parse(
         event.payload
       ) as CookingStockUpdatedEventPayload;
@@ -55,7 +56,7 @@ export default class CookingStockDomainTransformer {
     };
     return {
       objectId: domain.id,
-      name: 'snapshot',
+      name: CookingStockEventNames.stockSnapshot,
       payload: JSON.stringify(payload),
     };
   }

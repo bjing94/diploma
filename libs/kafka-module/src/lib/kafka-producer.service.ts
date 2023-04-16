@@ -64,7 +64,7 @@ import {
 import { Inject, Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common/decorators';
 import { ClientKafka } from '@nestjs/microservices';
-import { lastValueFrom, Observable } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { CommandTopics, EventTopics, QueryTopics } from './kafka.topics.enum';
 
 @Injectable()

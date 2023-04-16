@@ -8,6 +8,7 @@ import {
 } from '@burger-shop/domain-entity';
 import { ISaveEvent } from '@burger-shop/interfaces';
 import { EventTopics } from '@burger-shop/kafka-module';
+import { OrderEventNames } from '../event-store.const';
 
 export default class OrderDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
@@ -22,7 +23,7 @@ export default class OrderDomainTransformer {
   }
 
   private static applyEvent(domain: OrderDomainEntity, event: ISaveEvent) {
-    if (event.name === 'snapshot') {
+    if (event.name === OrderEventNames.orderSnapshot) {
       const { order } = JSON.parse(event.payload) as OrderCreatedEventPayload;
       domain.id = order.id;
       domain.orderItems = order.orderItems.map((item) => {
@@ -35,7 +36,7 @@ export default class OrderDomainTransformer {
       domain.paymentId = order.paymentId;
       domain.status = order.status;
     }
-    if (event.name === EventTopics.orderCreated) {
+    if (event.name === OrderEventNames.orderCreated) {
       const { order } = JSON.parse(event.payload) as OrderCreatedEventPayload;
       domain.id = order.id;
       domain.orderItems = order.orderItems.map((item) => {
@@ -48,7 +49,19 @@ export default class OrderDomainTransformer {
       domain.paymentId = order.paymentId;
       domain.status = order.status;
     }
-    if (event.name === EventTopics.orderUpdated) {
+    if (event.name === OrderEventNames.orderCanceled) {
+      const { order } = JSON.parse(event.payload) as OrderUpdatedEventPayload;
+      domain.status = order.status;
+    }
+    if (event.name === OrderEventNames.orderCompleted) {
+      const { order } = JSON.parse(event.payload) as OrderUpdatedEventPayload;
+      domain.status = order.status;
+    }
+    if (event.name === OrderEventNames.orderPayed) {
+      const { order } = JSON.parse(event.payload) as OrderUpdatedEventPayload;
+      domain.status = order.status;
+    }
+    if (event.name === OrderEventNames.orderReadyForPickup) {
       const { order } = JSON.parse(event.payload) as OrderUpdatedEventPayload;
       domain.status = order.status;
     }
@@ -72,7 +85,7 @@ export default class OrderDomainTransformer {
     };
     return {
       objectId: domain.id,
-      name: 'snapshot',
+      name: OrderEventNames.orderSnapshot,
       payload: JSON.stringify(payload),
     };
   }

@@ -4,7 +4,7 @@ import {
 } from '@burger-shop/contracts';
 import { PaymentDomainEntity } from '@burger-shop/domain-entity';
 import { ISaveEvent, PaymentType } from '@burger-shop/interfaces';
-import { EventTopics } from '@burger-shop/kafka-module';
+import { PaymentEventNames } from '../event-store.const';
 
 export default class PaymentDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
@@ -20,7 +20,7 @@ export default class PaymentDomainTransformer {
   }
 
   private static applyEvent(domain: PaymentDomainEntity, event: ISaveEvent) {
-    if (event.name === 'snapshot') {
+    if (event.name === PaymentEventNames.paymentSnapshot) {
       const { payment } = JSON.parse(
         event.payload
       ) as PaymentCreatedEventPayload;
@@ -30,7 +30,7 @@ export default class PaymentDomainTransformer {
       domain.sum = payment.sum;
       domain.type = payment.type;
     }
-    if (event.name === EventTopics.paymentCreated) {
+    if (event.name === PaymentEventNames.paymentCreated) {
       const { payment } = JSON.parse(
         event.payload
       ) as PaymentCreatedEventPayload;
@@ -40,7 +40,19 @@ export default class PaymentDomainTransformer {
       domain.sum = payment.sum;
       domain.type = payment.type;
     }
-    if (event.name === EventTopics.paymentStatusUpdated) {
+    if (event.name === PaymentEventNames.paymentFulfilled) {
+      const { status } = JSON.parse(
+        event.payload
+      ) as PaymentStatusUpdatedEventPayload;
+      domain.status = status;
+    }
+    if (event.name === PaymentEventNames.paymentRejected) {
+      const { status } = JSON.parse(
+        event.payload
+      ) as PaymentStatusUpdatedEventPayload;
+      domain.status = status;
+    }
+    if (event.name === PaymentEventNames.paymentRefunded) {
       const { status } = JSON.parse(
         event.payload
       ) as PaymentStatusUpdatedEventPayload;
@@ -61,7 +73,7 @@ export default class PaymentDomainTransformer {
     };
     return {
       objectId: domain.id,
-      name: 'snapshot',
+      name: PaymentEventNames.paymentSnapshot,
       payload: JSON.stringify(payload),
     };
   }

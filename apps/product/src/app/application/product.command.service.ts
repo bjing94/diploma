@@ -15,7 +15,11 @@ import {
   MenuItemDomainEntity,
   ProductDomainEntity,
 } from '@burger-shop/domain-entity';
-import { EventStoreProductService } from '@burger-shop/event-store';
+import {
+  EventStoreProductService,
+  MenuEventNames,
+  ProductEventNames,
+} from '@burger-shop/event-store';
 import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { ProductDocument } from '@burger-shop/models';
 import { Inject, Injectable } from '@nestjs/common';
@@ -46,7 +50,7 @@ export default class ProductCommandService {
     await this.kafkaProducerService.emitProductCreated(payload);
     await this.eventStoreService.saveProductEvent({
       objectId: domain.id,
-      name: EventTopics.productCreated,
+      name: ProductEventNames.productCreated,
       payload: JSON.stringify(payload),
     });
     return {
@@ -67,11 +71,12 @@ export default class ProductCommandService {
         name,
         price,
       },
+      eventName: ProductEventNames.productUpdated,
     };
     await this.kafkaProducerService.emitProductUpdated(payload);
     await this.eventStoreService.saveProductEvent({
       objectId: id,
-      name: EventTopics.productUpdated,
+      name: ProductEventNames.productUpdated,
       payload: JSON.stringify(payload),
     });
     return { success: true };
@@ -133,7 +138,7 @@ export default class ProductCommandService {
     await this.kafkaProducerService.emitMenuCreated(payload);
     await this.eventStoreService.saveMenuEvent({
       objectId: menuDomain.id,
-      name: EventTopics.menuCreated,
+      name: MenuEventNames.menuCreated,
       payload: JSON.stringify(payload),
     });
 
@@ -150,6 +155,14 @@ export default class ProductCommandService {
     const { items, active } = data;
     const menu = await this.menuRepository.get(id);
     if (!menu) return { success: false };
+
+    if (menu.active !== active) {
+      if (menu.active === false) {
+        await this.deactivateMenu(dto);
+      } else {
+        await this.activateMenu(dto);
+      }
+    }
 
     const productsMap = new Map<string, ProductDocument>();
     for (const item of items) {
@@ -178,13 +191,59 @@ export default class ProductCommandService {
           id: idx,
         })),
         id: menuDomain.id,
-        active: menuDomain.active,
       },
+      eventName: MenuEventNames.menuItemsUpdated,
     };
     await this.kafkaProducerService.emitMenuUpdated(payload);
     await this.eventStoreService.saveMenuEvent({
       objectId: menuDomain.id,
-      name: EventTopics.menuUpdated,
+      name: MenuEventNames.menuItemsUpdated,
+      payload: JSON.stringify(payload),
+    });
+    return {
+      success: true,
+    };
+  }
+
+  public async activateMenu(dto: MenuUpdateCommandRequest) {
+    const { id } = dto;
+    const menu = await this.menuRepository.get(id);
+    if (!menu) return { success: false };
+
+    const payload = {
+      menu: {
+        active: true,
+        id: id,
+      },
+      eventName: MenuEventNames.menuActivated,
+    };
+    await this.kafkaProducerService.emitMenuUpdated(payload);
+    await this.eventStoreService.saveMenuEvent({
+      objectId: id,
+      name: MenuEventNames.menuActivated,
+      payload: JSON.stringify(payload),
+    });
+    return {
+      success: true,
+    };
+  }
+
+  public async deactivateMenu(dto: MenuUpdateCommandRequest) {
+    const { id } = dto;
+    const menu = await this.menuRepository.get(id);
+    if (!menu) return { success: false };
+
+    const payload = {
+      menu: {
+        active: false,
+        id: id,
+      },
+      eventName: MenuEventNames.menuDeactivated,
+    };
+    await this.kafkaProducerService.emitMenuUpdated(payload);
+    await this.eventStoreService.saveMenuEvent({
+      objectId: id,
+      name: MenuEventNames.menuDeactivated,
       payload: JSON.stringify(payload),
     });
     return {

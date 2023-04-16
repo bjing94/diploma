@@ -1,5 +1,9 @@
 import { MenuFindQueryRequest } from '@burger-shop/contracts';
-import { MenuCreatedDto, MenuCreateDto } from '@burger-shop/interfaces';
+import {
+  MenuCreatedDto,
+  MenuCreateDto,
+  MenuUpdatedDto,
+} from '@burger-shop/interfaces';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import MenuAbstractRepository from '../../../application/repository/menu.abstract-repository';
@@ -45,7 +49,7 @@ export default class MenuRepository implements MenuAbstractRepository {
 
   public async update(
     id: string,
-    menu: Omit<MenuCreatedDto, 'id'>
+    menu: Omit<MenuUpdatedDto, 'id'>
   ): Promise<MenuDocument> {
     return this._repository.findByIdAndUpdate(id, menu).exec();
   }

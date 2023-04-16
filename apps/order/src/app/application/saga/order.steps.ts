@@ -12,8 +12,8 @@ import {
 } from '@burger-shop/contracts';
 import CreateOrderSaga from './order.saga';
 import { Logger } from '@nestjs/common';
-import { EventTopics } from '@burger-shop/kafka-module';
 import { PaymentStatus, OrderStatus } from '@burger-shop/interfaces';
+import { OrderEventNames } from '@burger-shop/event-store';
 
 // Заказ не создан
 export class CreateOrderNewStep extends CreateOrderSagaState {
@@ -108,7 +108,7 @@ export class CreateOrderNewStep extends CreateOrderSagaState {
 
     await this.saga.kafkaProducerService.emitOrderCreated(payload);
     await this.saga.eventStoreService.saveEvent({
-      name: EventTopics.orderCreated,
+      name: OrderEventNames.orderCreated,
       payload: JSON.stringify(payload),
       objectId: order.id,
     });
@@ -150,12 +150,13 @@ export class CreateOrderPayStep extends CreateOrderSagaState {
           id: order.id,
           status: order.status,
         },
+        eventName: OrderEventNames.orderPayed,
       };
 
       await this.saga.eventStoreService.saveEvent({
         objectId: order.id,
         payload: JSON.stringify(payload),
-        name: EventTopics.orderUpdated,
+        name: OrderEventNames.orderPayed,
       });
 
       await this.saga.kafkaProducerService.emitOrderUpdated({
@@ -163,6 +164,7 @@ export class CreateOrderPayStep extends CreateOrderSagaState {
           id: order.id,
           status: order.status,
         },
+        eventName: OrderEventNames.orderPayed,
       });
     }
   }
@@ -178,12 +180,13 @@ export class CreateOrderPayStep extends CreateOrderSagaState {
         id: order.id,
         status: order.status,
       },
+      eventName: OrderEventNames.orderCanceled,
     };
 
     await this.saga.eventStoreService.saveEvent({
       objectId: order.id,
       payload: JSON.stringify(payload),
-      name: EventTopics.orderUpdated,
+      name: OrderEventNames.orderCanceled,
     });
 
     await this.saga.kafkaProducerService.emitOrderUpdated({
@@ -191,6 +194,7 @@ export class CreateOrderPayStep extends CreateOrderSagaState {
         id: order.id,
         status: order.status,
       },
+      eventName: OrderEventNames.orderCanceled,
     });
   }
   public ready() {
@@ -228,12 +232,13 @@ export class CreateOrderMarkReadyStep extends CreateOrderSagaState {
         id: order.id,
         status: order.status,
       },
+      eventName: OrderEventNames.orderReadyForPickup,
     };
 
     await this.saga.eventStoreService.saveEvent({
       objectId: order.id,
       payload: JSON.stringify(payload),
-      name: EventTopics.orderUpdated,
+      name: OrderEventNames.orderReadyForPickup,
     });
 
     await this.saga.kafkaProducerService.emitOrderUpdated({
@@ -241,6 +246,7 @@ export class CreateOrderMarkReadyStep extends CreateOrderSagaState {
         id: order.id,
         status: order.status,
       },
+      eventName: OrderEventNames.orderReadyForPickup,
     });
   }
 
@@ -280,12 +286,13 @@ export class CreateOrderMarkCompleteStep extends CreateOrderSagaState {
         id: order.id,
         status: order.status,
       },
+      eventName: OrderEventNames.orderCompleted,
     };
 
     await this.saga.eventStoreService.saveEvent({
       objectId: order.id,
       payload: JSON.stringify(payload),
-      name: EventTopics.orderUpdated,
+      name: OrderEventNames.orderCompleted,
     });
 
     await this.saga.kafkaProducerService.emitOrderUpdated({
@@ -293,6 +300,7 @@ export class CreateOrderMarkCompleteStep extends CreateOrderSagaState {
         id: order.id,
         status: order.status,
       },
+      eventName: OrderEventNames.orderCompleted,
     });
   }
 }

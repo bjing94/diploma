@@ -19,6 +19,7 @@ export * from './lib/product/event/product.updated';
 export * from './lib/product/event/product.deleted';
 export * from './lib/product/event/menu.created';
 export * from './lib/product/event/menu.updated';
+export * from './lib/product/event/menu.snapshot';
 
 export * from './lib/payment/event/payment.created';
 export * from './lib/payment/event/payment.status-updated';

@@ -14,4 +14,8 @@ export class CookingRequestUpdatedEventPayload {
   @ApiProperty()
   @IsString()
   public readonly status: CookingRequestStatus;
+
+  @ApiProperty()
+  @IsString()
+  public readonly eventName: string;
 }

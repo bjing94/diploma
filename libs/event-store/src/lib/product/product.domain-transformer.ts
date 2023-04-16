@@ -1,11 +1,10 @@
 import {
   ProductUpdatedEventPayload,
   ProductCreatedEventPayload,
-  ProductDeletedEventPayload,
 } from '@burger-shop/contracts';
 import { ProductDomainEntity } from '@burger-shop/domain-entity';
 import { ISaveEvent } from '@burger-shop/interfaces';
-import { EventTopics } from '@burger-shop/kafka-module';
+import { ProductEventNames } from '../event-store.const';
 
 export default class ProductDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
@@ -17,7 +16,7 @@ export default class ProductDomainTransformer {
   }
 
   private static applyEvent(domain: ProductDomainEntity, event: ISaveEvent) {
-    if (event.name === 'snapshot') {
+    if (event.name === ProductEventNames.productSnapshot) {
       const { product } = JSON.parse(
         event.payload
       ) as ProductUpdatedEventPayload;
@@ -25,7 +24,7 @@ export default class ProductDomainTransformer {
       domain.name = product.name;
       domain.active = true;
     }
-    if (event.name === EventTopics.productCreated) {
+    if (event.name === ProductEventNames.productCreated) {
       const { product } = JSON.parse(
         event.payload
       ) as ProductCreatedEventPayload;
@@ -33,21 +32,11 @@ export default class ProductDomainTransformer {
       domain.name = product.name;
       domain.active = true;
     }
-    if (event.name === EventTopics.productUpdated) {
+    if (event.name === ProductEventNames.productUpdated) {
       const { product } = JSON.parse(
         event.payload
       ) as ProductUpdatedEventPayload;
       domain.name = product.name;
-    }
-    if (event.name === EventTopics.productUpdated) {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductUpdatedEventPayload;
-      domain.name = product.name;
-    }
-    if (event.name === EventTopics.productDeleted) {
-      const { id } = JSON.parse(event.payload) as ProductDeletedEventPayload;
-      domain.active = false;
     }
   }
 
@@ -57,10 +46,11 @@ export default class ProductDomainTransformer {
         id: domain.id,
         name: domain.name,
       },
+      eventName: ProductEventNames.productSnapshot,
     };
     return {
       objectId: domain.id,
-      name: 'snapshot',
+      name: ProductEventNames.productSnapshot,
       payload: JSON.stringify(payload),
     };
   }

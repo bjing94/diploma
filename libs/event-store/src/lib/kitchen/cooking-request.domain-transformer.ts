@@ -5,6 +5,7 @@ import {
 import { CookingRequestDomainEntity } from '@burger-shop/domain-entity';
 import { CookingRequestStatus, ISaveEvent } from '@burger-shop/interfaces';
 import { EventTopics } from '@burger-shop/kafka-module';
+import { CookingRequestEventNames } from '../event-store.const';
 
 export default class CookingRequestDomainTransformer {
   public static hydrate(events: ISaveEvent[]) {
@@ -23,7 +24,7 @@ export default class CookingRequestDomainTransformer {
     domain: CookingRequestDomainEntity,
     event: ISaveEvent
   ) {
-    if (event.name === 'snapshot') {
+    if (event.name === CookingRequestEventNames.requestSnapshot) {
       const { id, status, productId } = JSON.parse(
         event.payload
       ) as CookingRequestCreatedEventPayload;
@@ -31,7 +32,7 @@ export default class CookingRequestDomainTransformer {
       domain.productId = productId;
       domain.status = status;
     }
-    if (event.name === EventTopics.cookingRequestCreated) {
+    if (event.name === CookingRequestEventNames.requestCreated) {
       const { id, status, productId } = JSON.parse(
         event.payload
       ) as CookingRequestCreatedEventPayload;
@@ -39,11 +40,16 @@ export default class CookingRequestDomainTransformer {
       domain.productId = productId;
       domain.status = status;
     }
-    if (event.name === EventTopics.cookingRequestUpdated) {
+    if (event.name === CookingRequestEventNames.requestReady) {
       const { status, productId } = JSON.parse(
         event.payload
       ) as CookingRequestUpdatedEventPayload;
-      domain.productId = productId;
+      domain.status = status;
+    }
+    if (event.name === CookingRequestEventNames.requestRejected) {
+      const { status, productId } = JSON.parse(
+        event.payload
+      ) as CookingRequestUpdatedEventPayload;
       domain.status = status;
     }
   }
@@ -56,7 +62,7 @@ export default class CookingRequestDomainTransformer {
     };
     return {
       objectId: domain.id,
-      name: 'snapshot',
+      name: CookingRequestEventNames.requestSnapshot,
       payload: JSON.stringify(payload),
     };
   }
