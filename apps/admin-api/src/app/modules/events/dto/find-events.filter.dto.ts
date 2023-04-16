@@ -6,13 +6,15 @@ export default class FindEventsFilterDto {
     name: 'filter[from]',
   })
   @IsDateString()
-  public readonly from: Date;
+  @IsOptional()
+  public readonly from?: Date;
 
   @ApiProperty({
     name: 'filter[to]',
   })
   @IsDateString()
-  public readonly to: Date;
+  @IsOptional()
+  public readonly to?: Date;
 
   @ApiProperty({
     name: 'filter[id]',
