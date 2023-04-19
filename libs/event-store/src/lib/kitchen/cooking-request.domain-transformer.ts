@@ -59,6 +59,7 @@ export default class CookingRequestDomainTransformer {
       id: domain.id,
       status: domain.status,
       productId: domain.productId,
+      eventName: CookingRequestEventNames.requestSnapshot,
     };
     return {
       objectId: domain.id,

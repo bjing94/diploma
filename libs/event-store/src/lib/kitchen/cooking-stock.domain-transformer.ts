@@ -53,6 +53,7 @@ export default class CookingStockDomainTransformer {
       id: domain.id,
       productId: domain.productId,
       quantity: domain.quantity,
+      eventName: CookingStockEventNames.stockSnapshot,
     };
     return {
       objectId: domain.id,

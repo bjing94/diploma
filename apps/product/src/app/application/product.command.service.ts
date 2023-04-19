@@ -5,10 +5,12 @@ import {
   MenuUpdateCommandResponse,
   ProductCreateRequest,
   ProductCreateResponse,
+  ProductCreatedEventPayload,
   ProductDeleteRequest,
   ProductDeleteResponse,
   ProductUpdateRequest,
   ProductUpdateResponse,
+  ProductUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import {
   MenuDomainEntity,
@@ -40,12 +42,14 @@ export default class ProductCommandService {
   public async create(
     dto: ProductCreateRequest
   ): Promise<ProductCreateResponse> {
-    const domain = new ProductDomainEntity(dto.name);
-    const payload = {
+    const domain = new ProductDomainEntity(dto.name, null, dto.imgLink);
+    const payload: ProductCreatedEventPayload = {
       product: {
         name: domain.name,
         id: domain.id,
+        imgLink: domain.imgLink,
       },
+      eventName: ProductEventNames.productCreated,
     };
     await this.kafkaProducerService.emitProductCreated(payload);
     await this.eventStoreService.saveProductEvent({
@@ -61,15 +65,15 @@ export default class ProductCommandService {
   public async update(
     dto: ProductUpdateRequest
   ): Promise<ProductUpdateResponse> {
-    const { id, name, price } = dto;
+    const { id, name, imgLink } = dto;
     const product = await this.eventStoreService.getProduct(id);
     if (!product) return { success: false };
 
-    const payload = {
+    const payload: ProductUpdatedEventPayload = {
       product: {
         id,
         name,
-        price,
+        imgLink,
       },
       eventName: ProductEventNames.productUpdated,
     };
@@ -88,7 +92,7 @@ export default class ProductCommandService {
     const { id } = dto;
     const product = await this.eventStoreService.getProduct(id);
     if (!product) return { success: false };
-    const payload = { id };
+    const payload = { id, eventName: ProductEventNames.productUpdated };
     await this.kafkaProducerService.emitProductDeleted(payload);
     await this.eventStoreService.saveProductEvent({
       objectId: id,
@@ -134,6 +138,7 @@ export default class ProductCommandService {
         id: menuDomain.id,
         active: menuDomain.active,
       },
+      eventName: MenuEventNames.menuCreated,
     };
     await this.kafkaProducerService.emitMenuCreated(payload);
     await this.eventStoreService.saveMenuEvent({

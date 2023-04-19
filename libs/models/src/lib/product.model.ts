@@ -17,6 +17,9 @@ export class Product {
   @Prop()
   active: boolean;
 
+  @Prop()
+  imgLink: string;
+
   createdAt: Date;
   updatedAt: Date;
 }

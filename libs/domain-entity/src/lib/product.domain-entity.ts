@@ -1,10 +1,3 @@
-import {
-  ProductCreatedEventPayload,
-  ProductUpdatedEventPayload,
-  ProductDeletedEventPayload,
-} from '@burger-shop/contracts';
-import { ISaveEvent } from '@burger-shop/interfaces';
-import { EventTopics } from '@burger-shop/kafka-module';
 import { Types } from 'mongoose';
 
 export class ProductDomainEntity {
@@ -14,9 +7,12 @@ export class ProductDomainEntity {
 
   private _active: boolean;
 
-  constructor(name: string, id?: string) {
+  private _imgLink?: string;
+
+  constructor(name: string, id?: string, imgLink?: string) {
     this.id = id ?? new Types.ObjectId(id).toString();
     this.name = name;
+    this.imgLink = imgLink;
   }
 
   public get id(): string {
@@ -40,52 +36,10 @@ export class ProductDomainEntity {
     this._active = value;
   }
 
-  public static hydrate(events: ISaveEvent[]) {
-    const product = new ProductDomainEntity('', '');
-    events.forEach((event) => {
-      product.applyEvent(event);
-    });
-    return product;
+  public get imgLink(): string {
+    return this._imgLink;
   }
-
-  public applyEvents(events: ISaveEvent[]) {
-    events.forEach((event) => {
-      this.applyEvent(event);
-    });
-  }
-
-  private applyEvent(event: ISaveEvent) {
-    if (event.name === 'snapshot') {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductUpdatedEventPayload;
-      this.id = product.id;
-      this.name = product.name;
-      this.active = true;
-    }
-    if (event.name === EventTopics.productCreated) {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductCreatedEventPayload;
-      this.id = product.id;
-      this.name = product.name;
-      this.active = true;
-    }
-    if (event.name === EventTopics.productUpdated) {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductUpdatedEventPayload;
-      this.name = product.name;
-    }
-    if (event.name === EventTopics.productUpdated) {
-      const { product } = JSON.parse(
-        event.payload
-      ) as ProductUpdatedEventPayload;
-      this.name = product.name;
-    }
-    if (event.name === EventTopics.productDeleted) {
-      const { id } = JSON.parse(event.payload) as ProductDeletedEventPayload;
-      this.active = false;
-    }
+  public set imgLink(value: string) {
+    this._imgLink = value;
   }
 }

@@ -82,6 +82,7 @@ export default class OrderDomainTransformer {
         paymentId: domain.paymentId,
         status: domain.status,
       },
+      eventName: OrderEventNames.orderSnapshot,
     };
     return {
       objectId: domain.id,

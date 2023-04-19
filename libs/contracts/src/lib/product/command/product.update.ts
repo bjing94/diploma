@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ProductUpdateRequest {
   @ApiProperty()
@@ -7,12 +7,13 @@ export class ProductUpdateRequest {
   public readonly id: string;
 
   @ApiProperty()
-  @IsNumber()
-  public readonly price: number;
+  @IsString()
+  public readonly name: string;
 
   @ApiProperty()
   @IsString()
-  public readonly name: string;
+  @IsOptional()
+  public readonly imgLink?: string;
 }
 export class ProductUpdateResponse {
   @ApiProperty()

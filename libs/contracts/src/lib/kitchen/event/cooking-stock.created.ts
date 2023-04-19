@@ -13,4 +13,7 @@ export class CookingStockCreatedEventPayload {
   @ApiProperty()
   @IsNumber()
   public readonly quantity: number;
+
+  @ApiProperty()
+  public readonly eventName: string;
 }

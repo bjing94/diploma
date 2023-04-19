@@ -6,4 +6,7 @@ export default class ProductUpdatedDto {
 
   @ApiProperty()
   public readonly name: string;
+
+  @ApiProperty()
+  public readonly imgLink?: string;
 }

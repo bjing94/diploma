@@ -31,4 +31,7 @@ export class OrderCreatedDto {
 export class OrderCreatedEventPayload {
   @ApiProperty()
   public readonly order: OrderCreatedDto;
+
+  @ApiProperty()
+  public readonly eventName: string;
 }

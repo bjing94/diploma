@@ -35,8 +35,7 @@ export default class ProductQueryService {
     @Inject('ProductRepository')
     private readonly productRepository: ProductAbstractRepository,
     @Inject('MenuRepository')
-    private readonly menuRepository: MenuAbstractRepository,
-    private readonly kafakProducerService: KafkaProducerService
+    private readonly menuRepository: MenuAbstractRepository
   ) {}
 
   public async getById(id: string): Promise<ProductGetByIdQueryResponse> {
@@ -47,6 +46,7 @@ export default class ProductQueryService {
       product: {
         id: product.id,
         name: product.name,
+        imgLink: product.imgLink,
       },
     };
   }
@@ -69,9 +69,6 @@ export default class ProductQueryService {
   ): Promise<ProductFindQueryResponse> {
     const filter: FilterQuery<ProductDocument> = {};
     if (dto.ids) {
-      console.log(dto.ids);
-
-      // filter.id = In(dto.ids);
       filter._id = { $in: dto.ids };
     }
     const products = await this.productRepository.findMany(
@@ -79,14 +76,8 @@ export default class ProductQueryService {
       dto.take,
       dto.skip
     );
-    console.log(products);
     return {
-      products: products.map((item) => {
-        return {
-          id: item.id,
-          name: item.name,
-        };
-      }),
+      products: products.map(ProductQueryService.mapProduct),
     };
   }
 
@@ -103,8 +94,8 @@ export default class ProductQueryService {
   }
 
   public async onCreated(dto: ProductCreatedEventPayload): Promise<void> {
-    const { name, id } = dto.product;
-    await this.productRepository.create({ id, name });
+    const { name, id, imgLink } = dto.product;
+    await this.productRepository.create({ id, name, imgLink });
   }
 
   public async onDeleted(dto: ProductDeletedEventPayload): Promise<void> {
@@ -174,6 +165,6 @@ export default class ProductQueryService {
   }
 
   private static mapProduct(product: Product): ProductResponseDto {
-    return { id: product.id, name: product.name };
+    return { id: product.id, name: product.name, imgLink: product.imgLink };
   }
 }
