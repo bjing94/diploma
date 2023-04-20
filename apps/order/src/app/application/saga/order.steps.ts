@@ -79,6 +79,7 @@ export class CreateOrderNewStep extends CreateOrderSagaState {
         }),
         paymentId: order.paymentId,
       },
+      eventName: OrderEventNames.orderCreated,
     };
 
     for (const item of payload.order.orderItems) {

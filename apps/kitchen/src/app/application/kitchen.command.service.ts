@@ -44,6 +44,7 @@ export default class KitchenCommandService {
       id: entity.id,
       productId: entity.productId,
       status: entity.status,
+      eventName: CookingRequestEventNames.requestCreated,
     };
     await this.eventStore.saveCookingRequestEvent({
       objectId: entity.id,
@@ -147,6 +148,7 @@ export default class KitchenCommandService {
         id: req.id,
         productId: req.productId,
         status: req.status,
+        eventName: CookingRequestEventNames.requestCreated,
       };
       await this.eventStore.saveCookingRequestEvent({
         objectId: req.id,
@@ -191,6 +193,7 @@ export default class KitchenCommandService {
       id: domainStock.id,
       productId: domainStock.productId,
       quantity: domainStock.quantity,
+      eventName: CookingStockEventNames.stockCreated,
     };
     // Привязка по id товара
     await this.eventStore.saveCookingStockEvent({

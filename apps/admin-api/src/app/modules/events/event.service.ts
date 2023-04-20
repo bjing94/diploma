@@ -1,10 +1,16 @@
-import { KafkaProducerService } from '@burger-shop/kafka-module';
+import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
 import { EventDocument } from '@burger-shop/models';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
   ResourceNames,
   CONNECTION_NAME,
+  PaymentEventNames,
+  OrderEventNames,
+  CookingStockEventNames,
+  CookingRequestEventNames,
+  ProductEventNames,
+  MenuEventNames,
 } from 'libs/event-store/src/lib/event-store.const';
 import { Model } from 'mongoose';
 
@@ -241,7 +247,20 @@ export default class EventService {
             res(true);
           }, 200);
         });
-        await this.kafkaProducerService.emit(event.name, event.payload);
+        let topic = '';
+        if (event.name === MenuEventNames.menuCreated) {
+          topic = EventTopics.menuCreated;
+        }
+        if (event.name === MenuEventNames.menuActivated) {
+          topic = EventTopics.menuUpdated;
+        }
+        if (event.name === MenuEventNames.menuDeactivated) {
+          topic = EventTopics.menuUpdated;
+        }
+        if (event.name === MenuEventNames.menuItemsUpdated) {
+          topic = EventTopics.menuUpdated;
+        }
+        await this.kafkaProducerService.emit(topic, event.payload);
       }
       return;
     } catch (e) {
@@ -260,7 +279,15 @@ export default class EventService {
             res(true);
           }, 200);
         });
-        await this.kafkaProducerService.emit(event.name, event.payload);
+        let topic = '';
+        if (event.name === ProductEventNames.productCreated) {
+          topic = EventTopics.productCreated;
+        }
+        if (event.name === ProductEventNames.productUpdated) {
+          topic = EventTopics.productUpdated;
+        }
+
+        await this.kafkaProducerService.emit(topic, event.payload);
       }
       return;
     } catch (e) {
@@ -279,7 +306,11 @@ export default class EventService {
             res(true);
           }, 200);
         });
-        await this.kafkaProducerService.emit(event.name, event.payload);
+        const topic =
+          event.name === PaymentEventNames.paymentCreated
+            ? EventTopics.paymentCreated
+            : EventTopics.paymentStatusUpdated;
+        await this.kafkaProducerService.emit(topic, event.payload);
       }
       return;
     } catch (e) {
@@ -298,7 +329,11 @@ export default class EventService {
             res(true);
           }, 200);
         });
-        await this.kafkaProducerService.emit(event.name, event.payload);
+        const topic =
+          event.name === OrderEventNames.orderCreated
+            ? EventTopics.orderCreated
+            : EventTopics.orderUpdated;
+        await this.kafkaProducerService.emit(topic, event.payload);
       }
       return;
     } catch (e) {
@@ -312,18 +347,53 @@ export default class EventService {
       const stockEvents = await this.getCookingStockEvents({});
       const cookingEvents = await this.getCookingRequestEvents({});
       const events = [...stockEvents, ...cookingEvents];
-      console.log(`Events:`, events.length);
       for (const event of events) {
         await new Promise((res, rej) => {
           setTimeout(() => {
             res(true);
           }, 200);
         });
-        await this.kafkaProducerService.emit(event.name, event.payload);
+        let topic = '';
+        if (event.name === CookingStockEventNames.stockCreated) {
+          topic = EventTopics.cookingStockCreated;
+        }
+        if (event.name === CookingStockEventNames.stockQuantityChanged) {
+          topic = EventTopics.cookingStockUpdated;
+        }
+        if (event.name === CookingRequestEventNames.requestCreated) {
+          topic = EventTopics.cookingRequestCreated;
+        }
+        if (event.name === CookingRequestEventNames.requestReady) {
+          topic = EventTopics.cookingRequestUpdated;
+        }
+        if (event.name === CookingRequestEventNames.requestRejected) {
+          topic = EventTopics.cookingRequestUpdated;
+        }
+        await this.kafkaProducerService.emit(topic, event.payload);
       }
       return;
     } catch (e) {
       console.log(e);
     }
+  }
+
+  public async clearKitchenRead() {
+    await this.kafkaProducerService.sendKitchenClearRead();
+  }
+
+  public async clearOrderRead() {
+    await this.kafkaProducerService.sendOrderClearRead();
+  }
+
+  public async clearProductRead() {
+    await this.kafkaProducerService.sendProductClearRead();
+  }
+
+  public async clearPaymentRead() {
+    await this.kafkaProducerService.sendPaymentClearRead();
+  }
+
+  public async clearMenuRead() {
+    await this.kafkaProducerService.sendMenuClearRead();
   }
 }

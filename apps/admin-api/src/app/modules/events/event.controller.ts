@@ -71,4 +71,29 @@ export default class EventController {
   public async runPaymentEvents() {
     await this.eventService.runPaymentEvents();
   }
+
+  @Get('menu/clear-read')
+  public async clearMenuRead() {
+    await this.eventService.clearMenuRead();
+  }
+
+  @Get('order/clear-read')
+  public async clearOrderRead() {
+    await this.eventService.clearOrderRead();
+  }
+
+  @Get('product/clear-read')
+  public async clearProductRead() {
+    await this.eventService.clearProductRead();
+  }
+
+  @Get('kitchen/clear-read')
+  public async clearKitchenRead() {
+    await this.eventService.clearKitchenRead();
+  }
+
+  @Get('payment/clear-read')
+  public async clearPaymentRead() {
+    await this.eventService.clearPaymentRead();
+  }
 }
