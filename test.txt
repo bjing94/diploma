@@ -1,0 +1,1 @@
+[Nest] 58  - 04/23/2023, 8:04:31 AM   ERROR [ClientKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 127.0.0.1:29092 {"timestamp":"2023-04-23T08:04:31.472Z","logger":"kafkajs","retryCount":5,"retryTime":5862}

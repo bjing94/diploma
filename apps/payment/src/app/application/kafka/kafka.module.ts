@@ -3,7 +3,11 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
-    KafkaProducerModule.register('payment-client', ['localhost:29092'], []),
+    KafkaProducerModule.register(
+      'payment-client',
+      [process.env.KAFKA_HOST],
+      []
+    ),
   ],
   exports: [KafkaProducerModule],
 })

@@ -11,5 +11,5 @@ export enum ResourceNames {
 export const SNAPSHOT_FREQUENCY = 5;
 
 export function getMongoConnectionStringEventStore() {
-  return `mongodb://root:root@localhost:27017/?authMechanism=DEFAULT`;
+  return `mongodb://root:root@${process.env.EVENT_DB_HOST}/?authMechanism=DEFAULT`;
 }

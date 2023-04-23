@@ -8,6 +8,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app/app.module';
+import { getMongoConnectionStringEventStore } from './app/modules/events/event.const';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,4 +36,10 @@ async function bootstrap() {
   );
 }
 
+console.log(getMongoConnectionStringEventStore());
+console.log(
+  process.env.READ_DB_HOST,
+  process.env.EVENT_DB_HOST,
+  process.env.KAFKA_HOST
+);
 bootstrap();

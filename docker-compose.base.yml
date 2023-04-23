@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  nx-app-base:
+    restart: always
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    environment:
+      - DEV_PLATFORM=DOCKER
+      - EVENT_DB_HOST=burger-shop-mongo-event-store-1
+      - READ_DB_HOST=burger-shop-mongo-read-db-1
+      - KAFKA_HOST=kafka:9092
+    volumes:
+      - ./:/app
+
+      - mono-node-modules:/app/node_modules

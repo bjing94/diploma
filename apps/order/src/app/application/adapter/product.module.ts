@@ -11,7 +11,7 @@ import ProductAdapterService from './product.service';
         options: {
           client: {
             clientId: 'order-client',
-            brokers: ['localhost:29092'],
+            brokers: [process.env.KAFKA_HOST],
           },
           consumer: {
             groupId: 'order-consumer',

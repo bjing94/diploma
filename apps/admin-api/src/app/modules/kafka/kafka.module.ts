@@ -9,7 +9,7 @@ import { Module } from '@nestjs/common';
   imports: [
     KafkaProducerModule.register(
       'admin-api-producer',
-      ['localhost:29092'],
+      [process.env.KAFKA_HOST],
       [
         CommandTopics.productCreate,
         CommandTopics.productDelete,

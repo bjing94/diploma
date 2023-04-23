@@ -9,7 +9,7 @@ import { Module } from '@nestjs/common';
   imports: [
     KafkaProducerModule.register(
       'order-client',
-      ['localhost:29092'],
+      [process.env.KAFKA_HOST],
       [
         QueryTopics.menuItemGet,
         QueryTopics.cookingStockGet,

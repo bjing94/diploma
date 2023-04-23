@@ -9,7 +9,7 @@ import { Module } from '@nestjs/common';
   imports: [
     KafkaProducerModule.register(
       'kitchen-client',
-      ['localhost:29092'],
+      [process.env.KAFKA_HOST],
       [QueryTopics.productFind, QueryTopics.productGet]
     ),
   ],

@@ -9,7 +9,7 @@ import { EventStoreModule } from '@burger-shop/event-store';
 @Module({
   imports: [
     CommandModule,
-    KafkaProducerModule.register('cli-producer', ['localhost:29092'], []),
+    KafkaProducerModule.register('cli-producer', [process.env.KAFKA_HOST], []),
     EventStoreModule.registerForProduct(
       'mongodb://root:root@localhost:27017/?authMechanism=DEFAULT'
     ),

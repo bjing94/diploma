@@ -15,7 +15,7 @@ import ProductService from './product.service';
         options: {
           client: {
             clientId: 'order-producer',
-            brokers: ['localhost:29092'],
+            brokers: [process.env.KAFKA_HOST],
           },
         },
       },

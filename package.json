@@ -9,7 +9,12 @@
     "events:run:orders": "nx run cli:build&& set CLI_PATH=./dist/apps/cli/main.js&& npx nestjs-command  order-events:run",
     "events:run-many:product": "nx run cli:build&& set CLI_PATH=./dist/apps/cli/main.js&& npx nestjs-command  product-events:run-many",
     "events:run:product": "nx run cli:build&& set CLI_PATH=./dist/apps/cli/main.js&& npx nestjs-command  product-events:run ",
-    "start:all": "nx run-many --target=serve --all"
+    "start:all": "nx run-many --target=serve --all",
+    "admin-api:dev": "nx run admin-api:serve",
+    "payment:dev": "nx run payment:serve",
+    "product:dev": "nx run product:serve",
+    "order:dev": "nx run order:serve",
+    "kitchen:dev": "nx run kitchen:serve"
   },
   "private": true,
   "dependencies": {

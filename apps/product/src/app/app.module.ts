@@ -44,7 +44,7 @@ import ProductRepository from './infrastructure/database/repository/product.repo
     ),
     KafkaProducerModule.register(
       'product-consumer',
-      ['localhost:29092'],
+      [process.env.KAFKA_HOST],
       [CommandTopics.menuCreate]
     ),
     EventStoreModule.registerForProduct(getMongoConnectionStringEventStore()),
