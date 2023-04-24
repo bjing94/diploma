@@ -1,12 +1,10 @@
 import { EventStoreModule } from '@burger-shop/event-store';
 import { Module } from '@nestjs/common';
-import { getMongoEventStoreConnectionStringEventStore } from '../../config/mongoose.config';
+import { getMongoConnectionStringEventStore } from '../../config/mongoose.config';
 
 @Module({
   imports: [
-    EventStoreModule.registerForPayment(
-      getMongoEventStoreConnectionStringEventStore()
-    ),
+    EventStoreModule.registerForPayment(getMongoConnectionStringEventStore()),
   ],
   exports: [EventStoreModule],
 })

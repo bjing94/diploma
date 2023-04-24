@@ -2,7 +2,7 @@ import { EventStoreModule } from '@burger-shop/event-store';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
-  getMongoEventStoreConnectionStringReadDb,
+  getMongoConnectionStringReadDb,
   READ_CONNECTION_NAME,
 } from '../config/mongoose.config';
 import PaymentModel, {
@@ -18,7 +18,7 @@ import PaymentQueryService from './payment.query.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(getMongoEventStoreConnectionStringReadDb(), {
+    MongooseModule.forRoot(getMongoConnectionStringReadDb(), {
       connectionName: READ_CONNECTION_NAME,
     }),
     MongooseModule.forFeature(
