@@ -10,8 +10,8 @@ services:
 
     environment:
       - DEV_PLATFORM=DOCKER
-      - EVENT_DB_HOST=burger-shop-mongo-event-store-1
-      - READ_DB_HOST=burger-shop-mongo-read-db-1
+      - EVENT_DB_HOST=burger-shop-mongo-event-store-1:27018
+      - READ_DB_HOST=burger-shop-mongo-read-db-1:27017
       - KAFKA_HOST=kafka:9092
     volumes:
       - ./:/app
