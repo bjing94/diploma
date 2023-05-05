@@ -144,7 +144,8 @@ export default class ProductQueryService {
     dto: MenuGetQueryRequest
   ): Promise<MenuGetQueryResponse> {
     const result = await this.menuRepository.get(dto.id);
-    return { menu: result };
+    const menu = ProductQueryService.mapMenu(result);
+    return { menu };
   }
 
   private static mapMenu(menu: MenuModel): MenuResponseDto {

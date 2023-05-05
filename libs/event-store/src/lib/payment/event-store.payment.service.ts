@@ -68,7 +68,7 @@ export class EventStorePaymentService {
     return this.paymentSnapshotModel.find(filter);
   }
 
-  public async makeSnapshotProducts() {
+  public async makeSnapshotPaymens() {
     // Здесь сохраняем снэпшоты
     // В products_snapshot
     const latestSnapshot = await this.paymentSnapshotModel
@@ -115,7 +115,7 @@ export class EventStorePaymentService {
     Logger.log('Snapshotted payments');
   }
 
-  public async getProduct(id: string) {
+  public async getPayment(id: string) {
     const snapshot = await this.paymentSnapshotModel.findOne({ objectId: id });
     const date = snapshot?.createdAt ?? new Date(Date.parse('2023-02-24'));
     const events = await this.getPaymentEvents({ from: date, id });
