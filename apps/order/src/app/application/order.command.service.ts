@@ -65,6 +65,35 @@ export default class OrderCommandService {
     return null;
   }
 
+  private async markOrderReady(dto: OrderUpdateCommandRequest) {
+    const { id } = dto;
+    const order = await this.eventStoreService.getOrder(id);
+    if (!order) return null;
+
+    const saga = new CreateOrderSaga(
+      this.kafkaProducerService,
+      this.eventStoreService
+    );
+    saga.setState(order.status);
+    return saga.getState().ready(dto);
+  }
+
+  public async makrOrderComplete(
+    dto: OrderUpdateCommandRequest
+  ): Promise<OrderUpdateCommandResponse> {
+    const { id } = dto;
+    const order = await this.eventStoreService.getOrder(id);
+    if (!order) return null;
+
+    const saga = new CreateOrderSaga(
+      this.kafkaProducerService,
+      this.eventStoreService
+    );
+    saga.setState(order.status);
+
+    return saga.getState().complete(dto);
+  }
+
   public async onPaymentStatusUpdated(data: PaymentStatusUpdatedEventPayload) {
     const order = await this.eventStoreService.getOrder(data.orderId);
     if (!order || order.status !== OrderStatus.CREATED) return;
