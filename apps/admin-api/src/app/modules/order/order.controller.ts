@@ -57,7 +57,7 @@ export default class OrderController {
 
   @ApiResponse({ type: OrderUpdateCommandResponse })
   @Put(':id')
-  async pay(
+  async updateStatus(
     @Param('id') id: string,
     @Body() dto: OrderUpdateHttpRequest
   ): Promise<OrderUpdateCommandResponse> {
