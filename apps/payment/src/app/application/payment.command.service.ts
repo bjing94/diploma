@@ -72,6 +72,7 @@ export default class PaymentCommandService {
   ): Promise<PaymentUpdateCommandResponse> {
     const { id } = data;
     const payment = await this.paymentRepository.find(id);
+    // console.log()
     if (!payment) return { success: false };
     if (payment.status !== PaymentStatus.PENDING) return { success: false };
 

@@ -23,7 +23,6 @@ import {
 } from '@burger-shop/interfaces';
 import { FilterQuery, isObjectIdOrHexString, isValidObjectId } from 'mongoose';
 import { Product, ProductDocument } from '@burger-shop/models';
-import { In, ObjectID } from 'typeorm';
 import { MenuItemModel } from '../infrastructure/database/model/menu-item.model';
 import { MenuModel } from '../infrastructure/database/model/menu.model';
 import { KafkaProducerService } from '@burger-shop/kafka-module';
