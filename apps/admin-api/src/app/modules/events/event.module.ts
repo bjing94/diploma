@@ -72,5 +72,6 @@ import KafkaModule from '../kafka/kafka.module';
   ],
   controllers: [EventController],
   providers: [EventService],
+  exports: [EventService],
 })
 export default class EventModule {}

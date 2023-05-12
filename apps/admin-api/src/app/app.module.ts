@@ -8,6 +8,7 @@ import OrderModule from './modules/order/order.module';
 import PaymentModule from './modules/payment/payment.module';
 import { ProductModule } from './modules/product/product.module';
 import EventModule from './modules/events/event.module';
+import StatisticsModule from './modules/statistics/statistics.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import EventModule from './modules/events/event.module';
     PaymentModule,
     KitchenModule,
     EventModule,
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
