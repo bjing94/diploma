@@ -86,22 +86,6 @@ export default class ProductCommandService {
     return { success: true };
   }
 
-  public async delete(
-    dto: ProductDeleteRequest
-  ): Promise<ProductDeleteResponse> {
-    const { id } = dto;
-    const product = await this.eventStoreService.getProduct(id);
-    if (!product) return { success: false };
-    const payload = { id, eventName: ProductEventNames.productUpdated };
-    await this.kafkaProducerService.emitProductDeleted(payload);
-    await this.eventStoreService.saveProductEvent({
-      objectId: id,
-      name: EventTopics.productDeleted,
-      payload: JSON.stringify(payload),
-    });
-    return { success: true };
-  }
-
   public async createMenu(
     dto: MenuCreateCommandRequest
   ): Promise<MenuCreateCommandResponse> {

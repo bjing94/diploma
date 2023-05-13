@@ -38,13 +38,6 @@ export default class ProductCommandController {
     return this.productCommandService.update(payload);
   }
 
-  @MessagePattern(CommandTopics.productDelete)
-  public async delete(
-    @Payload() payload: ProductDeleteRequest
-  ): Promise<ProductDeleteResponse> {
-    return this.productCommandService.delete(payload);
-  }
-
   @MessagePattern(CommandTopics.menuCreate)
   public async createMenu(
     @Payload() payload: MenuCreateCommandRequest
