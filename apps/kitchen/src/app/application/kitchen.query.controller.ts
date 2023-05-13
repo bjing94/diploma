@@ -14,44 +14,44 @@ import KitchenQueryService from './kitchen.query.service';
 
 @Controller()
 export default class KitchenQueryController {
-  constructor(private readonly service: KitchenQueryService) {}
+  constructor(private readonly kitchenQueryService: KitchenQueryService) {}
 
   @MessagePattern(EventTopics.cookingRequestCreated)
   public async onCreated(@Payload() data: CookingRequestCreatedEventPayload) {
-    await this.service.onCookingRequestCreated(data);
+    await this.kitchenQueryService.onCookingRequestCreated(data);
   }
 
   @MessagePattern(EventTopics.cookingRequestUpdated)
   public async onUpdated(@Payload() data: CookingRequestUpdatedEventPayload) {
-    await this.service.onCookingRequestUpdated(data);
+    await this.kitchenQueryService.onCookingRequestUpdated(data);
   }
 
   @MessagePattern(EventTopics.cookingStockCreated)
   public async onStockCreated(
     @Payload() data: CookingStockCreatedEventPayload
   ) {
-    await this.service.onCookingStockCreated(data);
+    await this.kitchenQueryService.onCookingStockCreated(data);
   }
 
   @MessagePattern(EventTopics.cookingStockUpdated)
   public async onStockUpdated(
     @Payload() data: CookingStockUpdatedEventPayload
   ) {
-    await this.service.onCookingStockUpdated(data);
+    await this.kitchenQueryService.onCookingStockUpdated(data);
   }
 
   @MessagePattern(QueryTopics.cookingRequestGet)
   public async requestGet(@Payload() data: CookingRequestGetQueryRequest) {
-    return this.service.getCookingRequest(data);
+    return this.kitchenQueryService.getCookingRequest(data);
   }
 
   @MessagePattern(QueryTopics.cookingStockGet)
   public async stockGet(@Payload() data: CookingStockGetQueryRequest) {
-    return this.service.getCookingStock(data);
+    return this.kitchenQueryService.getCookingStock(data);
   }
 
   @MessagePattern(QueryTopics.cookingRequestFind)
   public async requestFind(@Payload() data: CookingRequestFindQueryRequest) {
-    return this.service.findCookingRequest(data);
+    return this.kitchenQueryService.findCookingRequest(data);
   }
 }
