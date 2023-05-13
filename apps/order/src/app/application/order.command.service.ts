@@ -1,24 +1,17 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import ProductAdapterService from './adapter/product.service';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   OrderCreateCommandRequest,
   OrderCreateCommandResponse,
-  OrderCreatedEventPayload,
   OrderUpdateCommandRequest,
   OrderUpdateCommandResponse,
-  OrderUpdatedEventPayload,
   PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
-import { EventTopics, KafkaProducerService } from '@burger-shop/kafka-module';
+import { KafkaProducerService } from '@burger-shop/kafka-module';
 import {
   EventStoreOrderService,
   PaymentEventNames,
 } from '@burger-shop/event-store';
-import {
-  OrderItemDomainEntity,
-  OrderDomainEntity,
-} from '@burger-shop/domain-entity';
-import { OrderStatus, PaymentStatus } from '@burger-shop/interfaces';
+import { OrderStatus } from '@burger-shop/interfaces';
 import CreateOrderSaga from './saga/order.saga';
 import OrderAbstractRepository from './repository/order.abstract-repository';
 
@@ -63,35 +56,6 @@ export default class OrderCommandService {
     }
 
     return null;
-  }
-
-  private async markOrderReady(dto: OrderUpdateCommandRequest) {
-    const { id } = dto;
-    const order = await this.eventStoreService.getOrder(id);
-    if (!order) return null;
-
-    const saga = new CreateOrderSaga(
-      this.kafkaProducerService,
-      this.eventStoreService
-    );
-    saga.setState(order.status);
-    return saga.getState().ready(dto);
-  }
-
-  public async makrOrderComplete(
-    dto: OrderUpdateCommandRequest
-  ): Promise<OrderUpdateCommandResponse> {
-    const { id } = dto;
-    const order = await this.eventStoreService.getOrder(id);
-    if (!order) return null;
-
-    const saga = new CreateOrderSaga(
-      this.kafkaProducerService,
-      this.eventStoreService
-    );
-    saga.setState(order.status);
-
-    return saga.getState().complete(dto);
   }
 
   public async onPaymentStatusUpdated(data: PaymentStatusUpdatedEventPayload) {

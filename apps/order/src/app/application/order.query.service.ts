@@ -17,11 +17,11 @@ import OrderAbstractRepository from './repository/order.abstract-repository';
 export default class OrderQueryService {
   constructor(
     @Inject('OrderRepository')
-    private readonly repository: OrderRepository
+    private readonly orderRepository: OrderRepository
   ) {}
 
   async getOrder(data: OrderGetQueryRequest): Promise<OrderGetQueryResponse> {
-    const result = await this.repository.find({ _id: data.id });
+    const result = await this.orderRepository.find({ _id: data.id });
     if (!result) return null;
     return {
       id: result.id,
@@ -32,7 +32,7 @@ export default class OrderQueryService {
   async findOrders(
     data: OrderFindQueryRequest
   ): Promise<OrderFindQueryResponse> {
-    const result = await this.repository.findMany({
+    const result = await this.orderRepository.findMany({
       status: data.status,
     });
     if (!result.length) return { orders: [] };
@@ -44,11 +44,11 @@ export default class OrderQueryService {
   }
 
   async onCreated(data: OrderCreatedEventPayload) {
-    await this.repository.create(data.order);
+    await this.orderRepository.create(data.order);
   }
 
   async onUpdated(data: OrderUpdatedEventPayload) {
-    const result = await this.repository.update(data.order.id, {
+    const result = await this.orderRepository.update(data.order.id, {
       status: data.order.status,
     });
     console.log('Updated order', result);

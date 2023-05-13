@@ -25,7 +25,7 @@ export default class PaymentQueryController {
   }
 
   @MessagePattern(QueryTopics.paymentGet)
-  public async onPaymentGet(@Payload() data: PaymentGetQueryRequest) {
+  public async paymentGet(@Payload() data: PaymentGetQueryRequest) {
     return this.paymentQueryService.getPayment(data);
   }
 }

@@ -7,7 +7,6 @@ import {
   OrderCreateCommandResponse,
   OrderUpdateCommandRequest,
   OrderUpdateCommandResponse,
-  OrderUpdatedEventPayload,
   PaymentStatusUpdatedEventPayload,
 } from '@burger-shop/contracts';
 import { CommandTopics, EventTopics } from '@burger-shop/kafka-module';
@@ -15,29 +14,29 @@ import { CommandTopics, EventTopics } from '@burger-shop/kafka-module';
 @UseInterceptors(LoggerInterceptor)
 @Controller()
 export default class OrderCommandController {
-  constructor(private readonly service: OrderCommandService) {}
+  constructor(private readonly orderCommandService: OrderCommandService) {}
 
   @MessagePattern(CommandTopics.orderCreate)
   create(
-    @Payload() dto: OrderCreateCommandRequest
+    @Payload() payload: OrderCreateCommandRequest
   ): Promise<OrderCreateCommandResponse> {
-    return this.service.createOrder(dto);
+    return this.orderCommandService.createOrder(payload);
   }
 
   @MessagePattern(CommandTopics.orderUpdate)
-  updated(
-    @Payload() dto: OrderUpdateCommandRequest
+  update(
+    @Payload() payload: OrderUpdateCommandRequest
   ): Promise<OrderUpdateCommandResponse> {
-    return this.service.updateOrder(dto);
+    return this.orderCommandService.updateOrder(payload);
   }
 
   @MessagePattern(EventTopics.paymentStatusUpdated)
-  async onPaymentUpdated(@Payload() data: PaymentStatusUpdatedEventPayload) {
-    await this.service.onPaymentStatusUpdated(data);
+  async onPaymentUpdated(@Payload() payload: PaymentStatusUpdatedEventPayload) {
+    await this.orderCommandService.onPaymentStatusUpdated(payload);
   }
 
   @MessagePattern(CommandTopics.orderClearRead)
   async orderClearRead() {
-    await this.service.orderClearRead();
+    await this.orderCommandService.orderClearRead();
   }
 }

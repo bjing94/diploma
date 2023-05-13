@@ -9,7 +9,6 @@ import {
   OrderSchema,
 } from '../infrastructure/database/mongo/model/order.model';
 import OrderRepository from '../infrastructure/database/mongo/repository/order.repository';
-import ProductAdapterModule from './adapter/product.module';
 import EventStoreRootModule from './event-store/event-store-root.module';
 import KafkaModule from './kafka/kafka.module';
 
@@ -27,7 +26,6 @@ import OrderQueryService from './order.query.service';
       [{ name: OrderModel.name, schema: OrderSchema }],
       READ_CONNECTION_NAME
     ),
-    ProductAdapterModule,
     KafkaModule,
     EventStoreRootModule,
   ],

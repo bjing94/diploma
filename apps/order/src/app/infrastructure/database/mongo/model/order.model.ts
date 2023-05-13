@@ -25,14 +25,6 @@ export class OrderModel {
   @Prop()
   paymentId: string;
 
-  // @Prop({
-  //   required: false,
-  //   default: null,
-  //   type: Types.ObjectId,
-  //   ref: DeliveryInfo.name,
-  // })
-  // deliveryInfo: DeliveryInfo;
-
   @Prop()
   createdAt: Date;
 }
