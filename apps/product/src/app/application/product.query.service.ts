@@ -97,10 +97,6 @@ export default class ProductQueryService {
     await this.productRepository.create({ id, name, imgLink });
   }
 
-  public async onDeleted(dto: ProductDeletedEventPayload): Promise<void> {
-    await this.productRepository.deactivate(dto.id);
-  }
-
   public async onUpdated(dto: ProductUpdatedEventPayload): Promise<void> {
     const { product } = dto;
     await this.productRepository.update(product.id, product);

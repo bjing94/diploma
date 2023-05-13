@@ -38,6 +38,20 @@ export default class ProductQueryController {
     return this.productQueryService.find(payload);
   }
 
+  @MessagePattern(QueryTopics.menuFind)
+  public async findMenu(
+    @Payload() payload: MenuFindQueryRequest
+  ): Promise<MenuFindQueryResponse> {
+    return this.productQueryService.findMenu(payload);
+  }
+
+  @MessagePattern(QueryTopics.menuItemGet)
+  public async getMenuItemById(
+    @Payload() payload: ProductGetMenuItemQueryRequest
+  ): Promise<ProductGetMenuItemQueryResponse> {
+    return this.productQueryService.getItemFromMenu(payload.id);
+  }
+
   @MessagePattern(EventTopics.productCreated)
   public async onProductCreated(
     @Payload() data: ProductCreatedEventPayload
@@ -50,13 +64,6 @@ export default class ProductQueryController {
     @Payload() data: ProductUpdatedEventPayload
   ): Promise<void> {
     return this.productQueryService.onUpdated(data);
-  }
-
-  @MessagePattern(EventTopics.productDeleted)
-  public async onProductDeleted(
-    @Payload() data: ProductDeletedEventPayload
-  ): Promise<void> {
-    return this.productQueryService.onDeleted(data);
   }
 
   @MessagePattern(QueryTopics.menuGet)
@@ -78,19 +85,5 @@ export default class ProductQueryController {
     @Payload() payload: MenuUpdatedEventPayload
   ): Promise<void> {
     return this.productQueryService.onMenuUpdated(payload);
-  }
-
-  @MessagePattern(QueryTopics.menuFind)
-  public async findMenu(
-    @Payload() payload: MenuFindQueryRequest
-  ): Promise<MenuFindQueryResponse> {
-    return this.productQueryService.findMenu(payload);
-  }
-
-  @MessagePattern(QueryTopics.menuItemGet)
-  public async getMenuItemById(
-    @Payload() payload: ProductGetMenuItemQueryRequest
-  ): Promise<ProductGetMenuItemQueryResponse> {
-    return this.productQueryService.getItemFromMenu(payload.id);
   }
 }
