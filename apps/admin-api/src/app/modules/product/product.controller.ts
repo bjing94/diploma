@@ -67,10 +67,4 @@ export default class ProductController {
   ): Promise<ProductUpdateResponse> {
     return this.productService.update({ ...dto, id });
   }
-
-  @ApiOperation({ description: 'Delete product' })
-  @Delete(':id')
-  public async delete(@Param('id') id: string): Promise<ProductDeleteResponse> {
-    return this.productService.delete({ id });
-  }
 }
