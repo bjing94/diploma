@@ -2,11 +2,8 @@ import {
   MenuCreateCommandRequest,
   MenuFindQueryRequest,
   MenuFindQueryResponse,
-  MenuGetQueryRequest,
   MenuGetQueryResponse,
-  MenuUpdateCommandRequest,
   MenuUpdateCommandResponse,
-  ProductGetMenuItemQueryRequest,
   ProductGetMenuItemQueryResponse,
 } from '@burger-shop/contracts';
 import { MenuUpdateRequestDto } from '@burger-shop/interfaces';

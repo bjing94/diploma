@@ -11,6 +11,12 @@ import {
 } from '@burger-shop/contracts';
 import { faker } from '@faker-js/faker';
 import ProductService from '../product/product.service';
+import {
+  CanceledOrdersResponse,
+  CookingTimeResponse,
+  PickupTimeResponse,
+  PopularProductsResponse,
+} from './statistics.interface';
 
 const MONTH_MILLISECONDS = 2629800000;
 const DAY_MILLISECONDS = 86400000;
@@ -22,7 +28,9 @@ export default class StatisticsService {
     private readonly productService: ProductService
   ) {}
 
-  public async getCookingTimeStatistics(productId: string) {
+  public async getCookingTimeStatistics(
+    productId: string
+  ): Promise<CookingTimeResponse[]> {
     const from = new Date(new Date().getTime() - MONTH_MILLISECONDS);
     const to = new Date();
 
@@ -103,7 +111,7 @@ export default class StatisticsService {
     }));
   }
 
-  public async getPickupTimeStatistics() {
+  public async getPickupTimeStatistics(): Promise<PickupTimeResponse[]> {
     const from = new Date(new Date().getTime() - MONTH_MILLISECONDS);
     const to = new Date();
 
@@ -179,7 +187,9 @@ export default class StatisticsService {
     }));
   }
 
-  public async getPopularProductsStatistics() {
+  public async getPopularProductsStatistics(): Promise<
+    PopularProductsResponse[]
+  > {
     const from = new Date(new Date().getTime() - MONTH_MILLISECONDS);
     const to = new Date();
 
@@ -217,7 +227,9 @@ export default class StatisticsService {
     return Array.from(eventsMap.values());
   }
 
-  public async getCanceledOrdersStatistics() {
+  public async getCanceledOrdersStatistics(): Promise<
+    CanceledOrdersResponse[]
+  > {
     const from = new Date(new Date().getTime() - MONTH_MILLISECONDS);
     const to = new Date();
 
